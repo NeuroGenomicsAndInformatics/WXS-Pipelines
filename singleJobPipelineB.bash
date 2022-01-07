@@ -14,5 +14,5 @@ bsub -g ${JOB_GROUP} \
 -W 240 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/pipelinea:latest)' /scripts/pipelineAfull.bash
+-a 'docker(mjohnsonngi/pipelinea:latest)' /scripts/pipelineBfull.bash
 done

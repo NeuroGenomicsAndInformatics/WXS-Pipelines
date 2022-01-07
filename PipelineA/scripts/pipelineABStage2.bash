@@ -1,5 +1,5 @@
 #!/bin/bash
-source /scripts/pipelineAHelperFunctions.bash
+source /scripts/pipelineABHelperFunctions.bash
 #1. set variables, equivalent to setting the environment in the original pipeline
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 MD_INPUTS="$(ls $OUTDIR/*.bam | xargs -I{} echo "I={}")"
