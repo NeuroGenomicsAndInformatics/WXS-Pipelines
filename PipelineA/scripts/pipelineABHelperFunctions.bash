@@ -53,7 +53,7 @@ ValidateSamFile -I ${CURRENT_BAM} \
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()
 {
-bedtools intersect -u -a $1 -b $2 > "${WORKDIR}/${RGBASE}.isec.bam"
+bedtools intersect -u -a $1 -b $2 > ${WORKDIR}/${RGBASE}.isec.bam
 CURRENT_BAM="${WORKDIR}/${RGBASE}.isec.bam"
 }
 # function for converting argument bam to cram
