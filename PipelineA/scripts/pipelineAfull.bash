@@ -11,6 +11,7 @@ MEM_SPLIT=$(expr $MEM / $THREADS)
 for RGBASE in ${RGBASES[@]}; do
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
 alignSortPairedFQs
+saveToOutputDirectory ${CURRENT_BAM}
 reportToLog "Aligned FASTQs into BAM. Validating"
 validateCurrentBam
 reportToLog "Validated."
@@ -22,6 +23,7 @@ if [ ${RUN_TYPE} -eq "paddedexome" ]
 then
   reportToLog "Intersecting BAM with BED"
   intersectBamWithBed ${CURRENT_BAM} ${REF_PADBED}
+  saveToOutputDirectory ${CURRENT_BAM}
   reportToLog "Intersected."
 fi
 reportToLog "Validating and saving BAM as CRAM"
