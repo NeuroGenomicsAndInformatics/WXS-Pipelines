@@ -4,7 +4,7 @@ source /scripts/pipelineABHelperFunctions.bash
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 RGBASE="$(echo ${RGBASES} | cut -d " " -f $LSB_JOBINDEX)"
 echo -e "${FULLSMID}" > ${LOGFILE}
-MEM_SPLIT=$(expr $MEM / $THREADS)
+MEM_SPLIT=$((${MEM}/${THREADS}))
 #TODO Add pipeline B, C, D logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
 alignSortInterleavedFQs

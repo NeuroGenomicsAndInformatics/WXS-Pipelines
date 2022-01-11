@@ -4,7 +4,7 @@ source /scripts/pipelineABHelperFunctions.bash
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 MD_INPUTS="$(ls $OUTDIR/*.bam | xargs -I{} echo "I={}")"
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
-MEM_SPLIT=$(expr $MEM / $THREADS)
+MEM_SPLIT=$((${MEM}/${THREADS}))
 #TODO Add pipeline B, C, D logic
 reportToLog "Marking duplicates"
 markDuplicates

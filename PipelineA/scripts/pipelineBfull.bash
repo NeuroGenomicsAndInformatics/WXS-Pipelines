@@ -6,7 +6,7 @@ RGBASES="$(ls $INDIR/*.rgfile | xargs -I{} basename {} .rgfile)"
 MD_INPUTS=()
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
 echo -e "${FULLSMID}" > ${LOGFILE}
-MEM_SPLIT=$(expr $MEM / $THREADS)
+MEM_SPLIT=$((${MEM}/${THREADS}))
 #TODO Add pipeline B, C, D logic
 for RGBASE in ${RGBASES[@]}; do
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
