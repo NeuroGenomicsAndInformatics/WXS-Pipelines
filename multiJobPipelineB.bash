@@ -8,7 +8,7 @@ for FULLSMID in $(cat $1); do
 JOBS_IN_ARRAY=$(ls /scratch1/fs1/cruchagac/matthewj/c1in/${FULLSMID}/*.rgfile | wc -w)
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/baseEnvs/pipelineBase.env /scratch1/fs1/cruchagac/matthewj/baseEnvs/references.env /scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
--J ngi-${USER}-pre-$FULLSMID[$JOBS_IN_ARRAY] \
+-J ngi-${USER}-pre-$FULLSMID[1-$JOBS_IN_ARRAY] \
 -n ${THREADS} \
 -R 'select[mem>48000] rusage[mem=48GB]' \
 -M ${MEM}GB \
