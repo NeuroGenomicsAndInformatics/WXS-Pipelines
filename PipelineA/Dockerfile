@@ -53,10 +53,12 @@ FROM alpine:edge AS java
 RUN apk add --no-cache \
 	zlib-dev \
 	libstdc++ \
+	libc6-compat \
   openjdk8-jre \
 	python2 \
   bash \
-	&& mv /usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/jli/libjli.so /lib
+	&& mv /usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/jli/libjli.so /lib \
+	&& cp /lib64/ld-linux-x86-64.so.2 /lib
 
 ARG BWA_VER
 ARG SAM_VER

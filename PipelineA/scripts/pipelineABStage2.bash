@@ -2,7 +2,10 @@
 source /scripts/pipelineABHelperFunctions.bash
 #1. set variables, equivalent to setting the environment in the original pipeline
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
-MD_INPUTS="$(ls $OUTDIR/*.bam | xargs -I{} echo "I={}")"
+MD_INPUTS=()
+for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do \
+MD_INPUTS+=("I=${OUTDIR}/${BAM}")
+done
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
 MEM_SPLIT=$((${MEM}/${THREADS}))
 #TODO Add pipeline B, C, D logic
