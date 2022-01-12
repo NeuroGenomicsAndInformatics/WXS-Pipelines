@@ -10,7 +10,7 @@ function reportToLog ()
 # function for taking unmapped paired FASTQs to sorted BAM
 function alignSortPairedFQs ()
 {
-bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} ${INDIR}/${RGBASE}.r1.fq.gz ${INDIR}/${RGBASE}.r2.fq.gz | \
+bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
 #${JAVA} -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false -jar ${PICARD} SortSam I=/dev/stdin O=${WORKDIR}/${SAMPLEID}.aln.srt.bam SO=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=2000000
 samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o "${WORKDIR}/${RGBASE}.aln.srt.bam" -T "${WORKDIR}/"
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
@@ -53,7 +53,7 @@ ValidateSamFile -I ${CURRENT_BAM} \
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()
 {
-bedtools intersect -u -a $1 -b $2 > ${WORKDIR}/${RGBASE}.isec.bam
+bedtools intersect -u -a "$1" -b "$2" > "${WORKDIR}/${RGBASE}.isec.bam"
 CURRENT_BAM="${WORKDIR}/${RGBASE}.isec.bam"
 }
 # function for converting argument bam to cram
