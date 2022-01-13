@@ -40,6 +40,11 @@ function saveBamAsCram ()
 {
 samtools view -T "${REF_FASTA}" -C -o "${OUTDIR}/${RGBASE}.cram" "$1"
 }
+function convertCramToBam ()
+{
+samtools view -b -T "${REF_FASTA}" -o "${WORKDIR}/${RGBASE}.bam" "$1"
+CURRENT_BAM="${WORKDIR}/${RGBASE}.bam"
+}
 function revertBamToFastqs ()
 {
 	java -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
