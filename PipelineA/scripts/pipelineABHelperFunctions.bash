@@ -100,7 +100,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	-R ${REF_FASTA} \
 	-I ${CURRENT_BAM} \
 	-bqsr-recal-file "${WORKDIR}/${SAMPLEID}.recal.table1" \
-	-L ${REF_COVBED} \
+	-L ${REF_PADBED} \
 	-O "${WORKDIR}/${SAMPLEID}.recal.bam"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
@@ -128,7 +128,7 @@ HaplotypeCaller -R ${REF_FASTA} \
 	-I ${CURRENT_BAM} \
 	-ERC GVCF \
 	--dbsnp ${REF_DBSNP} \
-	-L ${REF_COVBED} \
+	-L ${REF_PADBED} \
 	-O "${WORKDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
 CURRENT_VCF="${WORKDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
 }
