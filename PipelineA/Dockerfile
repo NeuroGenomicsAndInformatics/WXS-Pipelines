@@ -54,6 +54,7 @@ RUN apk add --no-cache \
 	zlib-dev \
 	libstdc++ \
 	libc6-compat \
+	libgomp \
   openjdk8-jre \
 	python2 \
   bash \

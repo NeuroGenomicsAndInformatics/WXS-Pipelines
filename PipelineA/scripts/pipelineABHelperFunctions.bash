@@ -137,7 +137,8 @@ function evaluateSampleVariants ()
 	java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
 	-jar ${GATK360} -T VariantEval -R ${REF_FASTA} \
 	-nt ${GATK_THREADS} \
+	-L ${REF_PADBED} \
 --dbsnp ${REF_DBSNP} \
---eval ${SAMPLEID_VE} "${WORKDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz" \
+--eval:"${SAMPLEID_VE}" "${CURRENT_VCF}" \
 -o "${WORKDIR}/${SAMPLEID}_exome_varianteval.gatkreport"
 }
