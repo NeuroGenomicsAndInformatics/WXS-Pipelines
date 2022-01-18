@@ -1,39 +1,11 @@
 # save argument to output directory.
 function saveToOutputDirectory ()
 {
-	cp "$1" ${OUTDIR}
+	cp "$1*" ${OUTDIR}
 }
 function reportToLog ()
 {
 	echo -e "$1" >> ${LOGFILE}
-}
-function getFreeMix ()
-{
-	/scripts/verifyBamID \
-		--vcf "${REF_HAPMAP}" \
-		--bam "${CURRENT_BAM}" \
-		--chip-none \
-		--maxDepth 1000 \
-		--precise \
-		--verbose \
-		--ignoreRG \
-		--out "${OUTDIR}/${RGBASE}_verifybam" \
-		|& grep -v "Skipping marker"
-	echo $(tail -n 1 ${OUTDIR}/${RGBASE}_verifybam.selfSM) | cut -f 6
-}
-function validateCurrentBam ()
-{
-java -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
--jar ${PICARD} \
-ValidateSamFile -I ${CURRENT_BAM} \
--R ${REF_FASTA} \
---CREATE_INDEX true \
---IGNORE MISSING_READ_GROUP \
---IGNORE RECORD_MISSING_READ_GROUP \
---IGNORE INVALID_VERSION_NUMBER \
---IGNORE INVALID_TAG_NM \
---TMP_DIR ${WORKDIR} \
--MODE SUMMARY
 }
 # function for converting argument bam to cram
 function saveBamAsCram ()
@@ -61,4 +33,11 @@ function revertBamToFastqs ()
 	-RG_TAG ID \
 	-OUTPUT_DIR "${OUTDIR}" \
 	-VALIDATION_STRINGENCY SILENT
+}
+function extractRGs ()
+{
+	IFS=$'\n' RGS=($(samtools view -H "${CURRENT_BAM}" | grep "^@RG"))
+	for RG in ${RGS[@]}; do RGID="$(echo ${RG} | grep -oP "(?<=ID:)[^[:space:]]*")"
+	RGID_NEW="$(echo ${RGID} | cut -d: -f2- | sed 's/:/^/g')"
+	RGBASE="${FULLSM}.${RGID_NEW}"
 }

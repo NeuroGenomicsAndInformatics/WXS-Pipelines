@@ -1,7 +1,7 @@
 # save argument to output directory.
 function saveToOutputDirectory ()
 {
-	cp "$1" ${OUTDIR}
+	cp "$1*" ${OUTDIR}
 }
 function reportToLog ()
 {
@@ -18,7 +18,7 @@ CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
 {
-bwa mem -t ${THREADS} -R "$(<${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${RGBASE}.fq" | \
+bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
 samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o "${WORKDIR}/${RGBASE}.aln.srt.bam" -T "${WORKDIR}"
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 }
@@ -53,7 +53,7 @@ ValidateSamFile -I ${CURRENT_BAM} \
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()
 {
-bedtools intersect -u -a "$1" -b "$2" > "${WORKDIR}/${RGBASE}.isec.bam"
+bedtools intersect -u -a "$1" -b "$2" > ${WORKDIR}/${RGBASE}.isec.bam
 CURRENT_BAM="${WORKDIR}/${RGBASE}.isec.bam"
 }
 # function for converting argument bam to cram

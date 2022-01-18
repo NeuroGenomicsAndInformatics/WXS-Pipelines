@@ -8,6 +8,7 @@ FQ1EXT="$(echo ${FQ1##*${RGBASE}})"
 FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"
 echo -e "${FULLSMID}" > ${LOGFILE}
 MEM_SPLIT=$((${MEM}/${THREADS}))
+echo -e "MEM is ${MEM}, THREADS is ${THREADS}, MEM_SPLIT is ${MEM_SPLIT}"
 echo -e "" > ${OUTDIR}/stage1complete.txt
 #TODO Add pipeline B, C, D logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
