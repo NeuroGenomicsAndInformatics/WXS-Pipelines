@@ -12,7 +12,7 @@ echo -e "" > ${OUTDIR}/stage1complete.txt
 #TODO Add pipeline B, C, D logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
 alignSortPairedFQs
-saveToOutputDirectory ${CURRENT_BAM}
+saveToOutputDirectory
 reportToLog "Aligned FASTQs into BAM. Validating"
 validateCurrentBam
 reportToLog "Validated."
@@ -26,9 +26,9 @@ then
   intersectBamWithBed ${CURRENT_BAM} ${REF_PADBED}
   reportToLog "Intersected."
 fi
+saveToOutputDirectory ${CURRENT_BAM}
 reportToLog "Validating and saving BAM as CRAM"
 validateCurrentBam
-saveToOutputDirectory ${CURRENT_BAM}
 saveBamAsCram ${CURRENT_BAM}
 echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
 reportToLog "Saved CRAM. Finished for $RGBASE"

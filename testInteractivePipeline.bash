@@ -1,5 +1,5 @@
 #!/bin/bash
-export THREADS=16
+export THREADS=8
 export MEM=48
 JOB_GROUP="/${USER}/compute-cruchagac"
 FULLSM="$(head -n 1 $1)"
