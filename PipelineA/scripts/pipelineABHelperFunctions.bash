@@ -1,7 +1,7 @@
 # save argument to output directory.
 function saveToOutputDirectory ()
 {
-	cp "$1*" ${OUTDIR}
+	cp "$1"* ${OUTDIR}
 }
 function reportToLog ()
 {
@@ -12,14 +12,14 @@ function alignSortPairedFQs ()
 {
 bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
 #${JAVA} -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false -jar ${PICARD} SortSam I=/dev/stdin O=${WORKDIR}/${SAMPLEID}.aln.srt.bam SO=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=2000000
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o "${WORKDIR}/${RGBASE}.aln.srt.bam" -T "${WORKDIR}/"
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
 {
 bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o "${WORKDIR}/${RGBASE}.aln.srt.bam" -T "${WORKDIR}"
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 }
 function getFreeMix ()
@@ -82,7 +82,7 @@ java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.us
 -ct 10 -ct 15 -ct 20 -ct 30 -ct 40 -ct 50 -ct 60 -ct 70 -ct 80 -ct 90 -ct 100 \
 --omitDepthOutputAtEachBase --omitIntervalStatistics --omitLocusTable -L ${REF_COVBED} \
 -I ${CURRENT_BAM} \
--o "${WORKDIR}/${SAMPLEID}_exome_coverage"
+-o "${OUTDIR}/${SAMPLEID}_exome_coverage"
 }
 # function for base recalibration and plots
 function recalibrateBases ()
@@ -140,5 +140,5 @@ function evaluateSampleVariants ()
 	-L ${REF_PADBED} \
 --dbsnp ${REF_DBSNP} \
 --eval:"${SAMPLEID_VE}" "${CURRENT_VCF}" \
--o "${WORKDIR}/${SAMPLEID}_exome_varianteval.gatkreport"
+-o "${OUTDIR}/${SAMPLEID}_exome_varianteval.gatkreport"
 }
