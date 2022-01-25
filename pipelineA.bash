@@ -1,5 +1,5 @@
 #!/bin/bash
-export THREADS=8
+export THREADS=16
 export MEM=64
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
