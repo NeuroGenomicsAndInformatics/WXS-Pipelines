@@ -9,15 +9,16 @@ FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"
 echo -e "${FULLSMID}" > ${LOGFILE}
 MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
-#TODO Add pipeline B, C, D logic
+#TODO Add pipeline B, C, D, and E logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
 alignSortPairedFQs
-saveToOutputDirectory
+#saveToOutputDirectory ${CURRENT_BAM}
 reportToLog "Aligned FASTQs into BAM. Validating"
 validateCurrentBam
-reportToLog "Validated."
-#SAMPLE_FREEMIX=$(getFreeMix)
-#reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
+reportToLog "Validating and saving BAM as CRAM"
+saveBamAsCram ${CURRENT_BAM}
+SAMPLE_FREEMIX=$(getFreeMix)
+reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
 #if [ ${SAMPLE_FREEMIX} -le 0.03 ]
 #then reportToLog "${FULLSMID} is likely contaminated"; exit 3; fi
 if [ "${RUN_TYPE}" = "paddedexome" ]
@@ -26,9 +27,9 @@ then
   intersectBamWithBed ${CURRENT_BAM} ${REF_PADBED}
   reportToLog "Intersected."
 fi
-saveToOutputDirectory ${CURRENT_BAM}
-reportToLog "Validating and saving BAM as CRAM"
+#saveToOutputDirectory ${CURRENT_BAM}
 validateCurrentBam
-saveBamAsCram ${CURRENT_BAM}
+reportToLog "Validated. Adding to stage1complete list."
+#NOTE: This can lead to a race condition on the list. A failed Stage 2 could be caused by the stage1complete.txt file being messed up. Fixing the file manually solves this and Stage 2 can be run normally after.
 echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
-reportToLog "Saved CRAM. Finished for $RGBASE"
+reportToLog "Finished for $RGBASE"

@@ -12,15 +12,17 @@ function alignSortPairedFQs ()
 {
 bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
 #${JAVA} -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false -jar ${PICARD} SortSam I=/dev/stdin O=${WORKDIR}/${SAMPLEID}.aln.srt.bam SO=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=2000000
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
-CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
+CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
+samtools index -@ ${THREADS} -m "${MEM_SPLIT}G" ${CURRENT_BAM} ${CURRENT_BAM%.bam}
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
 {
 bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
-CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
+CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
+samtools index -@ ${THREADS} -m "${MEM_SPLIT}G" ${CURRENT_BAM} ${CURRENT_BAM%.bam}
 }
 function getFreeMix ()
 {
@@ -53,8 +55,8 @@ ValidateSamFile -I ${CURRENT_BAM} \
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()
 {
-bedtools intersect -u -a "$1" -b "$2" > ${WORKDIR}/${RGBASE}.isec.bam
-CURRENT_BAM="${WORKDIR}/${RGBASE}.isec.bam"
+bedtools intersect -u -a "$1" -b "$2" > ${OUTDIR}/${RGBASE}.isec.bam
+CURRENT_BAM="${OUTDIR}/${RGBASE}.isec.bam"
 }
 # function for converting argument bam to cram
 function saveBamAsCram ()
@@ -65,14 +67,14 @@ function markDuplicates ()
 {
 java -Djava.io.tmpdir=${WORKDIR} \
 -jar ${PICARD} MarkDuplicates ${MD_INPUTS[@]} \
-O="${WORKDIR}/${SAMPLEID}_GATKready.bam" \
-M="${WORKDIR}/${SAMPLEID}_metrics.txt" \
+O="${OUTDIR}/${SAMPLEID}_GATKready.bam" \
+M="${OUTDIR}/${SAMPLEID}_metrics.txt" \
 QUIET=true \
 MAX_RECORDS_IN_RAM=2000000 \
 ASSUME_SORTED=TRUE \
 CREATE_INDEX=TRUE \
 TMP_DIR=${WORKDIR}
-CURRENT_BAM="${WORKDIR}/${SAMPLEID}_GATKready.bam"
+CURRENT_BAM="${OUTDIR}/${SAMPLEID}_GATKready.bam"
 }
 function analyzeDepthOfCoverage ()
 {
@@ -80,7 +82,7 @@ java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.us
 -jar ${GATK360} -T DepthOfCoverage \
 -R ${REF_FASTA} -nt 1 \
 -ct 10 -ct 15 -ct 20 -ct 30 -ct 40 -ct 50 -ct 60 -ct 70 -ct 80 -ct 90 -ct 100 \
---omitDepthOutputAtEachBase --omitIntervalStatistics --omitLocusTable -L ${REF_COVBED} \
+--omitDepthOutputAtEachBase --omitIntervalStatistics --omitLocusTable -L ${REF_PADBED} \
 -I ${CURRENT_BAM} \
 -o "${OUTDIR}/${SAMPLEID}_exome_coverage"
 }
@@ -94,18 +96,18 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	--known-sites ${REF_MILLS_GOLD} \
 	--known-sites ${REF_DBSNP} \
 	--known-sites ${REF_ONEKGP1} \
-	-O "${WORKDIR}/${SAMPLEID}.recal.table1"
+	-O "${OUTDIR}/${SAMPLEID}.recal.table1"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	ApplyBQSR \
 	-R ${REF_FASTA} \
 	-I ${CURRENT_BAM} \
-	-bqsr-recal-file "${WORKDIR}/${SAMPLEID}.recal.table1" \
+	-bqsr-recal-file "${OUTDIR}/${SAMPLEID}.recal.table1" \
 	-L ${REF_PADBED} \
-	-O "${WORKDIR}/${SAMPLEID}.recal.bam"
+	-O "${OUTDIR}/${SAMPLEID}.recal.bam"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
-	-bqsr "${WORKDIR}/${SAMPLEID}.recal.table1" \
-	-plots "${WORKDIR}/${SAMPLEID}_AnalyzeCovariates.pdf"
+	-bqsr "${OUTDIR}/${SAMPLEID}.recal.table1" \
+	-plots "${OUTDIR}/${SAMPLEID}_AnalyzeCovariates.pdf"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	BaseRecalibrator \
 	-I ${CURRENT_BAM} \
@@ -113,13 +115,13 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	--known-sites ${REF_MILLS_GOLD} \
 	--known-sites ${REF_DBSNP} \
 	--known-sites ${REF_ONEKGP1} \
-	-O "${WORKDIR}/${SAMPLEID}.recal.table2"
+	-O "${OUTDIR}/${SAMPLEID}.recal.table2"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
-	-before "${WORKDIR}/${SAMPLEID}.recal.table1" \
-	-after "${WORKDIR}/${SAMPLEID}.recal.table2" \
-	-plots "${WORKDIR}/${SAMPLEID}_before-after-plots.pdf"
-CURRENT_BAM="${WORKDIR}/${SAMPLEID}.recal.bam"
+	-before "${OUTDIR}/${SAMPLEID}.recal.table1" \
+	-after "${OUTDIR}/${SAMPLEID}.recal.table2" \
+	-plots "${OUTDIR}/${SAMPLEID}_before-after-plots.pdf"
+CURRENT_BAM="${OUTDIR}/${SAMPLEID}.recal.bam"
 }
 function callSampleVariants ()
 {
@@ -129,8 +131,8 @@ HaplotypeCaller -R ${REF_FASTA} \
 	-ERC GVCF \
 	--dbsnp ${REF_DBSNP} \
 	-L ${REF_PADBED} \
-	-O "${WORKDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
-CURRENT_VCF="${WORKDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
+	-O "${OUTDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
+CURRENT_VCF="${OUTDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
 }
 function evaluateSampleVariants ()
 {

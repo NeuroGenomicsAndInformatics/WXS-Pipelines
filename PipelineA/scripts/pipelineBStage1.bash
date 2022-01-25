@@ -8,11 +8,12 @@ MEM_SPLIT=$((${MEM}/${THREADS}))
 #TODO Add pipeline B, C, D logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
 alignSortInterleavedFQs
-reportToLog "Aligned FASTQs into BAM. Validating"
+reportToLog "Aligned FASTQ into BAM. Validating"
 validateCurrentBam
-reportToLog "Validated."
-#SAMPLE_FREEMIX=$(getFreeMix)
-#reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
+saveBamAsCram ${CURRENT_BAM}
+reportToLog "Validated and saved as CRAM."
+SAMPLE_FREEMIX=$(getFreeMix)
+reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
 #if [ ${SAMPLE_FREEMIX} -le 0.03 ]
 #then reportToLog "${FULLSMID} is likely contaminated"; exit 3; fi
 if [ "${RUN_TYPE}" = "paddedexome" ]
@@ -21,8 +22,11 @@ then
   intersectBamWithBed ${CURRENT_BAM} ${REF_PADBED}
   reportToLog "Intersected."
 fi
-reportToLog "Validating and saving BAM as CRAM"
+reportToLog "Validating."
 validateCurrentBam
-saveToOutputDirectory ${CURRENT_BAM}
-saveBamAsCram ${CURRENT_BAM}
-reportToLog "Saved CRAM. Finished for $RGBASE"
+#saveToOutputDirectory ${CURRENT_BAM}
+reportToLog "Validated. Finished for $RGBASE"
+reportToLog "Adding to stage1complete list."
+#NOTE: This can lead to a race condition on the list. A failed Stage 2 could be caused by the stage1complete.txt file being messed up. Fixing the file manually solves this and Stage 2 can be run normally after.
+echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
+reportToLog "Finished for $RGBASE"
