@@ -14,7 +14,7 @@ bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $F
 #${JAVA} -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false -jar ${PICARD} SortSam I=/dev/stdin O=${WORKDIR}/${SAMPLEID}.aln.srt.bam SO=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=2000000
 samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
 CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
-samtools index -@ ${THREADS} -m "${MEM_SPLIT}G" ${CURRENT_BAM} ${CURRENT_BAM%.bam}
+samtools index -@ ${THREADS} -m "${MEM_SPLIT}G" ${CURRENT_BAM} ${CURRENT_BAM%.bam}.bai
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
@@ -22,7 +22,7 @@ function alignSortInterleavedFQs ()
 bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
 samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
 CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
-samtools index -@ ${THREADS} -m "${MEM_SPLIT}G" ${CURRENT_BAM} ${CURRENT_BAM%.bam}
+samtools index -@ ${THREADS} -m "${MEM_SPLIT}G" ${CURRENT_BAM} ${CURRENT_BAM%.bam}.bai
 }
 function getFreeMix ()
 {
