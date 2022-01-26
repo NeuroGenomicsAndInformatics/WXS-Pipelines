@@ -17,10 +17,6 @@ reportToLog "Aligned FASTQs into BAM. Validating"
 validateCurrentBam
 reportToLog "Validating and saving BAM as CRAM"
 saveBamAsCram ${CURRENT_BAM}
-SAMPLE_FREEMIX=$(getFreeMix)
-reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
-#if [ ${SAMPLE_FREEMIX} -le 0.03 ]
-#then reportToLog "${FULLSMID} is likely contaminated"; exit 3; fi
 if [ "${RUN_TYPE}" = "paddedexome" ]
 then
   reportToLog "Intersecting BAM with BED"

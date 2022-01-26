@@ -20,7 +20,12 @@ reportToLog "Analyzed. Recalibrating bases"
 recalibrateBases
 reportToLog "Recalibrated. Validating"
 validateCurrentBam
-reportToLog "Validated. Calling variants on sample"
+reportToLog "Validated. Getting FREEMIX."
+SAMPLE_FREEMIX=$(getFreeMix)
+reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
+#if [ ${SAMPLE_FREEMIX} -le 0.03 ]
+#then reportToLog "${FULLSMID} is likely contaminated"; exit 3; fi
+reportToLog "Calling variants on sample"
 callSampleVariants
 #saveToOutputDirectory ${CURRENT_VCF}
 reportToLog "Called. Evaluating variants"
