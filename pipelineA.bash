@@ -16,7 +16,7 @@ bsub -g ${JOB_GROUP} \
 -M 120000000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/pipelinea:latest)' /scripts/pipelineAStage1.bash
+-a 'docker(mjohnsonngi/pipelinea:stable)' /scripts/pipelineAStage1.bash
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -w "done(\"ngi-${USER}-pre-$FULLSMID\")" \
@@ -28,5 +28,5 @@ bsub -g ${JOB_GROUP} \
 -M 120000000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/pipelinea:latest)' /scripts/pipelineABStage2.bash
+-a 'docker(mjohnsonngi/pipelinea:stable)' /scripts/pipelineABStage2.bash
 done
