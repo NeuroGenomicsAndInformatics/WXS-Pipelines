@@ -19,7 +19,7 @@ bsub -g ${JOB_GROUP} \
 -a 'docker(mjohnsonngi/pipelinea:stable)' /scripts/pipelineAStage1.bash
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
--w "done(\"ngi-${USER}-pre-$FULLSMID\")" \
+-w "done(\"ngi-${USER}-stage1-$FULLSMID\")" \
 -J ngi-${USER}-stage2-$FULLSMID \
 -n ${THREADS} \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}_s2.%J.out \
