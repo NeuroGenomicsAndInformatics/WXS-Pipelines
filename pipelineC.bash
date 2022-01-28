@@ -1,6 +1,6 @@
 #!/bin/bash
 # Check if running in the background. If not, call itself in the background and exit the foreground version
-export THREADS=1
+export THREADS=8
 export MEM=32
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
