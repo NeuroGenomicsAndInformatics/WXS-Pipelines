@@ -16,4 +16,3 @@ bsub -g ${JOB_GROUP} \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/pipelinea:latest)' /scripts/pipelineCStage0.bash
-done
