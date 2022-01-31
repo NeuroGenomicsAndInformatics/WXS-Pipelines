@@ -12,4 +12,4 @@ bsub -g ${JOB_GROUP} \
 -M 120000000 \
 -G compute-cruchagac \
 -q general-interactive \
--a 'docker(mjohnsonngi/pipelinea:stable)' /bin/bash "$1"
+-a 'docker(mjohnsonngi/pipelinea:latest)' /bin/bash "$1"
