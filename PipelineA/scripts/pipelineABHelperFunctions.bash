@@ -11,16 +11,21 @@ function reportToLog ()
 function alignSortPairedFQs ()
 {
 bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
-#${JAVA} -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false -jar ${PICARD} SortSam I=/dev/stdin O=${WORKDIR}/${SAMPLEID}.aln.srt.bam SO=coordinate CREATE_INDEX=true MAX_RECORDS_IN_RAM=2000000
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
+CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+}
+function alignSortPairedHugeFQs ()
+{
+bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${OUTDIR}/"
 CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
 {
 bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
-CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
+CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 }
 function getFreeMix ()
 {
@@ -34,7 +39,7 @@ function getFreeMix ()
 		--ignoreRG \
 		--out "${OUTDIR}/${FULLSMID}_verifybam" \
 		|& grep -v "Skipping marker"
-	echo $(tail -n 1 ${OUTDIR}/${FULLSMID}_verifybam.selfSM) | cut -f 6
+	echo $(tail -n 1 ${OUTDIR}/${FULLSMID}_verifybam.selfSM | cut -f 7)
 }
 function validateCurrentBam ()
 {
@@ -53,8 +58,8 @@ ValidateSamFile -I ${CURRENT_BAM} \
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()
 {
-bedtools intersect -u -a "$1" -b "$2" > ${OUTDIR}/${RGBASE}.isec.bam
-CURRENT_BAM="${OUTDIR}/${RGBASE}.isec.bam"
+bedtools intersect -u -a "$1" -b "$2" > ${WORKDIR}/${RGBASE}.isec.bam
+CURRENT_BAM="${WORKDIR}/${RGBASE}.isec.bam"
 }
 # function for converting argument bam to cram
 function saveBamAsCram ()
@@ -101,7 +106,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	-I ${CURRENT_BAM} \
 	-bqsr-recal-file "${OUTDIR}/${SAMPLEID}.recal.table1" \
 	-L ${REF_PADBED} \
-	-O "${OUTDIR}/${SAMPLEID}.recal.bam"
+	-O "${WORKDIR}/${SAMPLEID}.recal.bam"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
 	-bqsr "${OUTDIR}/${SAMPLEID}.recal.table1" \
@@ -141,4 +146,8 @@ function evaluateSampleVariants ()
 --dbsnp ${REF_DBSNP} \
 --eval:"${SAMPLEID_VE}" "${CURRENT_VCF}" \
 -o "${OUTDIR}/${SAMPLEID}_exome_varianteval.gatkreport"
+}
+function getTitvRatio ()
+{
+	echo $(cat ${OUTDIR}/${SAMPLEID}_exome_varianteval.gatkreport | grep TiTvVariantEvaluator | grep all) | cut -d ' ' -f 8
 }

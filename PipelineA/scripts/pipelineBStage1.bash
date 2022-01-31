@@ -3,8 +3,9 @@ source /scripts/pipelineABHelperFunctions.bash
 #1. set variables, equivalent to setting the environment in the original pipeline
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 RGBASE="$(echo ${RGBASES} | cut -d " " -f $LSB_JOBINDEX)"
-echo -e "${FULLSMID}" > ${LOGFILE}
+#echo -e "${FULLSMID}" > ${LOGFILE}
 MEM_SPLIT=$((${MEM}/${THREADS}))
+echo -e "" > ${OUTDIR}/stage1complete.txt
 #TODO Add pipeline B, C, D logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
 alignSortInterleavedFQs
@@ -12,10 +13,6 @@ reportToLog "Aligned FASTQ into BAM. Validating"
 validateCurrentBam
 saveBamAsCram ${CURRENT_BAM}
 reportToLog "Validated and saved as CRAM."
-SAMPLE_FREEMIX=$(getFreeMix)
-reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
-#if [ ${SAMPLE_FREEMIX} -le 0.03 ]
-#then reportToLog "${FULLSMID} is likely contaminated"; exit 3; fi
 if [ "${RUN_TYPE}" = "paddedexome" ]
 then
   reportToLog "Intersecting BAM with BED"
