@@ -13,7 +13,7 @@ PROJECTNAME="$3"
 FULLSM=$(echo ${SM}.${PROJECTNAME}\^${BARCODE}\^${PROJECT})
 RGBASE="${FULLSM}.${FLOWCELL}^${LANE}"
 STAGE_DIR="/scratch1/fs1/cruchagac/matthewj/c1in/${FULLSM}"
-mkdir ${STAGE_DIR}
+if [ ! -e $STAGE_DIR ]; then mkdir ${STAGE_DIR}; fi
 RGFILE="$STAGE_DIR/${RGBASE}.rgfile"
 touch $RGFILE
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}.${PROJECTNAME}\tDS:${FULLSM}" > $RGFILE
