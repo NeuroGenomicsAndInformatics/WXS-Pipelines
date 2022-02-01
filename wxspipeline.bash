@@ -29,5 +29,5 @@ bsub -g ${JOB_GROUP} \
 -M 120000000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/wxspipeline:latest)' /scripts/pipelineABStage2.bash
+-a 'docker(mjohnsonngi/wxspipeline:latest)' /scripts/pipelineStage2.bash
 done
