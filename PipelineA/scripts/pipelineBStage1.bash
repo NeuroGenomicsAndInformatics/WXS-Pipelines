@@ -8,7 +8,7 @@ MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
 #TODO Add pipeline B, C, D logic
 reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
-alignSortInterleavedFQs
+alignSortInterleavedFQs || alignSortHugeInterleavedFQs
 reportToLog "Aligned FASTQ into BAM. Validating"
 validateCurrentBam
 saveBamAsCram ${CURRENT_BAM}

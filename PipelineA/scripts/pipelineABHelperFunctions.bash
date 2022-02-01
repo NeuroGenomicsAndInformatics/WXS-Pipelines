@@ -106,7 +106,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	-I ${CURRENT_BAM} \
 	-bqsr-recal-file "${OUTDIR}/${SAMPLEID}.recal.table1" \
 	-L ${REF_PADBED} \
-	-O "${WORKDIR}/${SAMPLEID}.recal.bam"
+	-O "${OUTDIR}/${SAMPLEID}.recal.bam"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
 	-bqsr "${OUTDIR}/${SAMPLEID}.recal.table1" \
