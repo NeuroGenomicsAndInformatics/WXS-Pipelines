@@ -1,6 +1,6 @@
 #!/bin/bash
-OUTDIR=/scratch1/fs1/cruchagac/matthewj/c1out
-FINAL_OUTDIR=/storage1/fs1/cruchagac/Active/matthewj/c1out
+OUTDIR=/scratch1/fs1/cruchagac/$USER/c1out
+FINAL_OUTDIR=/storage1/fs1/cruchagac/Active/$USER/c1out
 for FULLSMID in $(cat $1); do
 mkdir ${FINAL_OUTDIR}/${FULLSMID}
 rsync ${OUTDIR}/${FULLSMID}/*.env ${FINAL_OUTDIR}/${FULLSMID}
