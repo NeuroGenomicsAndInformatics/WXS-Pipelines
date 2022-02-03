@@ -1,0 +1,88 @@
+This WXS-Pipelines repository is designed for processing whole genome
+and exome sequencing data on WUSTL's compute1 HPC cluster.
+
+Current tested and stable pipelines: A
+Pipelines in testing: B, C, D
+
+Inputs:
+  1. A text file with sample names (FULLSMID) separated by whitespace
+    ex. MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS
+  2. Data staged in scratch1 with the following structure:
+    /scratch1/fs1/cruchagac/matthewj/c1in/${FULLSMID}/
+    ex. /scratch1/fs1/cruchagac/matthewj/c1in/MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS/${RGBASE[1]}.rgfile
+        /scratch1/fs1/cruchagac/matthewj/c1in/MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS/${RGBASE[1]}.fq1
+        /scratch1/fs1/cruchagac/matthewj/c1in/MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS/${RGBASE[1]}.fq2
+        /scratch1/fs1/cruchagac/matthewj/c1in/MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS/${RGBASE[2]}.rgfile
+        /scratch1/fs1/cruchagac/matthewj/c1in/MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS/${RGBASE[2]}.fq1
+        /scratch1/fs1/cruchagac/matthewj/c1in/MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS/${RGBASE[2]}.fq2
+        ...
+    NOTE: rgfiles must have the .rgfile extension, but the extensions for Fastqs don't matter as long as they're numbered 1 and 2 for paired end THREADS
+
+Outputs:
+  1. Aligned, sorted crams for each readgroup
+    ex. MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS.HM5FVDSXY^1.cram
+  2. A bam/bai ready for GATK
+    ex. MAP_10040.GRAYS_GATKready.bam
+        MAP_10040.GRAYS_GATKready.bai
+  3. A gVCF for the sample
+    ex. MAP_10040.GRAYS.raw.snps.indels.g.vcf.gz
+        MAP_10040.GRAYS.raw.snps.indels.g.vcf.gz.tbi
+        MAP_10040.GRAYS_metrics.txt
+  4. Coverage reports
+    ex. MAP_10040.GRAYS_exome_coverage.sample_statistics
+        MAP_10040.GRAYS_exome_coverage.sample_summary
+  5. Variant evaluation report
+    ex. MAP_10040.GRAYS_exome_varianteval.gatkreport
+  6. VerifyBamID report
+    ex. MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS_verifybam.depthSM
+        MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS_verifybam.log
+        MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS_verifybam.selfSM
+  7. Various outputs, logs, and reports
+    ex. MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS_runlog.txt - Sample-wide log messages
+        MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS_s1.278114.5.err - stderr for FULLSMID_STAGE.JOBID.JOB_INDEX
+        MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS_s1.278114.5.out - stdout for FULLSMID_STAGE.JOBID.JOB_INDEX
+        MAP_10040.GRAYS^2102557103^20202110_MGI_WGS_GRAYS.env - The environment variables used to process the sample
+
+
+STEPS TO RUN PIPELINE A
+1. Stage data to scratch1
+  a. Use the structure defined above in "Inputs"
+  b1. A tested and efficient method is to move data to /storage1/fs1/cruchagac/Active
+    (Raw data is generally kept on Archive and requires Globus to be moved https://docs.ris.wustl.edu/doc/storage/globus.html)
+    and then using rsync (command line tool) to move the data to scratch1. Rsync will use a hash to ensure the files are transferred correctly.
+    This can be done from any server with storage1 mounted: rsync -a SOURCE USER@compute1-client-1.ris.wustl.edu:DEST
+  b2. My preferred method is to move data to storage1 (if not already there), then to
+    log into compute1 and run rsync without needing the additional login: rsync -a SOURCE DEST
+  b3. There is also a script in the repository called fileTransferMakeRgfiles.bash that will stage the data and generate rgfiles
+    from data provided by MGI and currently works for GRAYS, though may require modification for future projects.
+    /path/to/fileTransferMakeRgfiles.bash /full/path/to/SampleMap.csv 20202110_MGI_WGS_GRAYS GRAYS
+2. Log into compute1 (if you aren't already)
+  ssh USER@compute1-client-1.ris.wustl.edu
+  NOTE: The above uses client 1, but there are 4 client nodes numbered 1-4
+3. Create a workfile
+  a. Any text file should work. It should contain a list of FULLSMIDs that correspond to the folder names of the staged data.
+  b. Spaces, tabs, or new lines for each file should work and have all been tested.
+  c. Running a list command get the folders is a quick way of doing this.
+  ls /storage1/fs1/cruchagac/matthewj/c1in/*GRAYS > workfile.txt
+4. Get the pipeline code
+  a. The pipelines are available via github and are publicly available. You can get them by navigating to where you want the folder and entering:
+  git clone https://github.com/mjohnsonngi/WXS-Pipelines.git
+5. Run the pipeline
+  a. Navigate to the folder that was just added.
+  cd /path/to/WXS-Pipelines
+  b. Call the pipeline script
+  ./pipelineA.bash /path/to/workfile.txt
+6. Collect outputs when done
+  a. The output files will show up in /scratch1/fs1/cruchagac/matthewj/c1out/$FULLSMID
+  b. The pipeline repository also includes a transferOutputFiles.bash script to copy files back to storage1. The input could also be the same workfile.
+
+
+QUICK START
+These commands will run the entire pipeline for GRAYS from input files downloaded to storage1 to output files in storage1:
+ssh USER@compute1-client-1.ris.wustl.edu
+git clone https://github.com/mjohnsonngi/WXS-Pipelines.git; cd WXS-Pipelines
+./fileTransferMakeRgfiles /full/path/to/SampleMap.csv 20202110_MGI_WGS_GRAYS GRAYS
+ls /storage1/fs1/cruchagac/matthewj/c1in/*GRAYS > ~/workfile.txt
+./pipelineA.bash ~/workfile.txt
+... wait for complete
+./transferOutputFiles.bash ~/workfile.txt
