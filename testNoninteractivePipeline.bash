@@ -1,4 +1,8 @@
 #!/bin/bash
+export LSF_DOCKER_VOLUMES="/scratch1/fs1/cruchagac/matthewj/c1in:/input \
+/scratch1/fs1/cruchagac/matthewj/ref:/ref \
+/scratch1/fs1/cruchagac/matthewj/c1out:/output \
+/storage1/fs1/cruchagac/Active/matthewj/c1out:/final_output"
 export THREADS=8
 export MEM=96
 JOB_GROUP="/${USER}/compute-cruchagac"
