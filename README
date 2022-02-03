@@ -55,7 +55,7 @@ STEPS TO RUN PIPELINE A
     log into compute1 and run rsync without needing the additional login: rsync -a SOURCE DEST
   b3. There is also a script in the repository called fileTransferMakeRgfiles.bash that will stage the data and generate rgfiles
     from data provided by MGI and currently works for GRAYS, though may require modification for future projects.
-    /path/to/fileTransferMakeRgfiles.bash /full/path/to/SampleMap.csv 20202110_MGI_WGS_GRAYS GRAYS
+    bash /path/to/fileTransferMakeRgfiles.bash /full/path/to/SampleMap.csv 20202110_MGI_WGS_GRAYS GRAYS
 2. Log into compute1 (if you aren't already)
   ssh USER@compute1-client-1.ris.wustl.edu
   NOTE: The above uses client 1, but there are 4 client nodes numbered 1-4
@@ -71,7 +71,7 @@ STEPS TO RUN PIPELINE A
   a. Navigate to the folder that was just added.
   cd /path/to/WXS-Pipelines
   b. Call the pipeline script
-  ./pipelineA.bash /path/to/workfile.txt
+  bash pipelineA.bash /path/to/workfile.txt
 6. Collect outputs when done
   a. The output files will show up in /scratch1/fs1/cruchagac/matthewj/c1out/$FULLSMID
   b. The pipeline repository also includes a transferOutputFiles.bash script to copy files back to storage1. The input could also be the same workfile.
@@ -81,8 +81,8 @@ QUICK START
 These commands will run the entire pipeline for GRAYS from input files downloaded to storage1 to output files in storage1:
 ssh USER@compute1-client-1.ris.wustl.edu
 git clone https://github.com/mjohnsonngi/WXS-Pipelines.git; cd WXS-Pipelines
-./fileTransferMakeRgfiles /full/path/to/SampleMap.csv 20202110_MGI_WGS_GRAYS GRAYS
+bash fileTransferMakeRgfiles /full/path/to/SampleMap.csv 20202110_MGI_WGS_GRAYS GRAYS
 ls /storage1/fs1/cruchagac/matthewj/c1in/*GRAYS > ~/workfile.txt
-./pipelineA.bash ~/workfile.txt
+bash pipelineA.bash ~/workfile.txt
 ... wait for complete
-./transferOutputFiles.bash ~/workfile.txt
+bash transferOutputFiles.bash ~/workfile.txt
