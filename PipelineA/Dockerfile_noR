@@ -1,7 +1,11 @@
-ARG ALPINE_VER=3.14.3
+# This image is intended to be used as an end to end pipeline for a single sample from unmapped fastq to gvcf
+# These values can be used to set version numbers later in the build, though will require resetting them
+
+ARG ALPINE_VER=edge
 ARG BWA_VER=0.7.17
 ARG SAM_VER=1.9
 ARG BED_VER=2.27.1
+#ARG JAVA_VER=8-jre
 ##########################################
 FROM alpine:${ALPINE_VER} AS builder
 
@@ -44,7 +48,7 @@ RUN wget -q -P /tmp https://github.com/arq5x/bedtools2/releases/download/v${BED_
   && cd /tmp/bedtools${BED_VER%%.*}/ \
   && make
 
-FROM rhub/r-minimal:4.1-patched AS executor
+FROM alpine:edge AS java
 
 RUN apk add --no-cache \
 	zlib-dev \
@@ -54,11 +58,8 @@ RUN apk add --no-cache \
   openjdk8-jre \
 	python2 \
   bash \
-	rsync \
 	&& mv /usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/jli/libjli.so /lib \
 	&& cp /lib64/ld-linux-x86-64.so.2 /lib
-
-RUN installr -d -t gfortran ggplot2
 
 ARG BWA_VER
 ARG SAM_VER
@@ -71,4 +72,5 @@ COPY --from=builder /usr/lib/liblzma.so.5 /usr/lib/liblzma.so.5
 
 COPY ./scripts/* /scripts/
 
+#ENTRYPOINT ["/usr/bin/pipeA.bash"]
 CMD ["/bin/bash"]
