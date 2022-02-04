@@ -1,5 +1,6 @@
 #!/bin/bash
-export LSF_DOCKER_VOLUMES="/scratch1/fs1/cruchagac/matthewj/c1in:/input \
+export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active/matthewj/c1in/staged_input \
+/scratch1/fs1/cruchagac/matthewj/c1in:/input \
 /scratch1/fs1/cruchagac/matthewj/ref:/ref \
 /scratch1/fs1/cruchagac/matthewj/c1out:/output \
 /storage1/fs1/cruchagac/Active/matthewj/c1out:/final_output"
@@ -7,7 +8,7 @@ export THREADS=8
 export MEM=48
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
-bash ./perSampleEnvs.bash $1
+bash ./makeSampleEnv.bash $1
 for FULLSMID in $(cat $1); do
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \

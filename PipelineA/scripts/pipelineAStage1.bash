@@ -10,7 +10,9 @@ FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"
 MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
 #TODO Add pipeline B, C, D, and E logic
-reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
+reportToLog "Starting pipeline A for $RGBASE. Staging Data to scratch1."
+stageDataForRGBASE
+reportToLog "Aligning and sorting"
 alignSortPairedFQs || alignSortPairedHugeFQs
 reportToLog "Aligned FASTQs into BAM. Validating"
 validateCurrentBam

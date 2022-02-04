@@ -1,6 +1,7 @@
 #!/bin/bash
 # Check if running in the background. If not, call itself in the background and exit the foreground version
-export LSF_DOCKER_VOLUMES="/scratch1/fs1/cruchagac/matthewj/c1in:/input \
+export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active/matthewj/c1in/staged_input \
+/scratch1/fs1/cruchagac/matthewj/c1in:/input \
 /scratch1/fs1/cruchagac/matthewj/ref:/ref \
 /scratch1/fs1/cruchagac/matthewj/c1out:/output \
 /storage1/fs1/cruchagac/Active/matthewj/c1out:/final_output"

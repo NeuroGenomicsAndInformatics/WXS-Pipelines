@@ -1,7 +1,6 @@
 #!/bin/bash
 source /scripts/pipelineCommonHelperFunctions.bash
 source /scripts/pipelineStage1HelperFunctions.bash
-#1. set variables, equivalent to setting the environment in the original pipeline
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 RGBASE="$(echo ${RGBASES} | cut -d ' ' -f $LSB_JOBINDEX)"
 FQ1="$(ls $INDIR/${RGBASE}*1*)"
@@ -11,8 +10,9 @@ FQI="$(ls $INDIR/${RGBASE}*f*q*)"
 #echo -e "${FULLSMID}" > ${LOGFILE}
 MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
-#TODO Add pipeline B, C, D, and E logic
-reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
+reportToLog "Starting pipeline for $RGBASE. Staging Data to scratch1."
+stageDataForRGBASE
+reportToLog "Aligning and sorting"
 if [ -e $FQ1 ] && [ -e $FQ2 ]; then
 alignSortPairedFQs || alignSortPairedHugeFQs
 elif [ ! -e $FQ1 ] && [ ! -e $FQ2 ] && [ -e $FQI ]; then
