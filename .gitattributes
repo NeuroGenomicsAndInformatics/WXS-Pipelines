@@ -1,0 +1,4 @@
+* text=auto
+*.bash text eol=lf
+*.sh text eol=lf
+verifyBamID binary
