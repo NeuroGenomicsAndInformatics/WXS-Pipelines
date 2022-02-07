@@ -9,4 +9,6 @@ rsync ${OUTDIR}/${FULLSMID}/*_GATK* ${FINAL_OUTDIR}/${FULLSMID}
 rsync ${OUTDIR}/${FULLSMID}/*vcf* ${FINAL_OUTDIR}/${FULLSMID}
 rsync ${OUTDIR}/${FULLSMID}/*verifybam.selfSM ${FINAL_OUTDIR}/${FULLSMID}
 rsync ${OUTDIR}/${FULLSMID}/*_exome_* ${FINAL_OUTDIR}/${FULLSMID}
+rsync ${OUTDIR}/${FULLSMID}/*.pdf ${FINAL_OUTDIR}/${FULLSMID}
+rsync ${OUTDIR}/${FULLSMID}/*.recal.table* ${FINAL_OUTDIR}/${FULLSMID}
 done
