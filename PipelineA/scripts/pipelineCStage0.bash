@@ -1,8 +1,10 @@
 #!/bin/bash
-source /scripts/pipelineCommonHelperFunctions.bash
+source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineCHelperFunctions.bash
-#1. set variables, equivalent to setting the environment in the original pipeline
-reportToLog "Starting pipeline C for $CRAM. Converting CRAM to BAM"
+CRAM="$1"
+reportToLog "Starting pipeline C for $CRAM. Getting CRAM"
+getCram
+reportToLog "Converting CRAM to BAM"
 convertCramToBam
 reportToLog "CRAM Converted."
 #validateCurrentBam
