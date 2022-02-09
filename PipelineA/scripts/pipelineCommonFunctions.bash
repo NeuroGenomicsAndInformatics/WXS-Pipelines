@@ -2,7 +2,7 @@
 function saveToOutputDirectory ()
 {
 	cp "$1"* ${OUTDIR}
-	if [[ -e "${1::-1}i"]; then cp "${1::-1}i" ${OUTDIR}; fi
+	if [ -e "${1::-1}i"]; then cp "${1::-1}i" ${OUTDIR}; fi
 }
 # prints argument to stdin. could consider for stderr
 function reportToLog ()
