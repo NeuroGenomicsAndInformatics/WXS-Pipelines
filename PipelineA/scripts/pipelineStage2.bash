@@ -1,5 +1,5 @@
 #!/bin/bash
-source /scripts/pipelineCommonHelperFunctions.bash
+source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineStage2HelperFunctions.bash
 #1. set variables, equivalent to setting the environment in the original pipeline
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
