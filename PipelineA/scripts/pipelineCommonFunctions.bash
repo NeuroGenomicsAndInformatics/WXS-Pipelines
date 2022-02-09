@@ -9,7 +9,6 @@ function reportToLog ()
 {
 	echo -e "\n\n ===================================== \n\n"
 	echo -e "$1"
-	echo -e "\n\n ===================================== \n\n"
 }
 function validateCurrentBam ()
 {
@@ -29,4 +28,9 @@ ValidateSamFile -I ${CURRENT_BAM} \
 function saveBamAsCram ()
 {
 samtools view -T "${REF_FASTA}" -C -o "${OUTDIR}/${RGBASE}.cram" "$1"
+}
+# function for getting the size of the file given as an argument
+function getFileSize ()
+{
+	echo $(wc -c "$1" | cut -d' ' -f1)
 }
