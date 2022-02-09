@@ -1,5 +1,5 @@
 #!/bin/bash
-source /scripts/pipelineCommonHelperFunctions.bash
+source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineStage1HelperFunctions.bash
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 RGBASE="$(echo ${RGBASES} | cut -d ' ' -f $LSB_JOBINDEX)"
