@@ -9,7 +9,9 @@ if [[ -e $FQ1 ]]; then FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"; else unset F
 FQI="$(ls $INDIR/${RGBASE}*f*q*)"
 MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
-reportToLog "Starting pipeline A for $RGBASE. Aligning and sorting"
+reportToLog "Starting pipeline for $RGBASE. Staging Data to scratch1."
+stageDataForRGBASE
+reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
 alignSortPairedFQs || alignSortPairedHugeFQs
 elif [[ ! -e $FQ1 ]] && [[ ! -e $FQ2 ]] && [[ -e $FQI ]]; then

@@ -1,3 +1,7 @@
+function getCram ()
+{
+	rsync $STAGE_INDIR/$CRAM $INDIR/
+}
 function convertCramToBam ()
 {
 samtools view -b -@ $(($THREADS-1)) -T "${REF_FASTA}" -o "${INDIR}/${CRAM##*/}.test.bam" $CRAM

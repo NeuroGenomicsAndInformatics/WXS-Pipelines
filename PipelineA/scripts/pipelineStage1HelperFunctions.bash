@@ -1,3 +1,7 @@
+function stageDataForRGBASE ()
+{
+	rsync -rg  $STAGE_DIR/${RGBASE}* $INDIR
+}
 # function for taking unmapped paired FASTQs to sorted BAM
 function alignSortPairedFQs ()
 {

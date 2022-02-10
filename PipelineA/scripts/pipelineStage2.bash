@@ -32,3 +32,8 @@ callSampleVariants
 reportToLog "Called. Evaluating variants"
 evaluateSampleVariants
 reportToLog "Evaluated."
+SAMPLE_TITV=$(getTitvRatio)
+reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
+reportToLog "Transferring output files to $FINAL_OUTDIR"
+transferOutputFilesToStorage
+reportToLog "Finished for $FULLSMID."

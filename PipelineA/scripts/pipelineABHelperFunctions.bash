@@ -1,3 +1,7 @@
+function stageDataForRGBASE ()
+{
+	rsync -rg  $STAGE_DIR/${RGBASE}* $INDIR
+}
 # save argument to output directory.
 function saveToOutputDirectory ()
 {
