@@ -3,14 +3,14 @@ source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineStage1HelperFunctions.bash
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 RGBASE="$(echo ${RGBASES} | cut -d ' ' -f $LSB_JOBINDEX)"
+MEM_SPLIT=$((${MEM}/${THREADS}))
+reportToLog "Starting pipeline for $RGBASE. Staging Data to scratch1."
+stageDataForRGBASE
 FQ1="$(ls $INDIR/${RGBASE}*1*)"
 FQ1EXT="$(echo ${FQ1##*${RGBASE}})"
 if [[ -e $FQ1 ]]; then FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"; else unset FQ2; fi
 FQI="$(ls $INDIR/${RGBASE}*f*q*)"
-MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
-reportToLog "Starting pipeline for $RGBASE. Staging Data to scratch1."
-stageDataForRGBASE
 reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
 alignSortPairedFQs || alignSortPairedHugeFQs

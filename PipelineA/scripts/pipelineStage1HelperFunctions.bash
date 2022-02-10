@@ -1,13 +1,13 @@
 function stageDataForRGBASE ()
 {
-	rsync -Lg  $STAGE_DIR/${RGBASE}* $INDIR
+	rsync -Lg  $STAGE_INDIR/${RGBASE}* $INDIR/
 }
 # function for taking unmapped paired FASTQs to sorted BAM
 function alignSortPairedFQs ()
 {
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/")
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
 }
 function alignSortPairedHugeFQs ()
 {
@@ -21,7 +21,7 @@ function alignSortInterleavedFQs ()
 {
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" $FQI | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}")
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
 }
 function alignSortHugeInterleavedFQs ()
 {

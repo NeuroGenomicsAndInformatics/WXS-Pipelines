@@ -1,18 +1,22 @@
 function stageDataForRGBASE ()
 {
-	rsync -rg  $STAGE_DIR/${RGBASE}* $INDIR
+	rsync -rg  $STAGE_DIR/${RGBASE}* $INDIR/
 }
 # save argument to output directory.
 function saveToOutputDirectory ()
 {
-	rsync "$1"* ${OUTDIR}
-	if [[ -e "${1::-1}i"]]; then cp "${1::-1}i" ${OUTDIR}; fi
+	rsync "$1"* ${OUTDIR}/
+	if [[ -e "${1::-1}i" ]]; then
+	rsync "${1::-1}i" ${OUTDIR}/
+fi
 }
 # save argument to final output directory.
 function saveToFinalOutputDirectory ()
 {
-	rsync "$1"* ${FINAL_OUTDIR}
-	if [[ -e "${1::-1}i"]; then cp "${1::-1}i" ${FINAL_OUTDIR}; fi
+	rsync "$1"* ${FINAL_OUTDIR}/
+	if [[ -e "${1::-1}i" ]]; then
+	rsync "${1::-1}i" ${FINAL_OUTDIR}/
+fi
 }
 # prints argument to stdin. could consider for stderr
 function reportToLog ()
