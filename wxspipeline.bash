@@ -10,7 +10,7 @@ JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 for FULLSMID in $(cat $1); do
 bash ./makeSampleEnv.bash $FULLSMID
-JOBS_IN_ARRAY=$(ls /scratch1/fs1/cruchagac/matthewj/c1in/${FULLSMID}/*.rgfile | wc -w)
+JOBS_IN_ARRAY=$(ls /storage1/fs1/cruchagac/Active/matthewj/c1in/${FULLSMID}/*.rgfile | wc -w)
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
