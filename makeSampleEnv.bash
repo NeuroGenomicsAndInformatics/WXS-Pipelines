@@ -11,7 +11,7 @@ echo -e "OUTDIR=/output/${FULLSMID}" >> $ENV_FILE
 echo -e "FINAL_OUTDIR=/final_output/${FULLSMID}" >> $ENV_FILE
 echo -e "LOGFILE=/output/${FULLSMID}/${FULLSMID}_runlog.txt" >> $ENV_FILE
 echo -e "RUN_TYPE=paddedexome" >> $ENV_FILE
-echo -e "RGBASES="$(basename -s .rgfile /scratch1/fs1/cruchagac/matthewj/c1in/${FULLSMID}/*.rgfile)"" >> $ENVS_DIR/${FULLSMID}.env
+echo -e "RGBASES="$(basename -s .rgfile /storage1/fs1/cruchagac/Active/matthewj/c1in/${FULLSMID}/*.rgfile)"" >> $ENVS_DIR/${FULLSMID}.env
 cat ${BASE_ENVS_DIR}/pipelinebase.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
 cp $ENV_FILE /scratch1/fs1/cruchagac/matthewj/c1out/$FULLSMID/
