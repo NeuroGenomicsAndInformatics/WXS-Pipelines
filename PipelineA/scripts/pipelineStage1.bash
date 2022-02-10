@@ -5,17 +5,16 @@ SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 RGBASE="$(echo ${RGBASES} | cut -d ' ' -f $LSB_JOBINDEX)"
 FQ1="$(ls $INDIR/${RGBASE}*1*)"
 FQ1EXT="$(echo ${FQ1##*${RGBASE}})"
-FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"
+if [[ -e $FQ1 ]]; then FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"; else unset FQ2; fi
 FQI="$(ls $INDIR/${RGBASE}*f*q*)"
-#echo -e "${FULLSMID}" > ${LOGFILE}
 MEM_SPLIT=$((${MEM}/${THREADS}))
 echo -e "" > ${OUTDIR}/stage1complete.txt
 reportToLog "Starting pipeline for $RGBASE. Staging Data to scratch1."
 stageDataForRGBASE
 reportToLog "Aligning and sorting"
-if [ -e $FQ1 ] && [ -e $FQ2 ]; then
+if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
 alignSortPairedFQs || alignSortPairedHugeFQs
-elif [ ! -e $FQ1 ] && [ ! -e $FQ2 ] && [ -e $FQI ]; then
+elif [[ ! -e $FQ1 ]] && [[ ! -e $FQ2 ]] && [[ -e $FQI ]]; then
 alignSortInterleavedFQs || alignSortHugeInterleavedFQs
 else
 reportToLog "Check input files"; exit 3;

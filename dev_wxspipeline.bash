@@ -1,15 +1,14 @@
 #!/bin/bash
-export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active/matthewj/c1in/staged_input \
-/scratch1/fs1/cruchagac/matthewj/c1in:/input \
+export LSF_DOCKER_VOLUMES="/scratch1/fs1/cruchagac/matthewj/c1in:/input \
 /scratch1/fs1/cruchagac/matthewj/ref:/ref \
 /scratch1/fs1/cruchagac/matthewj/c1out:/output \
 /storage1/fs1/cruchagac/Active/matthewj/c1out:/final_output"
 export THREADS=16
 export MEM=96
-JOB_GROUP="/${USER}/compute-cruchagac"
+JOB_GROUP="/${USER}-dev/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
-FULLSMID="$1"
-bash ./makeSampleEnv.bash $FULLSMID
+bash ./perSampleEnvs.bash $1
+for FULLSMID in $(cat $1); do
 JOBS_IN_ARRAY=$(ls /scratch1/fs1/cruchagac/matthewj/c1in/${FULLSMID}/*.rgfile | wc -w)
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
@@ -21,7 +20,7 @@ bsub -g ${JOB_GROUP} \
 -M 120000000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/wxspipeline:latest)' /scripts/pipelineStage1.bash
+-a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage1.bash
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -w "done(\"ngi-${USER}-stage1-$FULLSMID\")" \
@@ -34,4 +33,5 @@ bsub -g ${JOB_GROUP} \
 -M 120000000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/wxspipeline:latest)' /scripts/pipelineStage2.bash
+-a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage2.bash
+done
