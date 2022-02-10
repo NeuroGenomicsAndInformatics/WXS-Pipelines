@@ -5,33 +5,30 @@ function stageDataForRGBASE ()
 # function for taking unmapped paired FASTQs to sorted BAM
 function alignSortPairedFQs ()
 {
-if (bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"); then CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam";
-else return 0;
-fi
+CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/")
 }
 function alignSortPairedHugeFQs ()
 {
+CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
 samtools view -b -1 -o ${WORKDIR}/${RGBASE}.aln.bam \
 && samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
-CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
 {
-if (bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" $FQI | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}");
-then CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam";
-else return 0;
-fi
+CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" $FQI | \
+samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}")
 }
 function alignSortHugeInterleavedFQs ()
 {
+CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 bwa mem -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
 samtools view -b -1 -o ${WORKDIR}/${RGBASE}.aln.bam \
 && samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
-CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
 }
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()
