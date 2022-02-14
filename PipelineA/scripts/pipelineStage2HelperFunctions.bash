@@ -1,13 +1,14 @@
 function transferOutputFilesToStorage ()
 {
-	rsync ${OUTDIR}/*.env ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*.cram ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*_GATK* ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*vcf* ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*verifybam.selfSM ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*_exome_* ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*.pdf ${FINAL_OUTDIR}
-	rsync ${OUTDIR}/*.recal.table* ${FINAL_OUTDIR}
+	mkdir ${FINAL_OUTDIR}
+	rsync ${OUTDIR}/*.env ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*.cram ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*_GATK* ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*vcf* ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*verifybam.selfSM ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*_exome_* ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*.pdf ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*.recal.table* ${FINAL_OUTDIR}/
 	#rm -R ${OUTDIR}
 	#rm -R ${INDIR}
 }

@@ -1,6 +1,6 @@
 function stageDataForRGBASE ()
 {
-	rsync -Lg  $STAGE_INDIR/${RGBASE}* $INDIR/
+	rsync -L $STAGE_INDIR/${RGBASE}* $INDIR
 }
 # function for taking unmapped paired FASTQs to sorted BAM
 function alignSortPairedFQs ()
@@ -11,10 +11,10 @@ samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.b
 }
 function alignSortPairedHugeFQs ()
 {
-CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
 bwa mem -M -t ${THREADS} -R "$(<${INDIR}/${RGBASE}.rgfile)" ${REF_FASTA} $FQ1 $FQ2 | \
 samtools view -b -1 -o ${WORKDIR}/${RGBASE}.aln.bam \
-&& samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
+&& samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${OUTDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
