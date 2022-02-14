@@ -17,6 +17,7 @@ bsub -g ${JOB_GROUP} \
 -n ${THREADS} \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
 -R 'select[mem>256000 && tmp>100] rusage[mem=256000, tmp=100] span[hosts=1]' \
+-M 280000000 \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:latest)' /scripts/pipelineStage1.bash
