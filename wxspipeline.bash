@@ -4,8 +4,8 @@ export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active/matthewj/c1in:/staged_
 /scratch1/fs1/cruchagac/matthewj/ref:/ref \
 /scratch1/fs1/cruchagac/matthewj/c1out:/output \
 /storage1/fs1/cruchagac/Active/matthewj/c1out:/final_output"
-export THREADS=16
-export MEM=256
+export THREADS=32
+export MEM=352
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 for FULLSMID in $(cat $1); do
@@ -16,8 +16,8 @@ bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
 -n ${THREADS} \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
--R 'select[mem>268000] rusage[mem=262000]' \
--M 280000 \
+-R 'select[mem>372000] rusage[mem=366000]' \
+-M 380000 \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:latest)' /scripts/pipelineStage1.bash
