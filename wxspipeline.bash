@@ -17,7 +17,7 @@ bsub -g ${JOB_GROUP} \
 -n ${THREADS} \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
 -R 'select[mem>350G && tmp>200G] rusage[mem=350G]' \
--R "affinity[thread(1):distribute=pack:membind=localonly]" \
+-R "affinity[thread(1):cpubind=numa:distribute=pack:membind=localonly]" \
 -M '380G' \
 -G compute-cruchagac \
 -q general \
