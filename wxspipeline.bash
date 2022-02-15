@@ -14,10 +14,10 @@ JOBS_IN_ARRAY=$(ls /storage1/fs1/cruchagac/Active/matthewj/c1in/${FULLSMID}/*.rg
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
--n ${THREADS} \
+-n 4 \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
 -R 'select[mem>350G && tmp>200G] rusage[mem=350G]' \
--R "affinity[thread(1,same=numa):cpubind=numa:membind=localonly]" \
+-R "affinity[thread(8,same=numa):cpubind=numa:membind=localprefer]" \
 -M '380G' \
 -G compute-cruchagac \
 -q general \
