@@ -13,7 +13,7 @@ FQI="$(ls $INDIR/${RGBASE}*f*q*)"
 echo -e "" > ${OUTDIR}/stage1complete.txt
 reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
-alignSortPairedHugeFQs
+alignSortPairedFQs || alignSortPairedHugeFQs
 elif [[ ! -e $FQ1 ]] && [[ ! -e $FQ2 ]] && [[ -e $FQI ]]; then
 alignSortInterleavedFQs || alignSortHugeInterleavedFQs
 else
