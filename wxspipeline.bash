@@ -16,7 +16,7 @@ bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
 -n ${THREADS} \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
--R 'select[mem>350G && tmp>200G] rusage[mem=350G] affinity[distribute=pack:membind=localonly]' \
+-R 'select[mem>350G && tmp>200G] rusage[mem=350G] affinity[distribute=pack(numa=1):membind=localonly]' \
 -M '380G' \
 -G compute-cruchagac \
 -q general \
