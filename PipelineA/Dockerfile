@@ -1,73 +1,31 @@
-ARG ALPINE_VER=3.14.3
-ARG BWA_VER=0.7.17
-ARG SAM_VER=1.9
-ARG BED_VER=2.27.1
 ##########################################
-FROM alpine:${ALPINE_VER} AS builder
+FROM rocker/r-base:latest
 
-ARG BWA_VER
-ARG SAM_VER
-ARG BED_VER
-ARG PICARD_VER
-
-RUN apk add --no-cache \
-	autoconf \
-	automake \
-	cmake \
-	gcc \
-	g++ \
-	git \
-	zlib-dev \
-	bzip2-dev \
-	libc-dev \
-	libtool \
-	make \
-	musl \
-	python2 \
-	tini \
-	wget \
-	xz-dev \
-	ncurses-dev
-
-RUN git clone https://github.com/lh3/bwa.git \
-	&& cd bwa \
-	&& make
-
-RUN wget -q -P /tmp https://github.com/samtools/samtools/releases/download/${SAM_VER}/samtools-${SAM_VER}.tar.bz2 \
-  && tar xjvf /tmp/samtools-${SAM_VER}.tar.bz2 -C /tmp \
-  && cd /tmp/samtools-${SAM_VER}/ \
-  && ./configure --without-curses \
-  && make
-
-RUN wget -q -P /tmp https://github.com/arq5x/bedtools2/releases/download/v${BED_VER}/bedtools-${BED_VER}.tar.gz \
-  && tar xzvf /tmp/bedtools-${BED_VER}.tar.gz -C /tmp \
-  && cd /tmp/bedtools${BED_VER%%.*}/ \
-  && make
-
-FROM rhub/r-minimal:4.1-patched AS executor
-
-RUN apk add --no-cache \
-	zlib-dev \
-	libstdc++ \
-	libc6-compat \
-	libgomp \
-  openjdk8-jre \
-	python2 \
-  bash \
-	rsync \
-	&& mv /usr/lib/jvm/java-1.8-openjdk/jre/lib/amd64/jli/libjli.so /lib \
-	&& cp /lib64/ld-linux-x86-64.so.2 /lib
-
-RUN installr -d -t gfortran ggplot2
-
-ARG BWA_VER
 ARG SAM_VER
 ARG BED_VER
 
-COPY --from=builder /bwa/bwa /usr/local/bin/
-COPY --from=builder /tmp/samtools-${SAM_VER}/samtools /usr/local/bin/
-COPY --from=builder /tmp/bedtools*/bin/bedtools /usr/local/bin/
-COPY --from=builder /usr/lib/liblzma.so.5 /usr/lib/liblzma.so.5
+RUN apt-get update && \
+ 	apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends \
+  build-essential \
+  wget \
+	unzip \
+	less \
+	bzip2 \
+  rsync \
+	python2 \
+	openjdk-8-jdk \
+	tabix \
+	bwa \
+  samtools \
+  bedtools \
+  software-properties-common && \
+	apt-get -y clean && \
+	apt-get -y autoclean && \
+	apt-get -y autoremove
+
+ENV JAVA_LIBRARY_PATH /usr/lib/jni
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
 COPY ./scripts/* /scripts/
 
