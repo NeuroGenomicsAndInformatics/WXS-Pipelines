@@ -5,6 +5,7 @@ FULLSMID="$1"
 ENV_FILE="$ENVS_DIR/${FULLSMID}.env"
 echo -e "FULLSMID=${FULLSMID}" > $ENV_FILE
 echo -e "STAGE_INDIR=/staged_input/${FULLSMID}" >> $ENV_FILE
+if [ ! -e /scratch1/fs1/cruchagac/matthewj/c1in/$FULLSMID ]; then mkdir /scratch1/fs1/cruchagac/matthewj/c1in/$FULLSMID; fi
 echo -e "INDIR=/input/${FULLSMID}" >> $ENV_FILE
 if [ ! -e /scratch1/fs1/cruchagac/matthewj/c1out/$FULLSMID ]; then mkdir /scratch1/fs1/cruchagac/matthewj/c1out/$FULLSMID; fi
 echo -e "OUTDIR=/output/${FULLSMID}" >> $ENV_FILE

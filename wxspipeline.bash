@@ -17,7 +17,7 @@ bsub -g ${JOB_GROUP} \
 -n ${THREADS} \
 -r \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
--R 'select[mem>275000] rusage[mem=270000]' \
+-R 'select[mem>275000] rusage[mem=270000] span[hosts=1]' \
 -M 275000 \
 -G compute-cruchagac \
 -q general \
@@ -26,11 +26,11 @@ LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env"
 bsub -g ${JOB_GROUP} \
 -w "done(\"ngi-${USER}-stage1-$FULLSMID\")" \
 -J ngi-${USER}-stage2-$FULLSMID \
--n ${THREADS} \
+-n 8 \
 -N \
 -o /scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}_s2.%J.out \
--R 'select[mem>275000] rusage[mem=270000]' \
--M 275000 \
+-R 'select[mem>105000] rusage[mem=105000] span[hosts=1]' \
+-M 110000 \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage2.bash
