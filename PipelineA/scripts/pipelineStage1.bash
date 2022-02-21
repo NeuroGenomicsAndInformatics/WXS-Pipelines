@@ -10,7 +10,7 @@ FQ1="$(ls $INDIR/${RGBASE}*1*)"
 FQ1EXT="$(echo ${FQ1##*${RGBASE}})"
 if [[ -e $FQ1 ]]; then FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"; else unset FQ2; fi
 FQI="$(ls $INDIR/${RGBASE}*f*q*)"
-echo -e "" > ${OUTDIR}/stage1complete.txt
+echo -n "" > ${OUTDIR}/stage1complete.txt
 reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
 alignSortPairedFQs || alignSortPairedHugeFQs
