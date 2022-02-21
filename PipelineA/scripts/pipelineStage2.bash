@@ -4,8 +4,8 @@ source /scripts/pipelineStage2HelperFunctions.bash
 #1. set variables, equivalent to setting the environment in the original pipeline
 SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
 MD_INPUTS=()
-for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do \
-MD_INPUTS+=("I=${OUTDIR}/${BAM}")
+for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do
+  MD_INPUTS+=("I=${OUTDIR}/${BAM}")
 done
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
 MEM_SPLIT=$((${MEM}/${THREADS}))
@@ -36,4 +36,6 @@ SAMPLE_TITV=$(getTitvRatio)
 reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
 reportToLog "Transferring output files to $FINAL_OUTDIR"
 transferOutputFilesToStorage
+if [[ $(wc -c $CURRENT_VCF) < 40000000 ]]; then cleanUp; exit 8; fi
+cleanUp
 reportToLog "Finished for $FULLSMID."

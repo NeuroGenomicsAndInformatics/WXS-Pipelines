@@ -9,8 +9,11 @@ function transferOutputFilesToStorage ()
 	rsync ${OUTDIR}/*_exome_* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.pdf ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.recal.table* ${FINAL_OUTDIR}/
-	#rm -R ${OUTDIR}
-	#rm -R ${INDIR}
+}
+function cleanUp ()
+{
+	rm -R ${OUTDIR}
+	rm -R ${INDIR}
 }
 function markDuplicates ()
 {
