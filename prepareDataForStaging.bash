@@ -1,5 +1,7 @@
 #!bin/bash
 SAMP_MAP="$1"
+WORKFILE="storage1/fs1/cruchagac/Active/matthewj/workfile.txt"
+touch $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
 for FILE in $(cat "$1"); do
 READNUM=$(echo $FILE | cut -d "," -f 5)
@@ -13,7 +15,7 @@ PROJECTNAME="$3"
 FULLSM=$(echo ${SM}.${PROJECTNAME}\^${BARCODE}\^${PROJECT})
 RGBASE="${FULLSM}.${FLOWCELL}^${LANE}"
 STAGE_DIR="/storage1/fs1/cruchagac/Active/matthewj/c1in/${FULLSM}"
-if [ ! -e $STAGE_DIR ]; then mkdir ${STAGE_DIR}; fi
+if [ ! -e $STAGE_DIR ]; then mkdir ${STAGE_DIR}; echo $FULLSM >> $WORKFILE; fi
 RGFILE="$STAGE_DIR/${RGBASE}.rgfile"
 touch $RGFILE
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}.${PROJECTNAME}\tDS:${FULLSM}" > $RGFILE
