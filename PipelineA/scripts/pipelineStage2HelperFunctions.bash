@@ -30,7 +30,7 @@ CURRENT_BAM="${OUTDIR}/${SAMPLEID}_GATKready.bam"
 }
 function analyzeDepthOfCoverage ()
 {
-java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
+java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${S2MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
 -jar ${GATK360} -T DepthOfCoverage \
 -R ${REF_FASTA} -nt 1 \
 -ct 10 -ct 15 -ct 20 -ct 30 -ct 40 -ct 50 -ct 60 -ct 70 -ct 80 -ct 90 -ct 100 \
@@ -41,7 +41,7 @@ java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.us
 # function for base recalibration and plots
 function recalibrateBases ()
 {
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${S2MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	BaseRecalibrator \
 	-I ${CURRENT_BAM} \
 	-R ${REF_FASTA} \
@@ -49,18 +49,18 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	--known-sites ${REF_DBSNP} \
 	--known-sites ${REF_ONEKGP1} \
 	-O "${OUTDIR}/${SAMPLEID}.recal.table1"
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${S2MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	ApplyBQSR \
 	-R ${REF_FASTA} \
 	-I ${CURRENT_BAM} \
 	-bqsr-recal-file "${OUTDIR}/${SAMPLEID}.recal.table1" \
 	-L ${REF_PADBED} \
 	-O "${OUTDIR}/${SAMPLEID}.recal.bam"
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${S2MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
 	-bqsr "${OUTDIR}/${SAMPLEID}.recal.table1" \
 	-plots "${OUTDIR}/${SAMPLEID}_AnalyzeCovariates.pdf"
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${S2MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	BaseRecalibrator \
 	-I ${CURRENT_BAM} \
 	-R ${REF_FASTA} \
@@ -68,7 +68,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 	--known-sites ${REF_DBSNP} \
 	--known-sites ${REF_ONEKGP1} \
 	-O "${OUTDIR}/${SAMPLEID}.recal.table2"
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${S2MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	AnalyzeCovariates \
 	-before "${OUTDIR}/${SAMPLEID}.recal.table1" \
 	-after "${OUTDIR}/${SAMPLEID}.recal.table2" \
@@ -91,7 +91,7 @@ function getFreeMix ()
 }
 function callSampleVariants ()
 {
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${S2MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 HaplotypeCaller -R ${REF_FASTA} \
 	-I ${CURRENT_BAM} \
 	-ERC GVCF \
@@ -102,7 +102,7 @@ CURRENT_VCF="${OUTDIR}/${SAMPLEID}.raw.snps.indels.g.vcf.gz"
 }
 function evaluateSampleVariants ()
 {
-	java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
+	java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${S2MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
 	-jar ${GATK360} -T VariantEval -R ${REF_FASTA} \
 	-nt ${GATK_THREADS} \
 	-L ${REF_PADBED} \

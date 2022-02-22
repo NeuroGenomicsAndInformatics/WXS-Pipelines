@@ -1,6 +1,6 @@
 function stageDataForRGBASE ()
 {
-	rsync -L $STAGE_INDIR/${RGBASE}* $INDIR
+	rsync $STAGE_INDIR/${RGBASE}* $INDIR
 }
 function cleanUp ()
 {
@@ -10,29 +10,29 @@ function cleanUp ()
 function alignSortPairedFQs ()
 {
 CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
-bwa mem -M -t ${THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) ${REF_FASTA} $FQ1 $FQ2 | \
-samtools sort -@ $((${THREADS} / 2)) -m "$((${MEM_SPLIT} * 2))G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
+bwa mem -M -t ${S1THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) ${REF_FASTA} $FQ1 $FQ2 | \
+samtools sort -@ $((${S1THREADS} / 2)) -m "$((${MEM_SPLIT} * 2))G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/"
 }
 function alignSortPairedHugeFQs ()
 {
 CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
-bwa mem -M -t ${THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) ${REF_FASTA} $FQ1 $FQ2 | \
+bwa mem -M -t ${S1THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) ${REF_FASTA} $FQ1 $FQ2 | \
 samtools view -b -1 -o ${WORKDIR}/${RGBASE}.aln.bam \
-&& samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
+&& samtools sort -@ ${S1THREADS} -m "${MEM_SPLIT}G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
 {
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
-bwa mem -t ${THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) -M -p "${REF_FASTA}" $FQI | \
-samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
+bwa mem -t ${S1THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) -M -p "${REF_FASTA}" $FQI | \
+samtools sort -@ ${S1THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}"
 }
 function alignSortHugeInterleavedFQs ()
 {
 CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
-bwa mem -t ${THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
+bwa mem -t ${S1THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) -M -p "${REF_FASTA}" "${INDIR}/${RGBASE}.fq.gz" | \
 samtools view -b -1 -o ${WORKDIR}/${RGBASE}.aln.bam \
-&& samtools sort -@ ${THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
+&& samtools sort -@ ${S1THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${WORKDIR}/" "${WORKDIR}/${RGBASE}.aln.bam"
 }
 # first argument is for the bam file and second is for the reference bed
 function intersectBamWithBed ()

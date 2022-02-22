@@ -8,7 +8,7 @@ for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do
   MD_INPUTS+=("I=${OUTDIR}/${BAM}")
 done
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
-MEM_SPLIT=$((${MEM}/${THREADS}))
+MEM_SPLIT=$((${S2MEM}/${S2THREADS}))
 #TODO Add pipeline B, C, D logic
 reportToLog "Marking duplicates"
 markDuplicates
