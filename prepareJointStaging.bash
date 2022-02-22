@@ -10,8 +10,9 @@ while IFS=$'\t' read -r -a sampArray; do
 WXS=${sampArray[0]}
 PR=${sampArray[1]}
 SM=$(echo ${sampArray[2]} | cut -d. -f1)
-if [[ ${WXS^^} == "WES" ]]; then \
-rsync -r --include="*/" --include="*vcf*" --exclude="*" $PROJECTS_DIR/${PR}/${SM/MAP_/}* $STAGE_DIR/
+if [[ ${WXS^^} == "WES" ]]; then
+rsync -r --include="*/" --include="*vcf*" --exclude="*" $PROJECTS_DIR/${PR}/${SM}* $STAGE_DIR/ \
+|| echo "${sampleArray[@]}" >> $CHECK_GVCFS
 elif [[ ${WXS^^} != "WGS" ]]; then echo ${sampArray[@]}  >> $CHECK_GVCFS
 fi
 done < ${SAMPLES_FILE}
