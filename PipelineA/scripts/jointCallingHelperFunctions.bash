@@ -10,7 +10,7 @@ function transferOutputFilesToStorage ()
 	#rm -R ${OUTDIR}
 	#rm -R ${INDIR}
 }
-function cleanup ()
+function cleanUp ()
 {
 	#rm -R $STAGE_INDIR
 	rm -R $INDIR

@@ -14,5 +14,5 @@ jointCallCohort
 #saveToOutputDirectory ${CURRENT_BAM}
 reportToLog "Called. Transferring files to storage"
 transferOutputFilesToStorage
-cleanup
+cleanUp
 reportToLog "Finished for $COHORT."

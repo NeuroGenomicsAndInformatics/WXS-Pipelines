@@ -1,7 +1,7 @@
 #!/bin/bash
 source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineStage1HelperFunctions.bash
-SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
+SAMPLEID=$(echo $FULLSMID | cut -d'^' -f1)
 RG_ARRAY=($RGBASES)
 RGBASE="${RG_ARRAY[$LSB_JOBINDEX-1]}"
 MEM_SPLIT=$((${S1MEM}/${S1THREADS}))
@@ -14,7 +14,7 @@ FQI="$(find $INDIR -name "${RGBASE}*f*q*" -print)"
 touch ${OUTDIR}/stage1complete.txt
 reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
-if [[ $(wc -c $FQ1) < 14000000000 ]]; then alignSortPairedFQs || alignSortPairedHugeFQs; else alignSortPairedHugeFQs; fi
+if [[ $(wc -c $FQ1 | cut -d' ' -f1) -lt 14000000000 ]]; then alignSortPairedFQs || alignSortPairedHugeFQs; else alignSortPairedHugeFQs; fi
 elif [[ ! -e $FQ1 ]] && [[ ! -e $FQ2 ]] && [[ -e $FQI ]]; then
 alignSortInterleavedFQs || alignSortHugeInterleavedFQs
 else
@@ -35,6 +35,9 @@ validateCurrentBam
 reportToLog "Validated. Adding to stage1complete list."
 #NOTE: This can lead to a race condition on the list. A failed Stage 2 could be caused by the stage1complete.txt file being messed up. Fixing the file manually solves this and Stage 2 can be run normally after.
 saveToOutputDirectory ${CURRENT_BAM}
-if [[ $(wc -c $CURRENT_BAM) > 80000000 ]]; then echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt; else cleanup; exit 5; fi
+if [[ $(wc -c $CURRENT_BAM | cut -d' ' -f1) -gt 80000000 ]]; then
+echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
+else
+cleanUp; exit 5; fi
 cleanUp && rm ${STAGE_INDIR}/${RGBASE}*
 reportToLog "Finished for $RGBASE"

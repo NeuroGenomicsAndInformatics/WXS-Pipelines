@@ -9,6 +9,7 @@ function transferOutputFilesToStorage ()
 	rsync ${OUTDIR}/*_exome_* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.pdf ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.recal.table* ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*.rgfile ${FINAL_OUTDIR}/
 }
 function cleanUp ()
 {
