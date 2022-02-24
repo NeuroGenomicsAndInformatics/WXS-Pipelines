@@ -1,7 +1,7 @@
 #!bin/bash
 SAMP_MAP="$1"
-WORKFILE="storage1/fs1/cruchagac/Active/matthewj/workfile.txt"
-touch $WORKFILE
+WORKFILE="storage1/fs1/cruchagac/Active/matthewj/workfile$3.txt"
+echo "" > $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
 for FILE in $(cat "$1"); do
 READNUM=$(echo $FILE | cut -d "," -f 5)
