@@ -21,7 +21,7 @@ touch $RGFILE
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}.${PROJECTNAME}\tDS:${FULLSM}" > $RGFILE
 #rsync ${RGFILE} ${STAGE_DIR}/${RGBASE}.rgfile
 FQ1FILE="$(echo $FILE | cut -d "," -f 1)"
-ln ${FILES_DIR}/${FQ1FILE} ${STAGE_DIR}/${RGBASE}.r1.fq.gz
-ln ${FILES_DIR}/${FQ1FILE%_*}_R2.fastq.gz ${STAGE_DIR}/${RGBASE}.r2.fq.gz
+ln -s ${FILES_DIR}/${FQ1FILE} ${STAGE_DIR}/${RGBASE}.r1.fq.gz
+ln -s ${FILES_DIR}/${FQ1FILE%_*}_R2.fastq.gz ${STAGE_DIR}/${RGBASE}.r2.fq.gz
 fi
 done

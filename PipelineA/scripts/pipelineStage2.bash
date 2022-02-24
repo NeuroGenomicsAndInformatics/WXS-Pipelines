@@ -34,8 +34,9 @@ evaluateSampleVariants
 reportToLog "Evaluated."
 SAMPLE_TITV=$(getTitvRatio)
 reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
-reportToLog "Transferring output files to $FINAL_OUTDIR"
+reportToLog "Transferring output files to ${FINAL_OUTDIR}"
 transferOutputFilesToStorage
-if [[ $(wc -c $CURRENT_VCF) < 40000000 ]]; then cleanUp; exit 8; fi
+if [[ $(wc -c $CURRENT_VCF) -lt 40000000 ]]; then
+mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; cleanUp; exit 8; fi
 cleanUp
 reportToLog "Finished for $FULLSMID."

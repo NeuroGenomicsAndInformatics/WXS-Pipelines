@@ -38,6 +38,7 @@ saveToOutputDirectory ${CURRENT_BAM}
 if [[ $(wc -c $CURRENT_BAM | cut -d' ' -f1) -gt 80000000 ]]; then
 echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
 else
+echo -e "CHECK_${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
 cleanUp; exit 5; fi
 cleanUp && rm ${STAGE_INDIR}/${RGBASE}*
 reportToLog "Finished for $RGBASE"

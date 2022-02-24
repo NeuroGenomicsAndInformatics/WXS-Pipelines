@@ -1,5 +1,6 @@
 #!/bin/bash
-export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active/matthewj/c1in:/staged_input \
+export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage \
+/storage1/fs1/cruchagac/Active/matthewj/c1in:/staged_input \
 /scratch1/fs1/cruchagac/matthewj/c1in:/input \
 /scratch1/fs1/cruchagac/matthewj/ref:/ref \
 /scratch1/fs1/cruchagac/matthewj/c1out:/output \
