@@ -5,7 +5,7 @@ echo "" > $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
 {
   read
-  while read -r LINE; do
+  while IFS='\n' read -r LINE; do
 READNUM=$(echo $FILE | cut -d "," -f 5)
 if [ "${READNUM}" = "1" ]; then
 FLOWCELL=$(echo $FILE | cut -d "," -f 2)
