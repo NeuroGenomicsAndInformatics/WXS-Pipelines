@@ -4,7 +4,7 @@ WORKFILE="storage1/fs1/cruchagac/Active/${USER}/workfile$3.txt"
 echo "" > $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
 {
-  read
+  IFS='\n' read
   while IFS='\n' read -r LINE; do
 READNUM=$(echo $FILE | cut -d "," -f 5)
 if [ "${READNUM}" = "1" ]; then
