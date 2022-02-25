@@ -18,12 +18,17 @@ function cleanUp ()
 }
 function makeSampleMap ()
 {
+	if [[ -r ${INDIR}/${SAMPLE_MAP##*/} ]]; then
+	SAMPLE_MAP=${${INDIR}/${SAMPLE_MAP##*/}}
+	else
 	SAMPLE_MAP="${WORKDIR}/SampleMap.txt"
-	touch ${SAMPLE_MAP}
+	cp ${SAMPLE_MAP} ${WORKDIR}/SampleMap.txt || \
+ 	(echo -n "" > ${SAMPLE_MAP}
 	for SAMPLE in $(ls -d ${INDIR}) ; do
 	echo -en "${echo $SAMPLE | cut -d'^' -f1}\t" >> ${SAMPLE_MAP}
 	echo "$(find ${STAGE_DIR}/${SAMPLE} -name "*.vcf.gz" -print)" >> ${SAMPLE_MAP}
-	done
+done)
+fi
 }
 function buildGenomicDB ()
 {
