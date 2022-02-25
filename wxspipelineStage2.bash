@@ -8,7 +8,7 @@ JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 bash ./makeSampleEnv.bash $1
 for FULLSMID in $(cat $1); do
-  LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
+  LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1out/${FULLSMID}/${FULLSMID}.env" \
   bsub -g ${JOB_GROUP} \
   -J ngi-${USER}-stage2-$FULLSMID \
   -n 8 \
