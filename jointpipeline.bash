@@ -8,7 +8,7 @@ JOB_GROUP="/${USER}/compute-cruchagac"
 COHORT="$1"
 bgadd -L 10 ${JOB_GROUP}
 bash ./makeCohortEnv.bash ${COHORT} $2
-LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
+LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage3-$COHORT \
 -n 16 \

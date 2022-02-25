@@ -1,6 +1,6 @@
 #!bin/bash
 SAMP_MAP="$1"
-WORKFILE="storage1/fs1/cruchagac/Active/matthewj/workfile$3.txt"
+WORKFILE="storage1/fs1/cruchagac/Active/${USER}/workfile$3.txt"
 echo "" > $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
 for FILE in $(cat "$1"); do
@@ -14,7 +14,7 @@ PROJECT="$2"
 PROJECTNAME="$3"
 FULLSM=$(echo ${SM}.${PROJECTNAME}\^${BARCODE}\^${PROJECT})
 RGBASE="${FULLSM}.${FLOWCELL}^${LANE}"
-STAGE_DIR="/storage1/fs1/cruchagac/Active/matthewj/c1in/${FULLSM}"
+STAGE_DIR="/storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSM}"
 if [ ! -e $STAGE_DIR ]; then mkdir ${STAGE_DIR}; echo $FULLSM >> $WORKFILE; fi
 RGFILE="$STAGE_DIR/${RGBASE}.rgfile"
 touch $RGFILE
