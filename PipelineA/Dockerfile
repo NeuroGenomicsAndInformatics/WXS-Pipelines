@@ -1,8 +1,8 @@
 ##########################################
-FROM rocker/r-base:latest
+FROM rocker/r-ver:latest
 
-ARG SAM_VER
-ARG BED_VER
+ENV JAVA_LIBRARY_PATH /usr/lib/jni
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
 RUN apt-get update && \
  	apt-get upgrade -y && \
@@ -20,12 +20,12 @@ RUN apt-get update && \
   samtools \
   bedtools \
   software-properties-common && \
-	apt-get -y clean && \
+  ln -s /usr/bin/python2.7 /usr/bin/python && \
+  apt-get -y clean && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
 
-ENV JAVA_LIBRARY_PATH /usr/lib/jni
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+RUN install2.r gfortran ggplot2 gsalib
 
 COPY ./scripts/* /scripts/
 

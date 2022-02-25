@@ -16,10 +16,10 @@ samtools sort -@ $((${S1THREADS} / 2)) -m "$((${MEM_SPLIT} * 2))G" -o ${WORKDIR}
 }
 function alignSortPairedHugeFQs ()
 {
-CURRENT_BAM="${WORKDIR}/${RGBASE}.aln.srt.bam"
+CURRENT_BAM="${OUTDIR}/${RGBASE}.aln.srt.bam"
 bwa mem -M -t ${S1THREADS} -R $(head -n1 ${INDIR}/${RGBASE}.rgfile) ${REF_FASTA} $FQ1 $FQ2 | \
 samtools view -b -1 -o ${OUTDIR}/${RGBASE}.aln.bam \
-&& samtools sort -@ ${S1THREADS} -m "${MEM_SPLIT}G" -o ${WORKDIR}/${RGBASE}.aln.srt.bam -T "${OUTDIR}/" "${OUTDIR}/${RGBASE}.aln.bam"
+&& samtools sort -@ $((${S1THREADS} / 2)) -m "$((${MEM_SPLIT} * 2))G" -o ${OUTDIR}/${RGBASE}.aln.srt.bam -T "${OUTDIR}/" "${OUTDIR}/${RGBASE}.aln.bam"
 }
 # function for taking unmapped interleaved FASTQs to sorted BAM
 function alignSortInterleavedFQs ()
