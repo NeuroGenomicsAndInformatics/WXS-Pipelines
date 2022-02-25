@@ -10,8 +10,8 @@ export MEM=144
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 for FULLSMID in $(cat $1); do
-bash ./makeSampleEnv.bash $FULLSMID
 JOBS_IN_ARRAY=$(ls /storage1/fs1/cruchagac/Active/matthewj/c1in/${FULLSMID}/*.rgfile | wc -w)
+bash ./makeSampleEnv.bash $FULLSMID
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
@@ -23,7 +23,7 @@ bsub -g ${JOB_GROUP} \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage1.bash && \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/matthewj/c1in/envs/${FULLSMID}.env" \
-bsub -g ${JOB_GROUP} \
+bsub -g ${JOB_GROUP} && \
 -w "done(\"ngi-${USER}-stage1-$FULLSMID\")" \
 -J ngi-${USER}-stage2-$FULLSMID \
 -n 8 \

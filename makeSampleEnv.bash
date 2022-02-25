@@ -16,3 +16,4 @@ echo -e "RGBASES="$(basename -s .rgfile /storage1/fs1/cruchagac/Active/matthewj/
 cat ${BASE_ENVS_DIR}/pipelinebase.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
 cp $ENV_FILE /scratch1/fs1/cruchagac/matthewj/c1out/$FULLSMID/
+if [[ -z $RGBASES ]]; then exit 1;
