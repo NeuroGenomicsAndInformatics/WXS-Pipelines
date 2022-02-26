@@ -37,7 +37,7 @@ SAMPLE_TITV=$(getTitvRatio)
 reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
 reportToLog "Transferring output files to ${FINAL_OUTDIR}"
 transferOutputFilesToStorage
-if [[ $(wc -c $CURRENT_VCF) -lt 40000000 ]]; then
+if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 40000000 ]]; then
 mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; cleanUp "keep isec"; exit 8; fi
 cleanUp
 reportToLog "Finished for $FULLSMID."
