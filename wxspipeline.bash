@@ -1,5 +1,5 @@
 #!/bin/bash
-export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1 \
+export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /storage1/fs1/cruchagac/Active/${USER}/c1in:/staged_input \
 /scratch1/fs1/cruchagac/${USER}/c1in:/input \
 /scratch1/fs1/cruchagac/WXSref:/ref \
