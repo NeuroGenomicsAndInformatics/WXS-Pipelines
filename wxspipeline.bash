@@ -15,7 +15,7 @@ LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" 
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
 -n 16 \
--o /scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
+-o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
 -R 'select[mem>150000] rusage[mem=150000/job] span[hosts=1]' \
 -M 160000 \
 -G compute-cruchagac \
@@ -27,7 +27,7 @@ bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage2-$FULLSMID \
 -n 8 \
 -N \
--o /scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}/${FULLSMID}_s2.%J.out \
+-o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s2.%J.out \
 -R 'select[mem>105000] rusage[mem=105000] span[hosts=1]' \
 -M 110000 \
 -G compute-cruchagac \
