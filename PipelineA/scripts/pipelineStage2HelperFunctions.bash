@@ -13,7 +13,6 @@ function transferOutputFilesToStorage ()
 }
 function cleanUp ()
 {
-	mkdir /output/logs/${FULLSMID}
 	rsync ${OUTDIR}/*.out /output/logs/${FULLSMID}
 	rsync ${OUTDIR}/*.txt /output/logs/${FULLSMID}
 	if [[ ! -z "$1" ]]; then rsync ${OUTDIR}/*.isec.bam ${STAGE_INDIR}/; fi
