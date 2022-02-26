@@ -22,7 +22,7 @@ bsub -g ${JOB_GROUP} \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage1.bash && \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
-bsub -g ${JOB_GROUP} && \
+bsub -g ${JOB_GROUP} \
 -w "done(\"ngi-${USER}-stage1-$FULLSMID\")" \
 -J ngi-${USER}-stage2-$FULLSMID \
 -n 8 \
