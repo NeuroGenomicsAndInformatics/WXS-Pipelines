@@ -3,9 +3,7 @@ SAMP_MAP="$1"
 WORKFILE="/storage1/fs1/cruchagac/Active/${USER}/workfile$3.txt"
 touch $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
-{
-  IFS='\n' read
-  while IFS='\n' read -r FILE; do
+cat $SAMP_MAP | sed 1d $rpt | while IFS='\n' read -r FILE; do
 READNUM=$(echo $FILE | cut -d "," -f 5)
 if [ "${READNUM}" = "1" ]; then
 FLOWCELL=$(echo $FILE | cut -d "," -f 2)
@@ -27,4 +25,3 @@ ln -s ${FILES_DIR}/${FQ1FILE} ${STAGE_DIR}/${RGBASE}.r1.fq.gz
 ln -s ${FILES_DIR}/${FQ1FILE%_*}_R2.fastq.gz ${STAGE_DIR}/${RGBASE}.r2.fq.gz
 fi
 done
-} < $SAMP_MAP
