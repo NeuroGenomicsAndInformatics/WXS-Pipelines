@@ -1,6 +1,6 @@
 #!bin/bash
 SAMP_MAP="$1"
-WORKFILE="storage1/fs1/cruchagac/Active/${USER}/workfile$3.txt"
+WORKFILE="/storage1/fs1/cruchagac/Active/${USER}/workfile$3.txt"
 if [[ ! -f $WORKFILE ]]; then echo -n "" > $WORKFILE; fi
 FILES_DIR=${SAMP_MAP%/*}
 {
