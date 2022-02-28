@@ -1,21 +1,19 @@
 #!/bin/bash
 source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineStage2HelperFunctions.bash
-#1. set variables, equivalent to setting the environment in the original pipeline
-SAMPLEID=$(echo $FULLSMID | cut -d '^' -f 1)
+stageDataForSample
+SAMPLEID=$(echo $FULLSMID | cut -d'^' -f1)
 MD_INPUTS=()
-sort ${OUTDIR}/stage1complete.txt | uniq -u > ${OUTDIR}/stage1complete.txt
+sort ${INDIR}/stage1complete.txt | uniq -u > ${OUTDIR}/stage1complete.txt
 for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do
-  MD_INPUTS+=("I=${OUTDIR}/${BAM}")
+  MD_INPUTS+=("I=${OUTDIR}/${BAM/CHECK_/}")
 done
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
 MEM_SPLIT=$((${S2MEM}/${S2THREADS}))
-#TODO Add pipeline B, C, D logic
 reportToLog "Marking duplicates"
 markDuplicates
 reportToLog "Marked duplicates. Validating"
 validateCurrentBam
-#saveToOutputDirectory ${CURRENT_BAM}
 reportToLog "Validated. Analyzing depth of coverage."
 analyzeDepthOfCoverage
 reportToLog "Analyzed. Recalibrating bases"
@@ -29,7 +27,6 @@ reportToLog "FREEMIX for ${FULLSMID} is ${SAMPLE_FREEMIX}"
 #then reportToLog "${FULLSMID} is likely contaminated"; exit 3; fi
 reportToLog "Calling variants on sample"
 callSampleVariants
-#saveToOutputDirectory ${CURRENT_VCF}
 reportToLog "Called. Evaluating variants"
 evaluateSampleVariants
 reportToLog "Evaluated."
@@ -37,7 +34,9 @@ SAMPLE_TITV=$(getTitvRatio)
 reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
 reportToLog "Transferring output files to ${FINAL_OUTDIR}"
 transferOutputFilesToStorage
-if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 40000000 ]]; then
-mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; cleanUp "keep isec"; exit 8; fi
 cleanUp
+if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 40000000 ]]; then
+mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; exit 8
+else rm -R ${STAGE_INDIR}
+fi
 reportToLog "Finished for $FULLSMID."

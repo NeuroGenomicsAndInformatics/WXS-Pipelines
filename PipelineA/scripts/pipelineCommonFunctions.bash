@@ -10,6 +10,20 @@ function saveToOutputDirectory ()
 	rsync "${1::-1}i" ${OUTDIR}/
 fi
 }
+function saveToInputDirectory ()
+{
+	rsync "$1"* ${INDIR}/
+	if [[ -e "${1::-1}i" ]]; then
+	rsync "${1::-1}i" ${INDIR}/
+fi
+}
+function saveToStageDirectory ()
+{
+	rsync "$1"* ${STAGE_INDIR}/
+	if [[ -e "${1::-1}i" ]]; then
+	rsync "${1::-1}i" ${STAGE_INDIR}/
+fi
+}
 # save argument to final output directory.
 function saveToFinalOutputDirectory ()
 {

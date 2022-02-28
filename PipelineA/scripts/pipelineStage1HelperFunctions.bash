@@ -6,6 +6,7 @@ function stageDataForRGBASE ()
 function cleanUp ()
 {
 	rm ${INDIR}/${RGBASE}*
+	rm ${OUTDIR}/${RGBASE}*
 }
 # function for taking unmapped paired FASTQs to sorted BAM
 function alignSortPairedFQs ()
@@ -40,9 +41,4 @@ function intersectBamWithBed ()
 {
 bedtools intersect -u -a "$1" -b "$2" > ${WORKDIR}/${RGBASE}.isec.bam
 CURRENT_BAM="${WORKDIR}/${RGBASE}.isec.bam"
-}
-# function for converting argument bam to cram
-function saveBamAsCram ()
-{
-samtools view -T "${REF_FASTA}" -C -o "${OUTDIR}/${RGBASE}.cram" "$1"
 }

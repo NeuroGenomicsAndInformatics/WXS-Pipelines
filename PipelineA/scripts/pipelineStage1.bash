@@ -11,7 +11,7 @@ FQ1="$(find $INDIR -name "${RGBASE}*1*" -print)"
 FQ1EXT="$(echo ${FQ1##*${RGBASE}})"
 if [[ -e $FQ1 ]]; then FQ2="$(echo $INDIR/${RGBASE}${FQ1EXT/1/2})"; else unset FQ2; fi
 FQI="$(find $INDIR -name "${RGBASE}*f*q*" -print)"
-touch ${OUTDIR}/stage1complete.txt
+touch ${INDIR}/stage1complete.txt
 reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
 if [[ $(wc -c $FQ1 | cut -d' ' -f1) -lt 14000000000 ]]; then alignSortPairedFQs || alignSortPairedHugeFQs; else alignSortPairedHugeFQs; fi
@@ -30,15 +30,20 @@ then
   intersectBamWithBed ${CURRENT_BAM} ${REF_PADBED}
   reportToLog "Intersected."
 fi
-saveToOutputDirectory ${CURRENT_BAM}
 validateCurrentBam
 reportToLog "Validated. Adding to stage1complete list."
 #NOTE: This can lead to a race condition on the list. A failed Stage 2 could be caused by the stage1complete.txt file being messed up. Fixing the file manually solves this and Stage 2 can be run normally after.
-saveToOutputDirectory ${CURRENT_BAM}
 if [[ $(wc -c $CURRENT_BAM | cut -d' ' -f1) -gt 80000000 ]]; then
-echo -e "${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
+echo -e "${CURRENT_BAM##*/}" >> ${INDIR}/stage1complete.txt
+rm ${STAGE_INDIR}/${RGBASE}*
+RETURN_VAL=0
 else
-echo -e "CHECK_${CURRENT_BAM##*/}" >> ${OUTDIR}/stage1complete.txt
-cleanUp; exit 5; fi
-cleanUp && rm ${STAGE_INDIR}/${RGBASE}*
+echo -e "CHECK_${CURRENT_BAM##*/}" >> ${INDIR}/stage1complete.txt
+RETURN_VAL=5
+fi
+saveToStageDirectory ${CURRENT_BAM}
+saveToStageDirectory ${INDIR}/stage1complete.txt
+saveToStageDirectory ${OUTDIR}/${RGBASE}.cram
+cleanUp
 reportToLog "Finished for $RGBASE"
+return RETURN_VAL

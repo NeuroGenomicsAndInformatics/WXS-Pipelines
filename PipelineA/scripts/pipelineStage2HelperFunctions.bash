@@ -1,21 +1,25 @@
+function stageDataForSample ()
+{
+	rsync ${STAGE_INDIR}/*.ba* ${INDIR}
+	rsync ${STAGE_INDIR}/stage1complete.txt ${INDIR}
+}
 function transferOutputFilesToStorage ()
 {
 	mkdir ${FINAL_OUTDIR}
 	rsync ${OUTDIR}/*.env ${FINAL_OUTDIR}/
-	rsync ${OUTDIR}/*.cram ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*.rgfile ${FINAL_OUTDIR}/
+	rsync ${STAGE_INDIR}/*.cram ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*_GATK* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*vcf* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*verifybam.selfSM ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*_exome_* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.pdf ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.recal.table* ${FINAL_OUTDIR}/
-	rsync ${OUTDIR}/*.rgfile ${FINAL_OUTDIR}/
 }
 function cleanUp ()
 {
 	rsync ${OUTDIR}/*.out /output/logs/${FULLSMID}
 	rsync ${OUTDIR}/*.txt /output/logs/${FULLSMID}
-	if [[ ! -z "$1" ]]; then rsync ${OUTDIR}/*.isec.bam ${STAGE_INDIR}/; fi
 	rm -R ${OUTDIR}
 	rm -R ${INDIR}
 	rm -d ${STAGE_INDIR}
