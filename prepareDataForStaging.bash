@@ -1,5 +1,7 @@
 #!bin/bash
 SAMP_MAP="$1"
+PROJECT="$2"
+PROJECTNAME="$3"
 WORKFILE="/storage1/fs1/cruchagac/Active/${USER}/workfile$3.txt"
 touch $WORKFILE
 FILES_DIR=${SAMP_MAP%/*}
@@ -10,8 +12,6 @@ FLOWCELL=$(echo $FILE | cut -d "," -f 2)
 LANE=$(echo $FILE | cut -d "," -f 4)
 SM=$(echo $(echo $FILE | cut -d "," -f 6) | cut -d "-" -f 2)
 BARCODE=$(echo $(echo $FILE | cut -d "," -f 6) | cut -d "-" -f 3)
-PROJECT="$2"
-PROJECTNAME="$3"
 FULLSM=$(echo ${SM}.${PROJECTNAME}\^${BARCODE}\^${PROJECT})
 RGBASE="${FULLSM}.${FLOWCELL}^${LANE}"
 STAGE_DIR="/storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSM}"
