@@ -15,7 +15,6 @@ echo -e "RUN_TYPE=paddedexome" >> $ENV_FILE
 echo -e "RGBASES="$(basename -s .rgfile /storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSMID}/*.rgfile)"" >> $ENVS_DIR/${FULLSMID}.env
 cat ${BASE_ENVS_DIR}/pipelinebase.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
-if [[ ! -d /scratch1/fs1/cruchagac/Active/${USER}/clout/logs/${FULLSMID} ]]; then mkdir /scratch1/fs1/cruchagac/Active/${USER}/clout/logs/${FULLSMID}; fi
 cp $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID/
 cp $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/logs/$FULLSMID/
 #if [[ -z $RGBASES ]]; then exit 1; fi
