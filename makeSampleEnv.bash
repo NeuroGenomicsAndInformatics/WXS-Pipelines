@@ -4,7 +4,7 @@ BASE_ENVS_DIR="./baseEnvs"
 FULLSMID="$1"
 ENV_FILE="$ENVS_DIR/${FULLSMID}.env"
 echo -e "FULLSMID=${FULLSMID}" > $ENV_FILE
-echo -e "STAGE_INDIR=/storage1/fs1/cruchagac/$USER/c1in/${FULLSMID}" >> $ENV_FILE
+echo -e "STAGE_INDIR=/storage1/fs1/cruchagac/Active/$USER/c1in/${FULLSMID}" >> $ENV_FILE
 if [ ! -e /scratch1/fs1/cruchagac/${USER}/c1in/$FULLSMID ]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1in/$FULLSMID; fi
 echo -e "INDIR=/input/${FULLSMID}" >> $ENV_FILE
 if [ ! -e /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID ]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID; fi
