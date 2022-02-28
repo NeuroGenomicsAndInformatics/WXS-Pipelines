@@ -6,7 +6,6 @@ export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active/${USER}/c1in:/staged_i
 /storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output"
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
-bash ./makeSampleEnv.bash $1
 for FULLSMID in $(cat $1); do
   LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}/${FULLSMID}.env" \
   bsub -g ${JOB_GROUP} \
