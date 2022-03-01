@@ -9,6 +9,7 @@ if [ ! -e /scratch1/fs1/cruchagac/${USER}/c1in/$FULLSMID ]; then mkdir /scratch1
 echo -e "INDIR=/input/${FULLSMID}" >> $ENV_FILE
 if [ ! -e /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID ]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID; fi
 echo -e "OUTDIR=/output/${FULLSMID}" >> $ENV_FILE
+if [ ! -e /storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID} ]; then mkdir /storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID}; fi
 echo -e "FINAL_OUTDIR=/final_output/${FULLSMID}" >> $ENV_FILE
 echo -e "LOGFILE=/output/${FULLSMID}/${FULLSMID}_runlog.txt" >> $ENV_FILE
 echo -e "RUN_TYPE=paddedexome" >> $ENV_FILE
