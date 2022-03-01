@@ -6,7 +6,8 @@ MEM_SPLIT=$((${S3MEM}/${S3THREADS}))
 reportToLog "Staging Data"
 stageDataForCOHORT
 reportToLog "Staged. Building Sample Map"
-makeSampleMap
+#makeSampleMap
+SAMPLE_MAP=${INDIR}/sampmap.txt
 reportToLog "Building GenomicDB"
 buildGenomicDB
 reportToLog "Built. Joint Calling"

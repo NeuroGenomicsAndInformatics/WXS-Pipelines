@@ -33,7 +33,7 @@ fi
 function buildGenomicDB ()
 {
 	DATABASE="${WORKDiR}/db"
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	GenomicDBImport \
 	--sample-name-map ${SAMPLE_MAP} \
 	--genomicsdb-workspace-path ${WORKDIR}/db \
@@ -44,7 +44,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_
 function jointCallCohort ()
 {
 	JOINT_GVCF="${OUTDIR}/${COHORT}.joint.g.vcf.gz"
-${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 GenotypeGVCFs \
 	-R ${REF_FASTA} \
 	-V gendb://${DATABASE} \
