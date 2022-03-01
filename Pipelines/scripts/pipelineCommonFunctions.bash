@@ -40,7 +40,7 @@ function reportToLog ()
 }
 function validateCurrentBam ()
 {
-java -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
+java -Xms2g -Xmx${S2MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
 -jar ${PICARD} \
 ValidateSamFile -I ${CURRENT_BAM} \
 -R ${REF_FASTA} \

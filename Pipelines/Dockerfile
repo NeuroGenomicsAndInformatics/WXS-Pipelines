@@ -25,7 +25,7 @@ RUN apt-get update && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
 
-RUN install2.r gfortran ggplot2 gsalib
+RUN install2.r gfortran ggplot2 gsalib gplots
 
 COPY ./scripts/* /scripts/
 
