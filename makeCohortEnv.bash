@@ -15,4 +15,4 @@ echo -e "LOGFILE=/output/${COHORT}/${COHORT}_runlog.txt" >> $ENV_FILE
 echo -e "SAMPLE_MAP=$2" >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/pipelineBaseJoint.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
-cp $ENV_FILE /scratch1/fs1/cruchagac/$USER/c1out/$COHORT
+rsync $ENV_FILE /scratch1/fs1/cruchagac/$USER/c1out/$COHORT

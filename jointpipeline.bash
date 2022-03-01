@@ -11,6 +11,7 @@ bash ./makeCohortEnv.bash ${COHORT} $2
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${COHORT}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage3-$COHORT \
+-N \
 -n 16 \
 -o /scratch1/fs1/cruchagac/$USER/c1out/logs/${COHORT}/${COHORT}_s1.%J.%I.out \
 -R 'select[mem>150000] rusage[mem=150000/job] span[hosts=1]' \
