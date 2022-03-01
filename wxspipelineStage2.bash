@@ -12,7 +12,7 @@ for FULLSMID in $(cat $1); do
   -J ngi-${USER}-stage2-$FULLSMID \
   -n 8 \
   -N \
-  -o /scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}/${FULLSMID}_s2.%J.out \
+  -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s2.%J.out \
   -R 'select[mem>105000] rusage[mem=105000] span[hosts=1]' \
   -M 110000 \
   -G compute-cruchagac \
