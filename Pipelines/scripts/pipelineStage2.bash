@@ -6,7 +6,7 @@ SAMPLEID=$(echo $FULLSMID | cut -d'^' -f1)
 MD_INPUTS=()
 sort ${INDIR}/stage1complete.txt | uniq -u > ${OUTDIR}/stage1complete.txt
 for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do
-  MD_INPUTS+=("I=${OUTDIR}/${BAM/CHECK_/}")
+  MD_INPUTS+=("I=${INDIR}/${BAM/CHECK_/}")
 done
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
 MEM_SPLIT=$((${S2MEM}/${S2THREADS}))
