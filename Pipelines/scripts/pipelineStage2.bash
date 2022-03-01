@@ -34,9 +34,8 @@ SAMPLE_TITV=$(getTitvRatio)
 reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
 reportToLog "Transferring output files to ${FINAL_OUTDIR}"
 transferOutputFilesToStorage
-cleanUp
 if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 40000000 ]]; then
-mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; exit 8
-else rm -R ${STAGE_INDIR}
+mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; cleanUp; exit 8
+else rm -R ${STAGE_INDIR}; cleanUp
 fi
 reportToLog "Finished for $FULLSMID."
