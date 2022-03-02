@@ -36,15 +36,14 @@ reportToLog "Validated. Adding to stage1complete list."
 if [[ $(wc -c $CURRENT_BAM | cut -d' ' -f1) -gt 80000000 ]]; then
 echo -e "${CURRENT_BAM##*/}" >> ${INDIR}/stage1complete.txt
 rm ${STAGE_INDIR}/${RGBASE}*
-RETURN_VAL=0
+SUSPEND=0
 else
 echo -e "CHECK_${CURRENT_BAM##*/}" >> ${INDIR}/stage1complete.txt
-RETURN_VAL=5
-touch ${STAGE_INDIR}/stage2.lock
+SUSPEND=1
 fi
 saveToStageDirectory ${CURRENT_BAM}
 saveToStageDirectory ${INDIR}/stage1complete.txt
 saveToStageDirectory ${OUTDIR}/${RGBASE}.cram
 cleanUp
+if [[ $SUSPEND -gt 0 ]]; then bstop $LSB_JOBID[$LSB_JOBINDEX]; fi
 reportToLog "Finished for $RGBASE"
-return RETURN_VAL
