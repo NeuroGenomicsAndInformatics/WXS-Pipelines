@@ -11,10 +11,10 @@ JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 for FULLSMID in $(cat $1); do
 JOBS_IN_ARRAY=$(ls /storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSMID}/*.rgfile | wc -w)
-bash ./makeSampleEnv.bash $FULLSMID
+bash ./makeSampleEnv.bash ${FULLSMID}
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
--J ngi-${USER}-stage1-$FULLSMID[1-$JOBS_IN_ARRAY] \
+-J ngi-${USER}-stage1-${FULLSMID}[1-${JOBS_IN_ARRAY}] \
 -n 16 \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
 -R 'select[mem>168000] rusage[mem=168000/job] span[hosts=1]' \
@@ -24,8 +24,8 @@ bsub -g ${JOB_GROUP} \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage1.bash && \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
--w "done(\"ngi-${USER}-stage1-$FULLSMID\") || external(\"ngi-${USER}-stage1-$FULLSMID\",\"OK\")" \
--J ngi-${USER}-stage2-$FULLSMID \
+-w 'done("ngi-${USER}-stage1-${FULLSMID}") || external("ngi-${USER}-stage2-${FULLSMID}","OK")' \
+-J ngi-${USER}-stage2-${FULLSMID} \
 -n 8 \
 -N \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s2.%J.out \
