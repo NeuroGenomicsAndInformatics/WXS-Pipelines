@@ -25,6 +25,7 @@ bsub -g ${JOB_GROUP} \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -w "done(\"ngi-${USER}-stage1-${FULLSMID}\")" \
+-J ngi-${USER}-stage2-${FULLSMID} \
 -n 8 \
 -N \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s2.%J.out \
