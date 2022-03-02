@@ -40,6 +40,7 @@ RETURN_VAL=0
 else
 echo -e "CHECK_${CURRENT_BAM##*/}" >> ${INDIR}/stage1complete.txt
 RETURN_VAL=5
+touch ${STAGE_INDIR}/stage2.lock
 fi
 saveToStageDirectory ${CURRENT_BAM}
 saveToStageDirectory ${INDIR}/stage1complete.txt

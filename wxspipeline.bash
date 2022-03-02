@@ -24,8 +24,7 @@ bsub -g ${JOB_GROUP} \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage1.bash && \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
--w "done(\"ngi-${USER}-stage1-${FULLSMID}\") \|\| external(\"ngi-${USER}-stage2-${FULLSMID}\",\"OK\")" \
--J ngi-${USER}-stage2-${FULLSMID} \
+-w "done("ngi-${USER}-stage1-${FULLSMID}") || [[ ! -e /storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSMID}/stage2.lock]]" \
 -n 8 \
 -N \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s2.%J.out \
