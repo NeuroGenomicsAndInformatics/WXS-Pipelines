@@ -47,6 +47,10 @@ java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${S2MEM}g -XX:+UseSerialGC -Dpicard.
 -I ${CURRENT_BAM} \
 -o "${OUTDIR}/${SAMPLEID}_exome_coverage"
 }
+function getAverageDepthOfCoverage ()
+{
+	tail -n2 ${OUTDIR}/${SAMPLEID}_exome_coverage.sample_summary | cut -d'\t' -f3
+}
 # function for base recalibration and plots
 function recalibrateBases ()
 {

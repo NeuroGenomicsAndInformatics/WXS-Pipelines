@@ -16,6 +16,8 @@ reportToLog "Marked duplicates. Validating"
 validateCurrentBam
 reportToLog "Validated. Analyzing depth of coverage."
 analyzeDepthOfCoverage
+SAMPLE_COVERAGE=$(getAverageDepthOfCoverage)
+reportToLog "Average deptho of coverage for ${FULLSMID} is ${SAMPLE_COVERAGE}"
 reportToLog "Analyzed. Recalibrating bases"
 recalibrateBases
 reportToLog "Recalibrated. Validating"
@@ -38,4 +40,5 @@ if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 40000000 ]]; then
 mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; cleanUp; exit 8
 else rm -R ${STAGE_INDIR}; cleanUp
 fi
+echo "${SAMPLEID},${SAMPLE_COVERAGE},${SAMPLE_FREEMIX},${SAMPLE_TITV}" > ${FINAL_OUTDIR}/${FULLSMID}_stats.csv
 reportToLog "Finished for $FULLSMID."

@@ -37,6 +37,7 @@ function reportToLog ()
 {
 	echo -e "\n\n ===================================== \n\n"
 	echo -e "$1"
+	echo -e "\n\n ===================================== \n\n"
 }
 function validateCurrentBam ()
 {

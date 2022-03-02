@@ -16,7 +16,7 @@ reportToLog "Aligning and sorting"
 if [[ -e $FQ1 ]] && [[ -e $FQ2 ]]; then
 if [[ $(wc -c $FQ1 | cut -d' ' -f1) -lt 14000000000 ]]; then alignSortPairedFQs || alignSortPairedHugeFQs; else alignSortPairedHugeFQs; fi
 elif [[ ! -e $FQ1 ]] && [[ ! -e $FQ2 ]] && [[ -e $FQI ]]; then
-alignSortInterleavedFQs || alignSortHugeInterleavedFQs
+if [[ $(wc -c $FQI | cut -d' ' -f1) -lt 20000000000 ]]; then alignSortInterleavedFQs || alignSortHugeInterleavedFQs; else alignSortHugeInterleavedFQs; fi
 else
 reportToLog "Check input files. $FQ1 $FQ2 $FQI"; exit 3;
 fi
