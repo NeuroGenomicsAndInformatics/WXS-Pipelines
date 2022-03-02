@@ -6,14 +6,16 @@ export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchaga
 /storage1/fs1/cruchagac/Active/$USER/c1out:/final_output"
 JOB_GROUP="/${USER}/compute-cruchagac"
 COHORT="$1"
+INTERVAL="$2"
 bgadd -L 10 ${JOB_GROUP}
-bash ./makeCohortEnv.bash ${COHORT} $2
-LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${COHORT}.env" \
+if [[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ]]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs; fi
+bash ./makeCohortEnv.bash ${COHORT} ${INTERVAL}
+LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${COHORT}_${INTERVAL}.env" \
 bsub -g ${JOB_GROUP} \
--J ngi-${USER}-stage3-$COHORT \
+-J ngi-${USER}-stage3-${COHORT}_${INTERVAL} \
 -N \
 -n 16 \
--o /scratch1/fs1/cruchagac/$USER/c1out/logs/${COHORT}/${COHORT}_s1.%J.%I.out \
+-o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${COHORT}_${INTERVAL}/${COHORT}_${INTERVAL}_s1.%J.%I.out \
 -R 'select[mem>150000] rusage[mem=150000/job] span[hosts=1]' \
 -M 160000 \
 -G compute-cruchagac \
