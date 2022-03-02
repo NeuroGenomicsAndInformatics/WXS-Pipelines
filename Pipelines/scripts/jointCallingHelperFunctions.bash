@@ -34,7 +34,8 @@ function buildGenomicDB ()
 {
 	DATABASE="${WORKDiR}/db"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
-	GenomicDBImport \
+	GenomicsDBImport \
+	${INTERVAL} \
 	--sample-name-map ${SAMPLE_MAP} \
 	--genomicsdb-workspace-path ${WORKDIR}/db \
 	--batch-size 50 \
