@@ -45,5 +45,5 @@ saveToStageDirectory ${CURRENT_BAM}
 saveToStageDirectory ${INDIR}/stage1complete.txt
 saveToStageDirectory ${OUTDIR}/${RGBASE}.cram
 cleanUp
-if [[ $SUSPEND -gt 0 ]]; then bstop $LSB_JOBID[$LSB_JOBINDEX]; fi
+if [[ $SUSPEND -gt 0 ]]; then bstop $(echo ${LSB_JOBNAME/stage1/stage2} | cut -d'[' -f1); fi
 reportToLog "Finished for $RGBASE"
