@@ -32,7 +32,8 @@ fi
 }
 function buildGenomicDB ()
 {
-	DATABASE="${WORKDiR}/db"
+	DATABASE="${WORKDIR}/db"
+if [[ ! -d ${OUTDIR}/dbwork ]]; then mkdir ${OUTDIR}/dbwork; fi
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	GenomicsDBImport \
 	${INTERVAL} \
