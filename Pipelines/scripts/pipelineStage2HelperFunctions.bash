@@ -49,7 +49,7 @@ java -Djava.io.tmpdir=${WORKDIR} -Xms2g -Xmx${S2MEM}g -XX:+UseSerialGC -Dpicard.
 }
 function getAverageDepthOfCoverage ()
 {
-	tail -n2 ${OUTDIR}/${SAMPLEID}_exome_coverage.sample_summary | cut -d'\t' -f3
+	tail -n1 ${OUTDIR}/${SAMPLEID}_exome_coverage.sample_summary | cut -f3
 }
 # function for base recalibration and plots
 function recalibrateBases ()
@@ -88,7 +88,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USE
 	-plots "${OUTDIR}/${SAMPLEID}_before-after-plots.pdf"
 CURRENT_BAM="${OUTDIR}/${SAMPLEID}.recal.bam"
 }
-function getFreeMix ()
+function verifyBamID ()
 {
 	/scripts/verifyBamID \
 		--vcf "${REF_HAPMAP}" \
@@ -100,8 +100,12 @@ function getFreeMix ()
 		--ignoreRG \
 		--out "${OUTDIR}/${FULLSMID}_verifybam" \
 		|& grep -v "Skipping marker"
-	echo $(tail -n 1 ${OUTDIR}/${FULLSMID}_verifybam.selfSM | cut -f 7)
 }
+function getFreeMix ()
+{
+	tail -n1 ${OUTDIR}/${FULLSMID}_verifybam.selfSM | cut -f7
+}
+
 function callSampleVariants ()
 {
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S2MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
