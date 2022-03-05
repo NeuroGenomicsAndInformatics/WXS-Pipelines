@@ -5,3 +5,4 @@ echo -n "" > ${STATSFILE}
 for CSV in $(ls ${OUTDIR}/M* | grep "stats.csv"); do
   cat ${OUTDIR}/${CSV%_stats.csv}/${CSV} >> ${STATSFILE}
 done
+cat $STATSFILE | wc -l
