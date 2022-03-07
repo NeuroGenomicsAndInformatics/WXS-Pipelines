@@ -4,8 +4,6 @@ export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchaga
 /scratch1/fs1/cruchagac/WXSref:/ref \
 /scratch1/fs1/cruchagac/${USER}/c1out:/output \
 /storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output"
-export THREADS=16
-export MEM=144
 if [[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ]]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs; fi
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
