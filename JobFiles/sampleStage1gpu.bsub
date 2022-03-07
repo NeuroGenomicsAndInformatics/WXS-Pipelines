@@ -1,0 +1,8 @@
+#!/bin/bash
+#BSUB -n 32
+#BSUB -M 196GB
+#BSUB -R 'gpuhost rusage[mem=196GB] span[hosts=1]'
+#BSUB -q general
+#BSUB -gpu "num=4:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes"
+#BSUB -a 'docker(gcr.io/ris-registry-shared/parabricks)'
+pbrun command options

@@ -14,9 +14,9 @@ LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${COHORT}_${INTER
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage3-${COHORT}_${INTERVAL} \
 -N \
--n 16 \
+-n 4 \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${COHORT}_${INTERVAL}/${COHORT}_${INTERVAL}_s1.%J.%I.out \
--R 'select[mem>150000] rusage[mem=150000/job] span[hosts=1]' \
+-R 'select[mem>150000 && tmp>100] rusage[mem=150000/job, tmp=100] span[hosts=1]' \
 -M 160000 \
 -G compute-cruchagac \
 -q general \
