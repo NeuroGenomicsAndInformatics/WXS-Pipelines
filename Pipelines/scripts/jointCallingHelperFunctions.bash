@@ -1,6 +1,9 @@
 function stageDataForCOHORT ()
 {
-	rsync -rpL $STAGE_INDIR/ $INDIR
+	rsync -rL $STAGE_INDIR/ $INDIR
+	for FILE in $(ls $INDIR); do
+		mv ${INDIR}/${FILE} ${INDIR}/${FILE/^/.}
+	done
 }
 function transferOutputFilesToStorage ()
 {
