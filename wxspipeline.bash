@@ -19,7 +19,7 @@ bsub -g ${JOB_GROUP} \
 -M 170000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage1.bash && \
+-a 'docker(mjohnsonngi/wxspipeline:stable)' /scripts/pipelineStage1.bash && \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -w "done(\"ngi-${USER}-stage1-${FULLSMID}\")" \
@@ -31,5 +31,5 @@ bsub -g ${JOB_GROUP} \
 -M 110000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/wxspipeline:dev)' /scripts/pipelineStage2.bash
+-a 'docker(mjohnsonngi/wxspipeline:stable)' /scripts/pipelineStage2.bash
 done
