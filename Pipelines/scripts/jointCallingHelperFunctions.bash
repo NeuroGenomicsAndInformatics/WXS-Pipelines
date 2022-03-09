@@ -45,6 +45,9 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USE
 	--batch-size 50 \
 	--tmp-dir $OUTDIR/dbwork \
 	--reader-threads ${S3THREADS}
+#	--batch-size 100 \
+#	--merge-input-intervals true \
+#	--genomicsdb-shared-posixfs-optimizations true \
 }
 function jointCallCohort ()
 {
@@ -53,8 +56,9 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USE
 GenotypeGVCFs \
 	-R ${REF_FASTA} \
 	-V gendb://${DATABASE} \
-	-O "${OUTDIR}/${COHORT}.joint.g.vcf.gz" \
+	-O "${WORKDIR}/${COHORT}.joint.g.vcf.gz" \
 	-G StandardAnnotation \
-	--use-new-qual-calculator \
 	--tmp-dir=${WORKDIR}
+#	--genomicsdb-shared-posixfs-optimizations true
+rsync ${WORKDIR}/${COHORT}.joint.g.vcf.gz* ${OUTDIR}/
 }
