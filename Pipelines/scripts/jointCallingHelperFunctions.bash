@@ -35,26 +35,30 @@ fi
 }
 function buildGenomicDB ()
 {
-	DATABASE="${WORKDIR}/db"
+	DATABASE="${WORKDIR}/db${INTERVAL}"
 if [[ ! -d ${OUTDIR}/dbwork ]]; then mkdir ${OUTDIR}/dbwork; fi
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	GenomicsDBImport \
-	${INTERVAL} \
+	-L ${INTERVAL} \
 	--sample-name-map ${SAMPLE_MAP} \
-	--genomicsdb-workspace-path ${WORKDIR}/db \
+	--genomicsdb-workspace-path ${WORKDIR}/db${INTERVAL} \
 	--batch-size 50 \
 	--tmp-dir $OUTDIR/dbwork \
 	--reader-threads ${S3THREADS}
+#	--batch-size 100 \
+#	--merge-input-intervals true \
+#	--genomicsdb-shared-posixfs-optimizations true \
 }
 function jointCallCohort ()
 {
-	JOINT_GVCF="${OUTDIR}/${COHORT}.joint.g.vcf.gz"
+	JOINT_GVCF="${OUTDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz"
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 GenotypeGVCFs \
 	-R ${REF_FASTA} \
 	-V gendb://${DATABASE} \
-	-O "${OUTDIR}/${COHORT}.joint.g.vcf.gz" \
+	-O "${WORKDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz" \
 	-G StandardAnnotation \
-	--use-new-qual-calculator \
 	--tmp-dir=${WORKDIR}
+#	--genomicsdb-shared-posixfs-optimizations true
+rsync ${WORKDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz* ${OUTDIR}/
 }

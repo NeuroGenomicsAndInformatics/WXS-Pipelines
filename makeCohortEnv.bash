@@ -6,7 +6,7 @@ COHORT="$1"
 INTERVAL="$2"
 ENV_FILE="$ENVS_DIR/${COHORT}_${INTERVAL}.env"
 echo -e "COHORT=${COHORT}" > $ENV_FILE
-echo -e "INTERVAL=-L ${INTERVAL}" >> $ENV_FILE
+echo -e "INTERVAL=${INTERVAL}" >> $ENV_FILE
 echo -e "STAGE_INDIR=/storage1/fs1/cruchagac/Active/$USER/c1in/${COHORT}" >> $ENV_FILE
 if [ ! -e /scratch1/fs1/cruchagac/$USER/c1in/${COHORT} ]; then mkdir /scratch1/fs1/cruchagac/$USER/c1in/${COHORT}; fi
 echo -e "INDIR=/input/${COHORT}" >> $ENV_FILE
