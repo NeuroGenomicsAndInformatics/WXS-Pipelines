@@ -15,8 +15,8 @@ bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-${FULLSMID}[1-${JOBS_IN_ARRAY}] \
 -n 16 \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s1.%J.%I.out \
--R 'select[mem>168000] rusage[mem=168000/job] span[hosts=1]' \
--M 170000 \
+-R 'select[mem>168GB] rusage[mem=168GB/job] span[hosts=1]' \
+-M 170GB \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:stable)' /scripts/pipelineStage1.bash && \
@@ -27,8 +27,8 @@ bsub -g ${JOB_GROUP} \
 -n 8 \
 -N \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}/${FULLSMID}_s2.%J.out \
--R 'select[mem>105000] rusage[mem=105000] span[hosts=1]' \
--M 110000 \
+-R 'select[mem>105GB] rusage[mem=105GB] span[hosts=1]' \
+-M 110GB \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:stable)' /scripts/pipelineStage2.bash
