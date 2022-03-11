@@ -11,7 +11,7 @@ function transferOutputFilesToStorage ()
 	rsync ${STAGE_INDIR}/*.cram ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*_GATK* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*vcf* ${FINAL_OUTDIR}/
-	rsync ${OUTDIR}/*verifybam.selfSM ${FINAL_OUTDIR}/
+	rsync ${OUTDIR}/*verifybam* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*_exome_* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.pdf ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.recal.table* ${FINAL_OUTDIR}/
