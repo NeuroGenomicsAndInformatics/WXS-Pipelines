@@ -15,6 +15,7 @@ bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage3-${COHORT}_${INTERVAL} \
 -N \
 -n 4 \
+-sp 55 \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/${COHORT}_${INTERVAL}/${COHORT}_${INTERVAL}_s1.%J.%I.out \
 -R 'select[mem>80000 && tmp>100] rusage[mem=80000/job, tmp=100] span[hosts=1]' \
 -M 82000 \
