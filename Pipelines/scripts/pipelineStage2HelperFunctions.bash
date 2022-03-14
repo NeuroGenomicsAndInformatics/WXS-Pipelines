@@ -97,7 +97,6 @@ function verifyBamID ()
 		--maxDepth 1000 \
 		--precise \
 		--verbose \
-		--ignoreRG \
 		--out "${OUTDIR}/${FULLSMID}_verifybam" \
 		|& grep -v "Skipping marker"
 }
