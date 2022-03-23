@@ -5,7 +5,7 @@ function stageDataForSample ()
 }
 function transferOutputFilesToStorage ()
 {
-	mkdir ${FINAL_OUTDIR}
+	[[ ! -d $FINAL_OUTDIR ]] && mkdir ${FINAL_OUTDIR}
 	rsync ${OUTDIR}/*.env ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*.rgfile ${FINAL_OUTDIR}/
 	rsync ${STAGE_INDIR}/*.cram ${FINAL_OUTDIR}/

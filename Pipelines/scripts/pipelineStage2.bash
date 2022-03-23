@@ -6,7 +6,7 @@ SAMPLEID=$(echo $FULLSMID | cut -d'^' -f1)
 MD_INPUTS=()
 sort ${INDIR}/stage1complete.txt | uniq -u > ${OUTDIR}/stage1complete.txt
 for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do
-  MD_INPUTS+=("I=${INDIR}/${BAM/CHECK_/}")
+  MD_INPUTS+=("I=${INDIR}/${BAM//CHECK_/}")
 done
 SAMPLEID_VE=$(echo ${SAMPLEID} | tr "^" "-")
 MEM_SPLIT=$((${S2MEM}/${S2THREADS}))
@@ -37,7 +37,7 @@ SAMPLE_TITV=$(getTitvRatio)
 reportToLog "TITV for ${FULLSMID} is ${SAMPLE_TITV}"
 reportToLog "Transferring output files to ${FINAL_OUTDIR}"
 transferOutputFilesToStorage
-if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 40000000 ]]; then
+if [[ $(wc -c $CURRENT_VCF | cut -d' ' -f1) -lt 30000000 ]]; then
 mv ${FINAL_OUTDIR} /final_output/CHECK_${FULLSMID}; cleanUp; exit 8
 else rm -R ${STAGE_INDIR}; cleanUp
 fi

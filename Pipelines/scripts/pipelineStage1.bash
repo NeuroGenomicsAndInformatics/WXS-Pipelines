@@ -33,7 +33,7 @@ fi
 validateCurrentBam
 reportToLog "Validated. Adding to stage1complete list."
 #NOTE: This can lead to a race condition on the list. A failed Stage 2 could be caused by the stage1complete.txt file being messed up. Fixing the file manually solves this and Stage 2 can be run normally after.
-if [[ $(wc -c $CURRENT_BAM | cut -d' ' -f1) -gt 80000000 ]]; then
+if [[ $(wc -c $CURRENT_BAM | cut -d' ' -f1) -gt 40000000 ]]; then
 echo -e "${CURRENT_BAM##*/}" >> ${INDIR}/stage1complete.txt
 rm ${STAGE_INDIR}/${RGBASE}*
 SUSPEND=0
