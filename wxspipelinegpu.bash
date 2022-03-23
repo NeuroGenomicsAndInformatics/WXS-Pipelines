@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH="/opt/miniconda/bin:$PATH"
-export TMP_DIR="/storage1/fs1/cruchagac/Active/${USER}/parabricks-tmp"
+export TMP_DIR="/scratch1/fs1/cruchagac/${USER}/parabricks-tmp"
 [ ! -d $TMP_DIR ] && mkdir $TMP_DIR
 if [[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ]]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs; fi
 JOB_GROUP="/${USER}/compute-cruchagac"
@@ -21,4 +21,4 @@ bsub -g ${JOB_GROUP} \
 -G compute-cruchagac \
 -q general \
 -gpu "num=1:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes" \
--a 'docker(gcr.io/ris-registry-shared/parabricks)' pbrun "$@"
+-a 'docker(gcr.io/ris-registry-shared/parabricks)' pbrun "$@" --tmp-dir $TMP_DIR
