@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH="/opt/miniconda/bin:$PATH"
-export TMP_DIR="/scratch1/fs1/cruchagac/parabricks-tmp"
+export TMP_DIR="/storage1/fs1/cruchagac/Active/${USER}/parabricks-tmp"
 [ ! -d $TMP_DIR ] && mkdir $TMP_DIR
 if [[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ]]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs; fi
 JOB_GROUP="/${USER}/compute-cruchagac"
@@ -12,7 +12,6 @@ $HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/sh \
-TMP_DIR="/scratch1/fs1/cruchagac/parabricks-tmp" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1gpu-%J \
 -N \
