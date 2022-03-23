@@ -15,6 +15,7 @@ LSF_DOCKER_ENTRYPOINT=/bin/sh \
 TMP_DIR="/scratch1/fs1/cruchagac/parabricks-tmp" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1gpu-%J \
+-N \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/logs/GPU.%J.out \
 -R 'select[gpuhost && mem>64GB && ncpus>15] rusage[mem=64GB] span[hosts=1]' \
 -M 64GB \
