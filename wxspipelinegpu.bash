@@ -2,7 +2,7 @@
 export PATH="/opt/miniconda/bin:$PATH"
 export TMP_DIR="/scratch1/fs1/cruchagac/${USER}/parabricks-tmp"
 [ ! -d $TMP_DIR ] && mkdir $TMP_DIR
-if [[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ]]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs; fi
+[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \

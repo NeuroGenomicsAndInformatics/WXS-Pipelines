@@ -8,7 +8,7 @@ JOB_GROUP="/${USER}/compute-cruchagac"
 COHORT="$1"
 INTERVAL="$2"
 bgadd -L 10 ${JOB_GROUP}
-if [[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ]]; then mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs; fi
+[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs
 bash ./makeCohortEnv.bash ${COHORT} ${INTERVAL}
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${COHORT}_${INTERVAL}.env" \
 bsub -g ${JOB_GROUP} \
