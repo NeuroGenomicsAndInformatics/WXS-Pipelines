@@ -2,12 +2,12 @@ function stageDataForCOHORT ()
 {
 	rsync -rL $STAGE_INDIR/ $INDIR
 	for FILE in $(ls $INDIR); do
-		mv ${INDIR}/${FILE} ${INDIR}/${FILE/^/.}
+		ln -s ${INDIR}/${FILE} ${INDIR}/${FILE//^/.}
 	done
 }
 function transferOutputFilesToStorage ()
 {
-	mkdir ${FINAL_OUTDIR}
+	[ ! -d ${FINAL_OUTDIR} ] && mkdir ${FINAL_OUTDIR}
 	rsync ${OUTDIR}/*.env ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*vcf* ${FINAL_OUTDIR}/
 	#rm -R ${OUTDIR}
@@ -22,21 +22,19 @@ function cleanUp ()
 function makeSampleMap ()
 {
 	if [[ -r ${INDIR}/${SAMPLE_MAP##*/} ]]; then
-	SAMPLE_MAP=${${INDIR}/${SAMPLE_MAP##*/}}
+	SAMPLE_MAP=${INDIR}/${SAMPLE_MAP##*/}
 	else
 	SAMPLE_MAP="${WORKDIR}/SampleMap.txt"
-	cp ${SAMPLE_MAP} ${WORKDIR}/SampleMap.txt || \
- 	(echo -n "" > ${SAMPLE_MAP}
-	for SAMPLE in $(ls -d ${INDIR}) ; do
-	echo -en "${echo $SAMPLE | cut -d'^' -f1}\t" >> ${SAMPLE_MAP}
-	echo "$(find ${STAGE_DIR}/${SAMPLE} -name "*.vcf.gz" -print)" >> ${SAMPLE_MAP}
+	echo -n "" > ${SAMPLE_MAP}
+	for SAMPLE in $(find ${INDIR} -name "*.vcf.gz" ${pwd} | grep -v '^') ; do
+	echo -e "$(echo ${SAMPLE##*/} | cut -d'.' -f1)\tfile:///${SAMPLE}" >> ${SAMPLE_MAP}
 done)
 fi
 }
 function buildGenomicDB ()
 {
 	DATABASE="${WORKDIR}/db${INTERVAL}"
-if [[ ! -d ${OUTDIR}/dbwork ]]; then mkdir ${OUTDIR}/dbwork; fi
+[ ! -d ${OUTDIR}/dbwork ] && mkdir ${OUTDIR}/dbwork
 ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	GenomicsDBImport \
 	-L ${INTERVAL} \
@@ -58,7 +56,7 @@ GenotypeGVCFs \
 	-V gendb://${DATABASE} \
 	-O "${WORKDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz" \
 	-G StandardAnnotation \
-	--tmp-dir=${WORKDIR}
+	--tmp-dir ${WORKDIR}
 #	--genomicsdb-shared-posixfs-optimizations true
 rsync ${WORKDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz* ${OUTDIR}/
 }
