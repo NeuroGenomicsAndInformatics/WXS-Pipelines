@@ -7,7 +7,8 @@ JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
-/scratch1/fs1/ris/application/parabricks-license:/opt/parabricks" \
+/scratch1/fs1/ris/application/parabricks:/opt/parabricks \
+$HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/sh \
