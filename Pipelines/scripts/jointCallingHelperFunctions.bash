@@ -2,7 +2,7 @@ function stageDataForCOHORT ()
 {
 	rsync -rL $STAGE_INDIR/ $INDIR
 	for FILE in $(ls $INDIR); do
-		ln -s ${INDIR}/${FILE} ${INDIR}/${FILE//^/.}
+		[[ ! -h ${INDIR}/${FILE//^/.} ]] && ln -s ${INDIR}/${FILE} ${INDIR}/${FILE//^/.}
 	done
 }
 function transferOutputFilesToStorage ()
@@ -21,15 +21,11 @@ function cleanUp ()
 }
 function makeSampleMap ()
 {
-	if [[ -r ${INDIR}/${SAMPLE_MAP##*/} ]]; then
-	SAMPLE_MAP=${INDIR}/${SAMPLE_MAP##*/}
-	else
 	SAMPLE_MAP="${WORKDIR}/SampleMap.txt"
 	echo -n "" > ${SAMPLE_MAP}
-	for SAMPLE in $(find ${INDIR} -name "*.vcf.gz" ${pwd} | grep -v '^') ; do
-	echo -e "$(echo ${SAMPLE##*/} | cut -d'.' -f1)\tfile:///${SAMPLE}" >> ${SAMPLE_MAP}
-done)
-fi
+	for SAMPLE in $(find ${INDIR} -name "*.vcf.gz" ${pwd} | grep "\^") ; do
+		echo -e "$(echo ${SAMPLE##*/} | cut -d'.' -f1)\tfile://${SAMPLE//^/.}" >> ${SAMPLE_MAP}
+	done
 }
 function buildGenomicDB ()
 {
