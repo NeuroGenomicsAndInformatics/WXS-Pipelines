@@ -21,4 +21,4 @@ bsub -g ${JOB_GROUP} \
 -M 82000 \
 -G compute-cruchagac \
 -q general \
--a 'docker(mjohnsonngi/wxspipeline:joint)' /scripts/jointCalling.bash
+-a 'docker(mjohnsonngi/wxspipeline:v1.1)' /scripts/jointCalling.bash
