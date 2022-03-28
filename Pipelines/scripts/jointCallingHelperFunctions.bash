@@ -17,14 +17,14 @@ function cleanUp ()
 {
 	#rm -R $STAGE_INDIR
 	rm -R $INDIR
-	#rm -R $OUTDIR
+	rm -R $OUTDIR
 }
 function makeSampleMap ()
 {
 	SAMPLE_MAP="${WORKDIR}/SampleMap.txt"
 	echo -n "" > ${SAMPLE_MAP}
-	for SAMPLE in $(find ${INDIR} -name "*.vcf.gz" ${pwd} | grep "\^") ; do
-		echo -e "$(echo ${SAMPLE##*/} | cut -d'.' -f1)\tfile://${SAMPLE//^/.}" >> ${SAMPLE_MAP}
+	for SAMPLE in $(find ${STAGE_INDIR} -name "*.vcf.gz" ${pwd}) ; do
+		echo -e "$(echo ${SAMPLE##*/} | cut -d'.' -f1)\tfile://${SAMPLE//^/%5E}" >> ${SAMPLE_MAP}
 	done
 }
 function buildGenomicDB ()
@@ -38,10 +38,8 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USE
 	--genomicsdb-workspace-path ${WORKDIR}/db${INTERVAL} \
 	--batch-size 50 \
 	--tmp-dir $OUTDIR/dbwork \
-	--reader-threads ${S3THREADS}
-#	--batch-size 100 \
-#	--merge-input-intervals true \
-#	--genomicsdb-shared-posixfs-optimizations true \
+	--reader-threads ${S3THREADS} \
+	--genomicsdb-shared-posixfs-optimizations true \
 }
 function jointCallCohort ()
 {
@@ -52,7 +50,7 @@ GenotypeGVCFs \
 	-V gendb://${DATABASE} \
 	-O "${WORKDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz" \
 	-G StandardAnnotation \
-	--tmp-dir ${WORKDIR}
-#	--genomicsdb-shared-posixfs-optimizations true
+	--tmp-dir ${WORKDIR} \
+	--genomicsdb-shared-posixfs-optimizations true
 rsync ${WORKDIR}/${COHORT}.${INTERVAL}.joint.g.vcf.gz* ${OUTDIR}/
 }
