@@ -17,5 +17,5 @@ for FULLSMID in $(cat $1); do
   -M 110GB \
   -G compute-cruchagac \
   -q general \
-  -a 'docker(mjohnsonngi/wxspipeline:v1.1)' /scripts/pipelineStage2.bash
+  -a 'docker(mjohnsonngi/wxspipeline:1.1)' /scripts/pipelineStage2.bash
   done

@@ -1,6 +1,6 @@
 function getCram ()
 {
-	rsync $STAGE_INDIR/$CRAM $INDIR/
+	rsync -L $STAGE_INDIR/$CRAM $INDIR/
 }
 function convertCramToBam ()
 {
@@ -10,14 +10,14 @@ samtools index -@ $(($THREADS-1)) $CURRENT_BAM
 }
 function revertBamToFastqs ()
 {
-	java -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
+	java -Xms${MEM_SPLIT}g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
 	-jar ${PICARD} \
 	RevertSam -I ${CURRENT_BAM} \
 	-O /dev/stdout \
 	-SORT_ORDER queryname \
 	-COMPRESSION_LEVEL 0 \
 	-VALIDATION_STRINGENCY SILENT \
-	| java -Xms2g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
+	| java -Xms${MEM_SPLIT}g -Xmx${MEM}g -XX:+UseSerialGC -Dpicard.useLegacyParser=false \
 	-jar ${PICARD} \
 	SamToFastq -I /dev/stdin \
 	-OUTPUT_PER_RG true \

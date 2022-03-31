@@ -26,6 +26,7 @@ function makeSampleMap ()
 	for SAMPLE in $(find ${STAGE_INDIR} -name "*.vcf.gz" ${pwd}) ; do
 		echo -e "$(echo ${SAMPLE##*/} | cut -d'.' -f1)\tfile://${SAMPLE//^/%5E}" >> ${SAMPLE_MAP}
 	done
+	cp $SAMPLE_MAP $OUTDIR/${COHORT}_${INTERVAL}_SampleMap.txt
 }
 function buildGenomicDB ()
 {
@@ -39,7 +40,7 @@ ${GATK} --java-options "-Xms${MEM_SPLIT}g -Xmx${S3MEM}g -DGATK_STACKTRACE_ON_USE
 	--batch-size 50 \
 	--tmp-dir $OUTDIR/dbwork \
 	--reader-threads ${S3THREADS} \
-	--genomicsdb-shared-posixfs-optimizations true \
+	--genomicsdb-shared-posixfs-optimizations true
 }
 function jointCallCohort ()
 {

@@ -2,6 +2,7 @@
 source /scripts/pipelineCommonFunctions.bash
 source /scripts/pipelineCHelperFunctions.bash
 CRAM="$1"
+MEM_SPLIT=$((${MEM}/${THREADS}))
 reportToLog "Starting pipeline C for $CRAM. Getting CRAM"
 getCram
 reportToLog "Converting CRAM to BAM"
@@ -14,5 +15,5 @@ revertBamToFastqs
 reportToLog "Converted to FASTQs. Making RGfiles and renaming FASTQs"
 makeRgfiles
 reportToLog "Finished for $CRAM. Adding to Stage 1 workfile."
-touch $STAGE1_WORKFILE
-echo ${FULLSMID} >> $STAGE1_WORKFILE
+#touch $STAGE1_WORKFILE
+#echo ${FULLSMID} >> $STAGE1_WORKFILE
