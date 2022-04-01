@@ -15,4 +15,4 @@ echo -e "STAGE1_WORKFILE=${STAGE1_WORKFILE}"
 cat ${BASE_ENVS_DIR}/pipelinebase.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
 cp $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID/
-echo $CRAM
+echo -n $CRAM
