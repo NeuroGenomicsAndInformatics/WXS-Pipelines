@@ -11,7 +11,7 @@ echo -e "STAGE_INDIR=/storage1/fs1/cruchagac/Active/${USER}/c1in" >> $ENV_FILE
 echo -e "INDIR=/input/${FULLSMID}" >> $ENV_FILE
 mkdir /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID
 echo -e "OUTDIR=/output/${FULLSMID}" >> $ENV_FILE
-echo -e "STAGE1_WORKFILE=${STAGE1_WORKFILE}"
+echo -e "STAGE1_WORKFILE=${STAGE1_WORKFILE}" >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/pipelinebase.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
 cp $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID/
