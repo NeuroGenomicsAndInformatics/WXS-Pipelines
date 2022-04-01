@@ -9,7 +9,7 @@ export MEM=32
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 cat $1 | while read -r LINE; do
-CRAM=$(bash ./makeCramEnv.bash $LINE)
+bash ./makeCramEnv.bash $LINE
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${CRAM}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage0-$CRAM \
