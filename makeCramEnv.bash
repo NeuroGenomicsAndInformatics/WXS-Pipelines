@@ -14,4 +14,4 @@ echo -e "OUTDIR=/output/${FULLSMID}" >> $ENV_FILE
 echo -e "STAGE1_WORKFILE=${STAGE1_WORKFILE}" >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/pipelinebase.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
-cp $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID/
+rsync $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID/
