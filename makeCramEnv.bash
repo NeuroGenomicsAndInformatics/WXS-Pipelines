@@ -1,9 +1,8 @@
 #!/bin/bash
 ENVS_DIR="/scratch1/fs1/cruchagac/${USER}/c1in/envs"
 BASE_ENVS_DIR="./baseEnvs"
-LINE="$1"
-FULLSMID="$(echo $LINE | cut -d ' ' -f1)"
-export CRAM="$(echo $LINE | cut -d ' ' -f2)"
+FULLSMID="$1"
+CRAM="$2"
 STAGE1_WORKFILE="~/work${CRAM##/*}.txt"
 ENV_FILE="$ENVS_DIR/${CRAM}.env"
 echo -e "FULLSMID=${FULLSMID}" > $ENV_FILE

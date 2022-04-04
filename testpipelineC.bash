@@ -8,7 +8,7 @@ export THREADS=8
 export MEM=32
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
-cat $1 | while read -r LINE; do
+cat $1 | while read LINE; do
 CRAM="$(echo $LINE | cut -d ' ' -f2)"
 bash ./makeCramEnv.bash $LINE
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${CRAM}.env" \
