@@ -1,4 +1,9 @@
 #!/bin/bash
+export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/cruchagac/${USER}/c1in:/input \
+/scratch1/fs1/cruchagac/WXSref:/ref \
+/scratch1/fs1/cruchagac/${USER}/c1out:/output \
+/storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output" 
 export THREADS=8
 export MEM=64
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -7,11 +12,6 @@ bgadd -L 10 ${JOB_GROUP}
 cat $1 | while read LINE; do
 CRAM="$(echo $LINE | cut -d ' ' -f2)"
 bash ${SCRIPT_DIR}/makeCramEnv.bash $LINE
-LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/cruchagac/${USER}/c1in:/input \
-/scratch1/fs1/cruchagac/WXSref:/ref \
-/scratch1/fs1/cruchagac/${USER}/c1out:/output \
-/storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output" \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${CRAM}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage0-$CRAM \
