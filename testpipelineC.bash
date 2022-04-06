@@ -19,7 +19,7 @@ bsub -g ${JOB_GROUP} \
 -cwd ${SCRIPT_DIR} \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/${CRAM%.cram}/${CRAM%.cram}.%J.out \
 -R 'select[mem>64000] rusage[mem=64000]' \
--M 72000000 \
+-M 72000 \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' bash /scripts/pipelineCStage0.bash $CRAM
