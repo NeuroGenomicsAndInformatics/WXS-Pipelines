@@ -1,15 +1,17 @@
 #!/bin/bash
-export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/cruchagac/${USER}/c1in:/input \
-/scratch1/fs1/cruchagac/WXSref:/ref \
-/scratch1/fs1/cruchagac/${USER}/c1out:/output \
-/storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
-for FULLSMID in $(cat $1); do
+if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
+for FULLSMID in ${FULLSMIDS[@]}; do
 JOBS_IN_ARRAY=$(ls /storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSMID}/*.rgfile | wc -w)
-bash ./makeSampleEnv.bash ${FULLSMID}
+bash ${SCRIPT_DIR}/makeSampleEnv.bash ${FULLSMID}
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/cruchagac/${USER}/c1in:/input \
+/scratch1/fs1/cruchagac/WXSref:/ref \
+/scratch1/fs1/cruchagac/${USER}/c1out:/output \
+/storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output" \
 LSF_DOCKER_ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/${FULLSMID}.env" \
 bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage1-${FULLSMID}[1-${JOBS_IN_ARRAY}] \
