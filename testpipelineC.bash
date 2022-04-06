@@ -1,10 +1,7 @@
 #!/bin/bash
 export THREADS=8
-<<<<<<< HEAD
 export MEM=64
-=======
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
->>>>>>> 8c0ed4cd7bccfdf33c1c0257c065d689facf8d80
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 cat $1 | while read LINE; do
