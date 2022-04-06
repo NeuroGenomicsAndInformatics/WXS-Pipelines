@@ -7,7 +7,7 @@ function transferOutputFilesToStorage ()
 {
 	[[ ! -d $FINAL_OUTDIR ]] && mkdir ${FINAL_OUTDIR}
 	rsync ${OUTDIR}/*.env ${FINAL_OUTDIR}/
-	rsync ${OUTDIR}/*.rgfile ${FINAL_OUTDIR}/
+	rsync ${STAGE_INDIR}/*.rgfile ${FINAL_OUTDIR}/
 	rsync ${STAGE_INDIR}/*.cram ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*_GATK* ${FINAL_OUTDIR}/
 	rsync ${OUTDIR}/*vcf* ${FINAL_OUTDIR}/
@@ -18,7 +18,6 @@ function transferOutputFilesToStorage ()
 }
 function cleanUp ()
 {
-	rsync ${OUTDIR}/*.out /output/logs/${FULLSMID}
 	rsync ${OUTDIR}/*.txt /output/logs/${FULLSMID}
 	rm -R ${OUTDIR}
 	rm -R ${INDIR}
