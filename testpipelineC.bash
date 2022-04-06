@@ -5,7 +5,7 @@ export LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchaga
 /scratch1/fs1/cruchagac/${USER}/c1out:/output \
 /storage1/fs1/cruchagac/Active/${USER}/c1out:/final_output"
 export THREADS=8
-export MEM=32
+export MEM=64
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
 cat $1 | while read LINE; do
@@ -16,8 +16,8 @@ bsub -g ${JOB_GROUP} \
 -J ngi-${USER}-stage0-$CRAM \
 -n ${THREADS} \
 -o /scratch1/fs1/cruchagac/${USER}/c1out/${CRAM%.cram}/${CRAM%.cram}.%J.out \
--R 'select[mem>32000] rusage[mem=32000]' \
--M 46000000 \
+-R 'select[mem>64000] rusage[mem=64000]' \
+-M 72000000 \
 -G compute-cruchagac \
 -q general \
 -a 'docker(mjohnsonngi/wxspipeline:dev)' bash /scripts/pipelineCStage0.bash $CRAM
