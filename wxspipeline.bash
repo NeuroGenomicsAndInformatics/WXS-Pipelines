@@ -3,7 +3,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs
 JOB_GROUP="/${USER}/compute-cruchagac"
 bgadd -L 10 ${JOB_GROUP}
-for FULLSMID in $(cat $1); do
+if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
+for FULLSMID in ${FULLSMIDS[@]}; do
 JOBS_IN_ARRAY=$(ls /storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSMID}/*.rgfile | wc -w)
 bash ${SCRIPT_DIR}/makeSampleEnv.bash ${FULLSMID}
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
