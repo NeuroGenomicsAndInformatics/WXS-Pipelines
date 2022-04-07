@@ -16,7 +16,7 @@ BARCODE=$(echo $(echo $FILE | cut -d "," -f 6) | cut -d "-" -f 3)
 FULLSM=$(echo ${SM}\^${BARCODE}\^${PROJECT})
 RGBASE="${FULLSM}.${FLOWCELL}^${LANE}"
 STAGE_DIR="/storage1/fs1/cruchagac/Active/${USER}/c1in/${FULLSM}"
-if [ ! -e $STAGE_DIR ]; then mkdir ${STAGE_DIR}; echo $FULLSM >> $WORKFILE; fi
+if [ ! -d $STAGE_DIR ]; then mkdir ${STAGE_DIR}; echo $FULLSM >> $WORKFILE; fi
 RGFILE="$STAGE_DIR/${RGBASE}.rgfile"
 touch $RGFILE
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSM}" > $RGFILE
