@@ -1,9 +1,9 @@
 #!bin/bash
 SAMP_MAP="$1"
 PROJECT="$2"
-WORKFILE="~/workfile${PROJECT}.txt"
+WORKFILE="${HOME}/workfile${PROJECT}.txt"
 touch $WORKFILE
-METAFILE="~/${PROJECT}-FULLSM-SM-DNA-PR-RGBASE.csv"
+METAFILE="${HOME}/${PROJECT}-FULLSM-SM-DNA-PR-RGBASE.csv"
 if [[ ! -f $METAFILE ]]; then echo "FULLSM,SM,DNA,PR,RGBASE,ORIG_FILEBASE,FQSIZE" > $METAFILE; fi
 FILES_DIR=${SAMP_MAP%/*}
 cat $SAMP_MAP | sed 1d $rpt | while IFS='\n' read -r FILE; do
