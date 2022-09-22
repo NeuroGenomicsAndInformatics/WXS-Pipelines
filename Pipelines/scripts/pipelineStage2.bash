@@ -4,7 +4,7 @@ source /scripts/pipelineStage2HelperFunctions.bash
 stageDataForSample
 SAMPLEID=$(echo $FULLSMID | cut -d'^' -f1)
 MD_INPUTS=()
-sort ${INDIR}/stage1complete.txt | uniq -u > ${OUTDIR}/stage1complete.txt
+sort ${INDIR}/stage1complete.txt | uniq > ${OUTDIR}/stage1complete.txt
 for BAM in $(cat ${OUTDIR}/stage1complete.txt) ; do
   MD_INPUTS+=("I=${INDIR}/${BAM//CHECK_/}")
 done
