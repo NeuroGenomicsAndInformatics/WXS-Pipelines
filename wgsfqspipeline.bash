@@ -107,8 +107,7 @@ bsub -g ${JOB_GROUP_F} \
     -n 4 \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
-    -R '{ 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes] span[hosts=1] } } \
-    || { 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes] span[hosts=1] } }@2' \
+    -R 'rusage[4GB]' \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxspipeline:1.1)' \
