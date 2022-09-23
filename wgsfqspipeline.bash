@@ -48,7 +48,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-align \
   -cwd ${SCRIPT_DIR} \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1] cu[maxcus=1:usablecuslots=16] span[hosts=1] } || { select[mem>4GB] rusage[mem=4GB/job] cu[maxcus=1:usablecuslots=1] }@5' \
+  -R '{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1] affinity[core(16)] span[hosts=1] } || { select[mem>4GB] rusage[mem=4GB/job] affinity[core(1)] }@5' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
