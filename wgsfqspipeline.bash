@@ -48,7 +48,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-align \
   -cwd ${SCRIPT_DIR} \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ 16*{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1/job] span[hosts=1] } } || { 1*{ select[mem>4GB] rusage[mem=4GB/job] } }@5' \
+  -R '{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1] cu[maxcus=1:usablecuslots=16] span[hosts=1] } || { select[mem>4GB] rusage[mem=4GB/job] cu[maxcus=1:usablecuslots=1] }@5' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
@@ -88,7 +88,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -n 16 \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
-  -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB/job, ngpus_physical=1/job] span[hosts=1] }' \
+  -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1] span[hosts=1] }' \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
