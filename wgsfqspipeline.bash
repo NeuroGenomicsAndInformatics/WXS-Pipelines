@@ -104,7 +104,7 @@ bsub -g ${JOB_GROUP_F} \
     -n 4 \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
-    -R 'rusage[4GB]' \
+    -R 'rusage[mem=4GB]' \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxspipeline:1.1)' \
