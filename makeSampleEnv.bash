@@ -1,7 +1,7 @@
 #!/bin/bash
 ENVS_DIR="/scratch1/fs1/cruchagac/${USER}/c1in/envs"
 [ ! -d $ENVS_DIR ] && mkdir $ENVS_DIR
-BASE_ENVS_DIR="./BaseEnvs"
+BASE_ENVS_DIR="./baseEnvs"
 FULLSMID="$1"
 ENV_FILE="$ENVS_DIR/${FULLSMID}.env"
 echo -e "ENV_FILE=${ENV_FILE}" > $ENV_FILE
