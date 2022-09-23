@@ -48,8 +48,8 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-align \
   -cwd ${SCRIPT_DIR} \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes] span[hosts=1] } } \
-  || { 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes] span[hosts=1] } }@2 \
+  -R '{ 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job, ngpus_physical=1/job:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes] span[hosts=1] } } \
+  || { 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job, ngpus_physical=1/job:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes] span[hosts=1] } }@2 \
   || { 1*{ select[mem>4GB] rusage[mem=4GB/job] span[hosts=1] } }@5' \
   -G compute-fernandezv \
   -q general \
@@ -90,10 +90,10 @@ bsub -g ${JOB_GROUP_GPU} \
   -n 16 \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
-  -R 'select[gpuhost && mem>140GB] rusage[mem=140GB] span[hosts=1]' \
+  -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes] span[hosts=1] } \
+  || { select[gpuhost && mem>140GB] rusage[mem=140GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes] span[hosts=1] }@2' \
   -G compute-fernandezv \
   -q general \
-  -gpu "num=1:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes" \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
   bash /scripts/gpuhc.bash
 
@@ -107,7 +107,8 @@ bsub -g ${JOB_GROUP_F} \
     -n 4 \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
-    -R 'rusage[mem=20GB]' \
+    -R '{ 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes] span[hosts=1] } } \
+    || { 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes] span[hosts=1] } }@2' \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxspipeline:1.1)' \
