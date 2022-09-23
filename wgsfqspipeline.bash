@@ -38,6 +38,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Activ
 /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 /scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
+${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
@@ -47,11 +48,12 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-align \
   -cwd ${SCRIPT_DIR} \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R 'select[gpuhost && mem>140GB] rusage[mem=140GB] span[hosts=1]' \
+  -R '{ 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes] span[hosts=1] } } \
+  || { 16*{ select[gpuhost && mem>140GB] rusage[mem=140GB/job,ngpus_physical=1/job:gmodel=TeslaV100_SXM2_32GB:j_exclusive=yes] span[hosts=1] } }@2 \
+  || { 1*{ select[mem>4GB] rusage[mem=4GB/job] span[hosts=1] } }@5' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
-  -gpu "num=1:gmodel=NVIDIAA100_SXM4_40GB:j_exclusive=yes" \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
   bash /scripts/align.bash
 
