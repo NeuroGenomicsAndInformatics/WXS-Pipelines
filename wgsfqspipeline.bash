@@ -43,7 +43,6 @@ $HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/sh \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-aligngpu \
   -n "1,16" \
@@ -53,7 +52,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -q general \
   -sp $PRIORITY_ALIGN \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-  bash /scripts/align.bash
+  bash /scripts/align.bash $FULLSMID
 
   LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
   /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
