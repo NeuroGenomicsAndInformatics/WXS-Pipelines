@@ -23,8 +23,8 @@ JOB_GROUP_GPU="/${USER}-gpu/compute-fernandezv"
 JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 [[ -z "$(bjgroup | grep $JOB_GROUP_C)" ]] && bgadd -L 10 ${JOB_GROUP_C}
 [[ -z "$(bjgroup | grep $JOB_GROUP_F)" ]] && bgadd -L 300 ${JOB_GROUP_F}
-[[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 10 ${JOB_GROUP_GPU}
-[[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 10 ${JOB_GROUP_ALIGN}
+[[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 15 ${JOB_GROUP_GPU}
+[[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 15 ${JOB_GROUP_ALIGN}
 
 if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
@@ -45,15 +45,37 @@ LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/sh \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_GPU} \
-  -J ${JOBNAME}-align \
-  -cwd ${SCRIPT_DIR} \
+  -J ${JOBNAME}-aligngpu \
+  -n "1,16" \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1] affinity[thread(16,same=numa,exclusive=(numa))] span[hosts=1] } || { select[mem>4GB] rusage[mem=4GB/job] affinity[thread(1)] }@5' \
+  -R '{ 16*{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:gmem=39GB] span[hosts=1] } } || { 16*{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:gmem=31GB] span[hosts=1] } }@2 || { 1*{ select[mem>4GB] rusage[mem=4GB/job] } }@10' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
   bash /scripts/align.bash
+
+  LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+  /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+  /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+  /scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
+  ${REF_DIR}:/ref \
+  $HOME:$HOME" \
+  LSF_DOCKER_NETWORK=host \
+  LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
+  LSF_DOCKER_ENTRYPOINT=/bin/sh \
+  LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+  bsub -g ${JOB_GROUP_ALIGN} \
+    -J ${JOBNAME}-aligncpu \
+    -w "exit(\"${JOBNAME}-aligngpu\",66)" \
+    -n 1 \
+    -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
+    -R 'rusage[mem=10GB]' \
+    -G compute-fernandezv \
+    -q general \
+    -sp $PRIORITY_ALIGN \
+    -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
+    bash /scripts/stageinfqsalign3.bash
 
 ## 2. BQSR
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
@@ -63,7 +85,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-align\")" \
+  -w "done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")" \
   -n 8 \
   -sp $PRIORITY_BQSR \
   -o ${LOGDIR}/${FULLSMID}.bqsr.%J.out \
@@ -88,7 +110,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -n 16 \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
-  -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1] span[hosts=1] }' \
+  -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:gmem=39GB] span[hosts=1] } || { select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:gmem=31GB] span[hosts=1] }@2' \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
@@ -100,7 +122,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Activ
 $HOME:$HOME" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-stageout \
-    -w "exit(\"${JOBNAME}-bqsr\") || exit(\"${JOBNAME}-hc\")" \
+    -w "exit(\"${JOBNAME}-bqsr\") || ended(\"${JOBNAME}-hc\")" \
     -n 4 \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
@@ -117,7 +139,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-wgsmetrics \
-    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
+    -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
     -n 2 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=80GB,tmp=2GB]' \
