@@ -1,4 +1,5 @@
 #!/bin/bash
+export NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES
 pbrun haplotypecaller \
   --ref ${REF_FASTA} \
   --in-bam ${OUTDIR}/${CRAM} \
