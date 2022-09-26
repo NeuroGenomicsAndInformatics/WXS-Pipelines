@@ -1,5 +1,5 @@
 ##########################################
-FROM griffan/verifybamid2
+FROM griffan/verifybamid2:v2.0.1
 
 RUN apt-get update && \
  	apt-get upgrade -y && \

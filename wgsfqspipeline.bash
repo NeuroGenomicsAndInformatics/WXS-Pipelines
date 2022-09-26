@@ -42,17 +42,18 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
-LSF_DOCKER_ENTRYPOINT=/bin/sh \
+LSF_DOCKER_ENTRYPOINT=/bin/bash \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-aligngpu \
   -n "1,16" \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ 16*{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:gmem=39GB] span[hosts=1] } } || { 16*{ select[gpuhost && mem>170GB] rusage[mem=170GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:gmem=31GB] span[hosts=1] } }@2 || { 1*{ select[mem>4GB] rusage[mem=4GB/job] } }@10' \
+  -R '{ 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB] span[hosts=1] } } || { 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB] span[hosts=1] } }@2 || { 1*{ select[!gpuhost] } }@10' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-  bash /scripts/align.bash $FULLSMID
+  bash /scripts/align.bash
 
   LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
   /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
@@ -152,6 +153,21 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Activ
 ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
+    -J ${JOBNAME}-freemix \
+    -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
+    -n 4 \
+    -sp $PRIORITY_QC \
+    -R 'rusage[mem=80GB,tmp=2GB]' \
+    -G compute-fernandezv \
+    -q general \
+    -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
+    bash /scripts/vbid.bash ${FINAL_OUTDIR}/${CRAM}
+
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+${REF_DIR}:/ref" \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-vcfmetrics \
     -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
     -n 8 \
@@ -162,20 +178,20 @@ bsub -g ${JOB_GROUP_F} \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
     bash /scripts/getvcfmetrics.bash
 
-    LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-    /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
-    ${REF_DIR}:/ref" \
-    LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
-    LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-    bsub -g ${JOB_GROUP_F} \
-        -J ${JOBNAME}-snpeff \
-        -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
-        -n 16 \
-        -sp $PRIORITY_HC \
-        -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
-        -R 'rusage[mem=120GB]' \
-        -G compute-fernandezv \
-        -q general \
-        -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
-    	bash /scripts/keygene_annotate.bash
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+${REF_DIR}:/ref" \
+LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_F} \
+    -J ${JOBNAME}-snpeff \
+    -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -n 16 \
+    -sp $PRIORITY_HC \
+    -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
+    -R 'rusage[mem=120GB]' \
+    -G compute-fernandezv \
+    -q general \
+    -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
+  	bash /scripts/keygene_annotate.bash
 done
