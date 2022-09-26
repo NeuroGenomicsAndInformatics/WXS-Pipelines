@@ -6,7 +6,7 @@ bash /scripts/stageinfqs.bash ${FULLSMID}
 pbrun fq2bam \
     --ref ${REF_FASTA} \
     --in-fq-list ${INDIR}/infqfile.txt \
-    --out-bam ${OUTDIR}/${BAM} \
+    --out-bam ${INDIR}/${BAM} \
     --out-duplicate-metrics ${METDIR}/${FULLSMID}.dup.metrics.txt \
     --num-gpus 1 \
     --tmp-dir ${TMP_DIR} \
