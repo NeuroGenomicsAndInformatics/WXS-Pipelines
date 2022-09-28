@@ -47,6 +47,7 @@ LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-aligngpu \
   -n "1,16" \
+  -Ne \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
   -R '{ 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB] span[hosts=1] } } || { 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB] span[hosts=1] } }@2 || { 1*{ select[!gpuhost] } }@10' \
   -G compute-fernandezv \
@@ -69,6 +70,7 @@ bsub -g ${JOB_GROUP_GPU} \
     -J ${JOBNAME}-aligncpu \
     -w "exit(\"${JOBNAME}-aligngpu\",66)" \
     -n 1 \
+    -Ne \
     -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
     -R 'rusage[mem=10GB]' \
     -G compute-fernandezv \
@@ -87,6 +89,7 @@ bsub -g ${JOB_GROUP_F} \
   -J ${JOBNAME}-bqsr \
   -w "done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")" \
   -n 8 \
+  -Ne \
   -sp $PRIORITY_BQSR \
   -o ${LOGDIR}/${FULLSMID}.bqsr.%J.out \
   -R 'select[mem>120GB] rusage[mem=120GB] span[hosts=1]' \
@@ -109,6 +112,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
   -w "done(\"${JOBNAME}-bqsr\")" \
   -n 16 \
+  -Ne \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
   -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:gmem=39GB] span[hosts=1] } || { select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:gmem=31GB] span[hosts=1] }@2' \
