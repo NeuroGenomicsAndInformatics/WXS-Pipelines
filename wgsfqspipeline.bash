@@ -99,6 +99,7 @@ bsub -g ${JOB_GROUP_F} \
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 /scratch1/fs1/ris/application/parabricks:/opt/parabricks \
+${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \

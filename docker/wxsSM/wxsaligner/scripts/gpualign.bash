@@ -12,4 +12,4 @@ pbrun fq2bam \
     --tmp-dir ${TMP_DIR} \
     || exit 66
 samtools view -@ $LSB_MAX_NUM_PROCESSORS -C -T ${REF_FASTA} -o $OUTDIR/$CRAM $INDIR/$BAM
-samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM && rm $INDIR
+samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM && rm -R $INDIR
