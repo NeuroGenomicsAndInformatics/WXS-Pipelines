@@ -115,7 +115,8 @@ bsub -g ${JOB_GROUP_GPU} \
   -Ne \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
-  -R '{ select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:gmem=39GB] span[hosts=1] } || { select[gpuhost && mem>140GB] rusage[mem=140GB, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:gmem=31GB] span[hosts=1] }@2' \
+  -R 'select[gpuhost && mem>140GB] rusage[mem=140GB] span[hosts=1]' \
+  -gpu "num=1:j_exclusive=yes" \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
