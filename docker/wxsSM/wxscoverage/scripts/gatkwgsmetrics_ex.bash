@@ -3,7 +3,11 @@ ${GATK} \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
     -I ${FINAL_OUTDIR}/${CRAM} \
+<<<<<<< HEAD
     --INTERVALS ${REF_PADBED} \
+=======
+    -L ${REF_PADBED} \
+>>>>>>> f9580b4978b8c20529d8999563cc6bd70361a237
     -O /tmp/wgsmetrics_paddedexome.txt \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR} \
