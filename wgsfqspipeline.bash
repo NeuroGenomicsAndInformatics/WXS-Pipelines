@@ -49,7 +49,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -n "1,16" \
   -Ne \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB] span[hosts=1] } } || { 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB] span[hosts=1] } }@2 || { 1*{ select[!gpuhost] } }@10' \
+  -R '{ 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=NVIDIAA100_SXM4_40GB:gmem=38GB] span[hosts=1] } } || { 16*{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmodel=TeslaV100_SXM2_32GB:gmem=30GB] span[hosts=1] } }@2 || { 1*{ select[!gpuhost] rusage[mem=180GB/job] } }@10' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
