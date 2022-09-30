@@ -126,17 +126,18 @@ bsub -g ${JOB_GROUP_GPU} \
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 $HOME:$HOME" \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-stageout \
     -w "exit(\"${JOBNAME}-bqsr\") || ended(\"${JOBNAME}-hc\")" \
-    -n 4 \
+    -n 1 \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
     -R 'rusage[mem=4GB]' \
     -G compute-fernandezv \
     -q general \
-    -a 'docker(mjohnsonngi/wxspipeline:1.1)' \
-    bash $SCRIPT_DIR/stageoutcram.bash $FULLSMID
+    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
+    bash /scripts/stageout.bash
 
 ## 5. QC
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
@@ -167,7 +168,7 @@ bsub -g ${JOB_GROUP_F} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
-    bash /scripts/vbid.bash ${FINAL_OUTDIR}/${CRAM}
+    bash /scripts/vbid.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
@@ -200,4 +201,21 @@ bsub -g ${JOB_GROUP_F} \
     -q general \
     -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
   	bash /scripts/keygene_annotate.bash
+
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+$HOME:$HOME" \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_F} \
+    -J ${JOBNAME}-stageout \
+    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
+    -n 1 \
+    -sp $PRIORITY_UTIL \
+    -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
+    -R 'rusage[mem=4GB]' \
+    -G compute-fernandezv \
+    -q general \
+    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
+    bash /scripts/statsupdate.bash
+
 done
