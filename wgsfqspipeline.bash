@@ -19,7 +19,7 @@ PRIORITY_QC=50
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP_C="/${USER}/compute-cruchagac"
 JOB_GROUP_F="/${USER}/compute-fernandezv"
-JOB_GROUP_GPU="/${USER}-gpu/compute-fernandezv"
+JOB_GROUP_GPU="/${USER}/compute-fernandezv/gpu"
 JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 [[ -z "$(bjgroup | grep $JOB_GROUP_C)" ]] && bgadd -L 10 ${JOB_GROUP_C}
 [[ -z "$(bjgroup | grep $JOB_GROUP_F)" ]] && bgadd -L 300 ${JOB_GROUP_F}
@@ -55,28 +55,28 @@ bsub -g ${JOB_GROUP_GPU} \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
   bash /scripts/align.bash
 
-  LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-  /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
-  /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
-  /scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
-  ${REF_DIR}:/ref \
-  $HOME:$HOME" \
-  LSF_DOCKER_NETWORK=host \
-  LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
-  LSF_DOCKER_ENTRYPOINT=/bin/sh \
-  LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-  bsub -g ${JOB_GROUP_ALIGN} \
-    -J ${JOBNAME}-aligncpu \
-    -w "exit(\"${JOBNAME}-aligngpu\",66)" \
-    -n 1 \
-    -Ne \
-    -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-    -R 'rusage[mem=10GB]' \
-    -G compute-fernandezv \
-    -q general \
-    -sp $PRIORITY_ALIGN \
-    -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-    bash /scripts/stageinfqsalign3.bash
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+/scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_NETWORK=host \
+LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
+LSF_DOCKER_ENTRYPOINT=/bin/sh \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_ALIGN} \
+  -J ${JOBNAME}-aligncpu \
+  -w "exit(\"${JOBNAME}-aligngpu\",66)" \
+  -n 1 \
+  -Ne \
+  -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
+  -R 'rusage[mem=10GB]' \
+  -G compute-fernandezv \
+  -q general \
+  -sp $PRIORITY_ALIGN \
+  -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
+  bash /scripts/stageinfqsalign3.bash
 
 ## 2. BQSR
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
