@@ -40,8 +40,9 @@ bsub -g /matthew.j/compute-fernandezv \
   -K \
   -sp 70 \
   -o ${LOGDIR}/md.%J.out \
-  -R 'select[mem>240GB && tmp>100GB] rusage[mem=240GB,tmp=100GB] span[hosts=1]' \
+  -R 'select[mem>240GB] rusage[mem=240GB] span[hosts=1]' \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
-  bash /scripts/md_helper.bash \
+  bash /scripts/md_helper.bash
+rm -R $TMPDIR

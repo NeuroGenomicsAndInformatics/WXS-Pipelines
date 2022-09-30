@@ -12,7 +12,15 @@ bwa-mem2 mem -M -t $LSB_MAX_NUM_PROCESSORS -K 10000000 \
   ${REF_FASTA} \
   ${FQ1} \
   ${FQ1/_1.fastq/_2.fastq} \
-  | samtools sort -@ 4 -m 30G -o ${INDIR}/${FQ1##*/}.bam \
+  | ${GATK} \
+  --java-options "-Xmx140g -XX:ParallelGCThreads=2" \
+  SortSam  \
+  -I /dev/stdin \
+  -O ${INDIR}/${FQ1##*/}.bam \
+  -R ${REF_FASTA} \
+  -SO coordinate \
+  --MAX_RECORDS_IN_RAM 2000000 \
+  --CREATE_INDEX true \
   && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}
 else
 bwa-mem2 mem -M -t $LSB_MAX_NUM_PROCESSORS -K 10000000 \
@@ -21,7 +29,15 @@ bwa-mem2 mem -M -t $LSB_MAX_NUM_PROCESSORS -K 10000000 \
   ${FQ1} \
   ${FQ1/_1.fastq/_2.fastq} \
   | samtools view -b -1 -o ${INDIR}/${FQ1##*/}.aln.bam \
-  && samtools sort -@ 4 -m 30G -o ${INDIR}/${FQ1##*/}.bam ${INDIR}/${FQ1##*/}.aln.bam \
+  && ${GATK} \
+  --java-options "-Xmx140g -XX:ParallelGCThreads=2" \
+  SortSam  \
+  -I ${INDIR}/${FQ1##*/}.aln.bam \
+  -O ${INDIR}/${FQ1##*/}.bam \
+  -R ${REF_FASTA} \
+  -SO coordinate \
+  --MAX_RECORDS_IN_RAM 2000000 \
+  --CREATE_INDEX true \
 && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}
 rm ${INDIR}/${FQ1##*/}.aln.bam
 fi

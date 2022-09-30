@@ -12,5 +12,6 @@ ${GATK} \
     -R ${REF_FASTA} \
     --SORTING_COLLECTION_SIZE_RATIO 0.25 \
     --TMP_DIR ${TMP_DIR} \
-    --MAX_RECORDS_IN_RAM 2000000 \
-    --CREATE_INDEX true
+    --MAX_RECORDS_IN_RAM 2500000 \
+    --CREATE_INDEX true \
+&& rm -R ${INDIR}
