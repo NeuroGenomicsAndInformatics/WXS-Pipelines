@@ -1,5 +1,7 @@
 #!/bin/bash
-export NVIDIA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES
+for VAR in $(printenv | grep CUDA_VISIBLE_DEVICES); do
+export ${VAR/CUDA/NVIDIA}
+done
 pbrun haplotypecaller \
   --ref ${REF_FASTA} \
   --in-bam ${OUTDIR}/${CRAM} \
