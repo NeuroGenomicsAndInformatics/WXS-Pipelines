@@ -148,11 +148,11 @@ bsub -g ${JOB_GROUP_F} \
     -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
     -n 2 \
     -sp $PRIORITY_QC \
-    -R 'rusage[mem=80GB,tmp=2GB]' \
+    -R 'rusage[mem=25GB,tmp=2GB]' \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
-    bash /scripts/get_both_wgsmetrics.bash
+    bash /scripts/get_all_wgsmetrics.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
