@@ -23,7 +23,7 @@ TOTAL_INDELS=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant
 PCT_DBSNP=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f5)
 NOVEL_TITV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f6)
 DBSNP_TITV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f7)
-TOTAL_TITV=$(( PCT_DBSNP*DBSNP_TITV + (1-PCT_DBSNP)*NOVEL_TITV ))
+TOTAL_TITV=$(( (PCT_DBSNP * DBSNP_TITV) + ((1-PCT_DBSNP) * NOVEL_TITV) ))
 
 ## Get Annotation stats
 FIELDS_FILE="${FINAL_OUTDIR}/${FULLSMID}*.vcf-snpeff-5.1-FIELDS.txt"
@@ -33,7 +33,7 @@ NUM_ANNS=()
 NUM_ANNS_HM=()
 for TS in ${CAN_TS[@]}; do
   NUM_ANNS+=($(grep -c ${TS} ${FIELDS_FILE}))
-  NUM_ANNS_HM=($(grep ${TS} ${FIELDS_FILE} | grep -c -E 'HIGH|MODERATE'))
+  NUM_ANNS_HM+=($(grep ${TS} ${FIELDS_FILE} | grep -c -E 'HIGH|MODERATE'))
 done
 
 ## Set Header Line
