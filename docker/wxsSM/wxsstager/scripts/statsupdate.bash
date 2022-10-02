@@ -18,11 +18,11 @@ PADEX_COV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.cram.wgsmetrics_paddedexome.tx
 FREEMIX=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.cram.vbid2.selfSM | cut -f7)
 
 ## Get TITV Ratio
-TOTAL_SNPS=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | cut -f1)
-TOTAL_INDELS=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | cut -f8)
-PCT_DBSNP=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | cut -f5)
-NOVEL_TITV=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | cut -f6)
-DBSNP_TITV=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | cut -f7)
+TOTAL_SNPS=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f1)
+TOTAL_INDELS=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f8)
+PCT_DBSNP=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f5)
+NOVEL_TITV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f6)
+DBSNP_TITV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f7)
 TOTAL_TITV=$(( PCT_DBSNP*DBSNP_TITV + (1-PCT_DBSNP)*NOVEL_TITV ))
 
 ## Get Annotation stats
@@ -35,7 +35,6 @@ for TS in ${CAN_TS[@]}; do
   NUM_ANNS+=($(grep -c ${TS} ${FIELDS_FILE}))
   NUM_ANNS_HM=($(grep ${TS} ${FIELDS_FILE} | grep -c -E 'HIGH|MODERATE'))
 done
-fi
 
 ## Set Header Line
 echo -n "FULLSMID,RGs in,Cram RGs,Raw Mean Coverage,Mean Coverage,Padded Exome Mean Coverage,FREEMIX,Total TITV,dbSNP TITV,Novel TITV,Num SNPs,Num Indels," > ${STATS_FILE}
