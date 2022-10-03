@@ -23,8 +23,8 @@ JOB_GROUP_GPU="/${USER}/compute-fernandezv/gpu"
 JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 [[ -z "$(bjgroup | grep $JOB_GROUP_C)" ]] && bgadd -L 10 ${JOB_GROUP_C}
 [[ -z "$(bjgroup | grep $JOB_GROUP_F)" ]] && bgadd -L 300 ${JOB_GROUP_F}
-[[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 15 ${JOB_GROUP_GPU}
-[[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 15 ${JOB_GROUP_ALIGN}
+[[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 10 ${JOB_GROUP_GPU}
+[[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 20 ${JOB_GROUP_ALIGN}
 
 if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
@@ -44,11 +44,11 @@ LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/bash \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
-bsub -g ${JOB_GROUP_GPU} \
+bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-aligngpu \
-  -Ne \
+  -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1] affinity[thread(16)] span[hosts=1] } || { select[!gpuhost] }@10' \
+  -R '{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmem=12GB] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
