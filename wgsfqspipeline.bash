@@ -182,7 +182,7 @@ bsub -g ${JOB_GROUP_F} \
     -G compute-cruchagac \
     -q general \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
-    bash /scripts/getvcfmetrics.bash
+    bash /scripts/gatkvcfmetrics.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
