@@ -2,9 +2,11 @@
 ## Needed for Parabricks
 export PATH="/opt/miniconda/bin:$PATH"
 
-## Set up variables
+## Set up variables and update touch references
 STORAGE_REF_DIR="/storage1/fs1/cruchagac/Active/matthew.j/REF/WXSref"
 REF_DIR="/scratch1/fs1/cruchagac/WXSref"
+find $REF_DIR -true -exec touch '{}' \;
+
 [ ! -d /scratch1/fs1/cruchagac/${USER} ] && mkdir /scratch1/fs1/cruchagac/${USER}
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1in ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1in
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out
