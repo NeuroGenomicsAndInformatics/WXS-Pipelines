@@ -1,5 +1,4 @@
 #!/bin/bash
-TMPDIR=/scratch1/fs1/cruchagac/$USER/c1out/${FULLSMID//^/}
 rsync -rL $STAGE_INDIR/ $INDIR
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
