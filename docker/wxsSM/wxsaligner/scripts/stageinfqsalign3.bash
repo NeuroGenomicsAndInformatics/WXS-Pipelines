@@ -1,10 +1,8 @@
 #!/bin/bash
 TMPDIR=/scratch1/fs1/cruchagac/$USER/c1out/${FULLSMID//^/}
-mkdir $TMPDIR
 rsync -rL $STAGE_INDIR/ $INDIR
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
-echo -n "" > ${OUTDIR}/FQ1s.txt
 for FQ in $(find $INDIR -name "*_1.fastq.gz"); do
 SM=$(echo $FULLSMID | cut -d^ -f1)
 BARCODE=$(echo $FULLSMID | cut -d^ -f2)
@@ -13,7 +11,6 @@ FLOWCELL=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)
 LANE=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2)
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWCELL}_${LANE}.rgfile
 echo "${FQ} ${FQ/_1.fastq/_2.fastq} @RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
-echo "${FQ}" >> ${OUTDIR}/FQ1s.txt
 done
 JOBS_IN_ARRAY=$(wc -l ${INDIR}/infqfile.txt | cut -d ' ' -f1)
 LSF_DOCKER_VOLUMES="/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
@@ -44,5 +41,5 @@ bsub -g /matthew.j/compute-fernandezv \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
-  bash /scripts/md_helper.bash
-rm -R $TMPDIR
+  bash /scripts/md_helper.bash \
+&& echo "$FULLSMID aligned, sorted, and marked."
