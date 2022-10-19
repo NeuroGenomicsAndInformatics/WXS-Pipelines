@@ -27,6 +27,21 @@ JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 [[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 10 ${JOB_GROUP_GPU}
 [[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 20 ${JOB_GROUP_ALIGN}
 
+## 0. Make sure references are there
+[ -f "$1" ] && \
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+$HOME:$HOME" \
+bsub -g ${JOB_GROUP_F} \
+    -J ngi-$USER-references \
+    -n 1 \
+    -sp $PRIORITY_UTIL \
+    -R 'rusage[mem=4GB]' \
+    -G compute-fernandezv \
+    -q general \
+    -a 'docker(mjohnsonngi/rsync:latest)' \
+    rsync -rL $STORAGE_REF_DIR/ $REF_DIR/
+
 if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
 bash ${SCRIPT_DIR}/makeSampleEnv.bash ${FULLSMID}
@@ -47,6 +62,7 @@ LSF_DOCKER_ENTRYPOINT=/bin/bash \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-aligngpu \
+  -w "done(\"ngi-$USER-references\")" \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
   -R '{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmem=12GB] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
