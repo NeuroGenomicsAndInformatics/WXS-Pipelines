@@ -12,6 +12,6 @@ ${GATK} \
     -R ${REF_FASTA} \
     --SORTING_COLLECTION_SIZE_RATIO 0.25 \
     --TMP_DIR ${TMP_DIR} \
-    --MAX_RECORDS_IN_RAM 2500000 \
-    --CREATE_INDEX true \
-&& rm -R ${INDIR}
+    --MAX_RECORDS_IN_RAM 2500000
+rm -R ${INDIR}
+samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
