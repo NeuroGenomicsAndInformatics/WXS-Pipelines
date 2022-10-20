@@ -2,7 +2,7 @@
 FROM rocker/r-ver:4.1.3
 
 ARG BWA_VER=0.7.17
-ARG SAM_VER=1.10
+ARG SAM_VER=1.15.1
 ARG BCF_VER=1.15.1
 ENV JAVA_LIBRARY_PATH /usr/lib/jni
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
