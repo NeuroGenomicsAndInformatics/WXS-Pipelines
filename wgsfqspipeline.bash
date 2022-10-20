@@ -199,7 +199,7 @@ bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-snpeff \
     -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
     -Ne \
-    -n 16 \
+    -n 4 \
     -sp $PRIORITY_HC \
     -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
     -R 'rusage[mem=120GB]' \
