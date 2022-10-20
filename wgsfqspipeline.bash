@@ -150,6 +150,7 @@ bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-wgsmetrics \
     -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
     -n 2 \
+    -Ne \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=25GB,tmp=2GB]' \
     -G compute-fernandezv \
@@ -164,6 +165,7 @@ LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-freemix \
     -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
+    -Ne \
     -n 4 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=80GB,tmp=2GB]' \
@@ -179,6 +181,7 @@ LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-vcfmetrics \
     -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -Ne \
     -n 8 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=40GB,tmp=2GB]' \
@@ -195,6 +198,7 @@ LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-snpeff \
     -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -Ne \
     -n 16 \
     -sp $PRIORITY_HC \
     -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
@@ -212,6 +216,7 @@ bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-stageout \
     -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
     -n 1 \
+    -N \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
     -R 'rusage[mem=4GB]' \
