@@ -20,6 +20,7 @@ bsub -q general \
   -G compute-fernandezv \
   -J ngi-$USER-$FULLSMID-fqsalign[1-${JOBS_IN_ARRAY}] \
   -n 8 \
+  -sp 55 \
   -o ${LOGDIR}/align_${FULLSMID}.%J.%I.out \
   -R 'select[mem>160GB] rusage[mem=160GB] span[hosts=1]' \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
