@@ -19,10 +19,10 @@ bsub -q general \
   -g /matthew.j/compute-fernandezv \
   -G compute-fernandezv \
   -J ngi-$USER-$FULLSMID-fqsalign[1-${JOBS_IN_ARRAY}] \
-  -n 8 \
+  -n 4 \
   -sp 55 \
   -o ${LOGDIR}/align_${FULLSMID}.%J.%I.out \
-  -R 'select[mem>160GB] rusage[mem=160GB] span[hosts=1]' \
+  -R 'select[mem>80GB] rusage[mem=80GB] span[hosts=1]' \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
   bash /scripts/bwa_helperfqs4.bash
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
