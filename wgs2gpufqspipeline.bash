@@ -51,7 +51,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-aligngpu \
   -n12 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R 'select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=2:gmem=24GB] span[hosts=1]' \
+  -R 'select[gpuhost && mem>120GB] rusage[mem=120GB/job, ngpus_physical=2:gmem=24GB] span[hosts=1]' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
