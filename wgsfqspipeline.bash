@@ -94,7 +94,7 @@ bsub -g ${JOB_GROUP_F} \
   -Ne \
   -sp $PRIORITY_BQSR \
   -o ${LOGDIR}/${FULLSMID}.bqsr.%J.out \
-  -R 'select[mem>120GB] rusage[mem=120GB] span[hosts=1]' \
+  -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxsrecalibrator:2.0)' \

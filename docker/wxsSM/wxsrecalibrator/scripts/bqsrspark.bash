@@ -1,4 +1,5 @@
 #!/bin/bash
+THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 ))
 ln -s ${OUTDIR}/$CRAM /tmp/working.cram
 ln -s ${OUTDIR}/$CRAM.crai /tmp/working.cram.crai
 ${GATK} \
@@ -11,5 +12,5 @@ ${GATK} \
     --known-sites ${REF_ONEKGP1} \
     -O "/tmp/recal.txt" \
     -- \
-    --spark-master local[$LSB_MAX_NUM_PROCESSORS]
+    --spark-master local[$THREADS]
 cp /tmp/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
