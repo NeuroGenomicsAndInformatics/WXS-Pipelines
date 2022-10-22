@@ -1,5 +1,5 @@
 #!/bin/bash
-THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 )
+THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 ))
 FQ1=$(head -n $LSB_JOBINDEX ${INDIR}/infqfile.txt | tail -n1 | cut -d ' ' -f1)
 echo $FQ1
 RGFILE="${OUTDIR}/${FULLSMID}.$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
