@@ -51,7 +51,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-aligngpu \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ select[gpuhost && mem>180GB] rusage[mem=180GB/job, ngpus_physical=1:gmem=12GB] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
+  -R '{ select[gpuhost && mem>180GB] rusage[ngpus_physical=1:gmem=12GB, mem=180GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
@@ -113,12 +113,12 @@ LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
   -w "done(\"${JOBNAME}-bqsr\")" \
-  -n 16 \
+  -n 8 \
   -Ne \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
   -R 'select[gpuhost && mem>140GB] rusage[mem=140GB] span[hosts=1]' \
-  -gpu "num=1:j_exclusive=yes" \
+  -gpu "num=1:gmem=12GB:j_exclusive=yes" \
   -G compute-fernandezv \
   -q general \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
