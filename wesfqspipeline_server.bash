@@ -1,40 +1,55 @@
 #!/bin/bash
-if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
+# Set up to run samples or workfile
+# First argument is either a directory named with the FULLSMID that holds FQs, or
+# a workfile of directories with the last directory being named with the FULLSMID
+if [[ -f $1 ]]; then INDIRS=($(cat $1)); else INDIRS=($1); fi
 export THREADS=16
-for FULLSMID in ${FULLSMIDS[@]}; do
+# Second argument is the directory where all samples will end up in
+RUN_OUTDIR=$2
 
-ENV_FILE="$ENVS_DIR/${FULLSMID}.env"
+for INDIR in ${INDIRS[@]}; do
+
+##0. Set up environment for processing
+FULLSMID=${INDIR##*/}
+ENV_FILE=${INDIR}/${FULLSMID}.env
 echo -e "ENV_FILE=${ENV_FILE}" > $ENV_FILE
 echo -e "FULLSMID=${FULLSMID}" >> $ENV_FILE
-echo -e "INDIR=/scratch1/fs1/cruchagac/${USER}/c1in/${FULLSMID}" >> $ENV_FILE
-[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/$FULLSMID
-echo -e "OUTDIR=/scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}" >> $ENV_FILE
+echo -e "INDIR=${INDIR}" >> $ENV_FILE
+[ ! -d ${RUN_OUTDIR} ] && mkdir ${RUN_OUTDIR}
+echo -e "OUTDIR=${RUN_OUTDIR}/${FULLSMID}" >> $ENV_FILE
+[ ! -d ${RUN_OUTDIR}/${FULLSMID} ] && mkdir ${RUN_OUTDIR}/${FULLSMID}
 echo -e "LOG_FILE=${OUTDIR}/${FULLSMID}.log" >> $ENV_FILE
 echo -e "RUN_TYPE=exome" >> $ENV_FILE
 echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
 echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
-cat ${BASE_ENVS_DIR}/pipelinebase_fenix.env >> $ENV_FILE
-cat ${BASE_ENVS_DIR}/references_fenix.env >> $ENV_FILE
+echo -e "STATS_FILE=${OUTDIR}/${FULLSMID}.stats.csv" >> $ENV_FILE
+echo -e "TMP_DIR=${OUTDIR}/tmp" >> $ENV_FILE
+cat ./references_fenix.env >> $ENV_FILE
 
 for VAR in $(cat $ENV_FILE); do export $VAR; done
 
 ## 1. Align and Sort
+INFQ_FILE=${INDIR}/infqfile.txt
+echo -n "" > $INFQ_FILE
+
 for FQ in $(find $INDIR -name "*_1.f*q.gz"); do
 SM=$(echo $FULLSMID | cut -d^ -f1)
 BARCODE=$(echo $FULLSMID | cut -d^ -f2)
 PROJECT=$(echo $FULLSMID | cut -d^ -f3)
 FLOWCELL=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)
 LANE=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2)
+
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWCELL}_${LANE}.rgfile
+
 echo "${FQ} ${FQ/_1.fastq/_2.fastq} @RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
 done
 
-FQ1=$(head -n $LSB_JOBINDEX ${INDIR}/infqfile.txt | tail -n1 | cut -d ' ' -f1)
+for FQ1 in $(cat ${INDIR}/infqfile.txt); do
 echo $FQ1
-RGFILE="${OUTDIR}/${FULLSMID}.$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
+RG="${OUTDIR}/${FULLSMID}.$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
-  -R $(head -n1 ${RGFILE}) \
+  -R $(head -n1 ${RG}) \
   ${REF_FASTA} \
   ${FQ1} \
   ${FQ1/_1.fastq/_2.fastq} \
@@ -55,39 +70,64 @@ for BM in $(find $INDIR -name "*.fastq*.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 ${GATK} \
-  --java-options "-Xmx220g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+  --java-options "-Xmx80g -XX:ParallelGCThreads=1" \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
     -O ${OUTDIR}/${CRAM} \
+    --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -M ${METDIR}/${FULLSMID}.dup.metrics.txt \
     -R ${REF_FASTA} \
-    --SORTING_COLLECTION_SIZE_RATIO 0.25 \
     --TMP_DIR ${TMP_DIR} \
-    --MAX_RECORDS_IN_RAM 2500000
 rm -R ${INDIR}
 samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
 
 ## 2. BQSR - Recalibrate Bases
-THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 ))
-ln -s ${OUTDIR}/$CRAM /tmp/working.cram
-ln -s ${OUTDIR}/$CRAM.crai /tmp/working.cram.crai
+# 2.1 Generate Recal Table
+ln -s ${OUTDIR}/${CRAM} ${TMP_DIR}/working.cram
+ln -s ${OUTDIR}/${CRAM}.crai ${TMP_DIR}/working.cram.crai
 ${GATK} \
-  --java-options "-Xmx100g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+  --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
   BaseRecalibratorSpark \
-    -I /tmp/working.cram \
+    -I ${TMP_DIR}/working.cram \
     -R ${REF_FASTA} \
+    -L ${REF_PADBED%.bed}.interval_list \
     --known-sites ${REF_MILLS_GOLD} \
     --known-sites ${REF_DBSNP} \
     --known-sites ${REF_ONEKGP1} \
-    -O "/tmp/recal.txt" \
+    -O "${TMP_DIR}/recal.txt" \
     -- \
     --spark-master local[$THREADS]
-cp /tmp/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
+cp ${TMP_DIR}/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
+
+# 2.2 Apply Recal Table
+ln -s ${OUTDIR}/${CRAM} ${TMP_DIR}/working.cram
+ln -s ${OUTDIR}/${CRAM}.crai ${TMP_DIR}/working.cram.crai
+${GATK} \
+  --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
+  BaseRecalibratorSpark \
+    -I ${TMP_DIR}/working.cram \
+    -bqsr ${TMP_DIR}/recal.txt \
+    -R ${REF_FASTA} \
+    -L ${REF_PADBED%.bed}.interval_list \
+    -O ${TMP_DIR}/recal.bam \
+    -- \
+    --spark-master local[$THREADS]
+mv ${TMP_DIR}/recal.bam ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 3. Call Variants
+${GATK} \
+  --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
+  HaplotypeCaller \
+    -I ${OUTDIR}/${FULLSMID}.recal.bam \
+    -R ${REF_FASTA} \
+    --dbsnp ${REF_DBSNP} \
+    -L ${REF_PADBED%.bed}.interval_list \
+    -ERC GVCF \
+    -O ${OUTDIR}/${GVCF} \
+    -G StandardAnnotation \
+    -G AS_StandardAnnotation
 
-  bash /scripts/gpuhc.bash
-
+rm ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 5. QC
 #5.1 Coverage
@@ -112,11 +152,11 @@ ${GATK} \
     --TMP_DIR ${TMP_DIR}
 
 #5.2 FREEMIX
-VerifyBamID \
+VerifyBamID2 \
   --BamFile ${OUTDIR}/${CRAM} \
   --SVDPrefix /VerifyBamID/resource/1000g.phase3.100k.b38.vcf.gz.dat \
   --Reference ${REF_FASTA} \
-  --NumThread $LSB_MAX_NUM_PROCESSORS \
+  --NumThread ${THREADS} \
   --Output ${OUTDIR}/${CRAM}.vbid2 \
   --max-depth 1000 \
 
@@ -126,6 +166,7 @@ ${GATK} \
   CollectVariantCallingMetrics \
     -I ${OUTDIR}/${GVCF} \
     -O ${OUTDIR}/${GVCF##*/}.vcfmetrics \
+    --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --DBSNP ${REF_DBSNP} \
     --THREAD_COUNT 6 \
@@ -133,11 +174,6 @@ ${GATK} \
     --TMP_DIR ${TMP_DIR}
 
 #5.4 SNPeff Annotations
-# Set locations for SNPEFF and SNPSIFT
-SNPEFF="/scripts/snpEff_v5.1/snpEff.jar"
-SNPSIFT="/scripts/snpEff_v5.1/SnpSift.jar"
-KEYGENES="/scripts/keygenes.bed"
-
 # Creates Fields file local to gVCF
 FIELDS_FILE=${OUTDIR}/${GVCF}.snpeff-5.1-FIELDS.txt
 
@@ -150,8 +186,6 @@ bcftools view -R ${KEYGENES} ${OUTDIR}/${GVCF} \
   "ANN[*].GENEID" "ANN[*].FEATURE" "ANN[*].FEATUREID" "ANN[*].HGVS_C" "ANN[*].HGVS_P" "ANN[*].CDNA_POS" \
   > ${FIELDS_FILE}
 
-  [ -z $FULLSMID ] && FULLSMID=$1
-  [ -z $OUTDIR ] && OUTDIR=/storage1/fs1/cruchagac/Active/$USER/c1out/$FULLSMID
   [ -z $STATS_FILE ] && STATS_FILE=${OUTDIR}/${FULLSMID}.stats.csv
 
   ## RG comparison
