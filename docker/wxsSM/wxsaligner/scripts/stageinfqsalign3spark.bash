@@ -24,7 +24,7 @@ bsub -q general \
   -o ${LOGDIR}/align_${FULLSMID}.%J.%I.out \
   -R 'select[mem>80GB] rusage[mem=80GB] span[hosts=1]' \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
-  bash /scripts/bwa_helperfqs4.bash
-bash bwa_helperfqs4base.bash
-bwait -w "done(\"ngi-$USER-$FULLSMID-fqsalign\")"
-bash /scripts/md_helper.bash
+  bash /scripts/bwa_helperfqs4spark.bash
+bash bwa_helperfqs4sparkbase.bash
+bwait -w "done(\"ngi-$USER-$FULLSMID-fqsalign\")" \
+&& bash md_helperspark.bash
