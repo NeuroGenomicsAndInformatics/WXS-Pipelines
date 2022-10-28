@@ -64,9 +64,15 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   --CREATE_INDEX true \
   && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}
 
-##1.2 Mark Duplicates
+# 1.2 Extract exome by intersecting the aligned bam
+bedtools intersect -u -a -O ${INDIR}/${FQ1##*/}.bam -b $REF_PADBED > ${INDIR}/${FQ1##*/}.isec.bam \
+&& rm ${INDIR}/${FQ1##*/}.bam
+
+done
+
+# 1.3 Mark Duplicates
 MD_INPUTS=()
-for BM in $(find $INDIR -name "*.fastq*.bam"); do
+for BM in $(find $INDIR -name "*.fastq*.isec.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 ${GATK} \
