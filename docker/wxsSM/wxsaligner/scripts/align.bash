@@ -1,4 +1,7 @@
 #!/bin/bash
-if [[ -z $CUDA_VISIBLE_DEVICES ]]; then exit 66
-else bash /scripts/gpualign.bash
+bash /scripts/stageinfqs.bash
+if [[ -z $CUDA_VISIBLE_DEVICES ]]; then
+  bash /scripts/cpualign.bash
+else
+  bash /scripts/gpualign.bash
 fi

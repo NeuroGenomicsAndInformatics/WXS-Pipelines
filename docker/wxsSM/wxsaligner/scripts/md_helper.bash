@@ -4,7 +4,7 @@ for BM in $(find $INDIR -name "*.fastq*.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 ${GATK} \
-  --java-options "-Xmx220g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+  --java-options "-Xmx170g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
     -O ${OUTDIR}/${CRAM} \
