@@ -1,7 +1,11 @@
 #!/bin/bash
+for VAR in $(printenv | grep CUDA_VISIBLE_DEVICES); do
+export ${VAR/CUDA/NVIDIA}
+done
 rsync -rL $STAGE_INDIR/ $INDIR
+samtools index -@ $LSB_MAX_NUM_PROCESSORS $(find $INDIR -name "*.cram")
 pbrun bam2fq \
-  --ref /ref/$1 \
+  --ref /ref/$UNWRAP_FASTA \
   --in-bam $(find $INDIR -name "*.cram") \
   --out-prefix ${INDIR} \
   --rg-tag PU \
