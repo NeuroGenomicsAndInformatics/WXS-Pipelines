@@ -1,6 +1,7 @@
 #!/bin/bash
 ## Needed for Parabricks
 export PATH="/opt/miniconda/bin:$PATH"
+UNWRAP_FASTA="$2"
 
 ## Set up variables and update touch references
 STORAGE_REF_DIR="/storage1/fs1/cruchagac/Active/matthew.j/REF/WXSref"
@@ -56,7 +57,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -q general \
   -sp $PRIORITY_ALIGN \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-  bash /scripts/align_cram.bash
+  bash /scripts/align_cram.bash $UNWRAP_FASTA
 
 ## 2. BQSR
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
