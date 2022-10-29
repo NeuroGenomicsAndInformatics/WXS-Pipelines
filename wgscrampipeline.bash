@@ -30,7 +30,7 @@ JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 [[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 10 ${JOB_GROUP_GPU}
 [[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 20 ${JOB_GROUP_ALIGN}
 
-if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
+if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($1); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
 bash ${SCRIPT_DIR}/makeSampleEnv.bash ${FULLSMID}
 JOBNAME="ngi-${USER}-${FULLSMID}"
