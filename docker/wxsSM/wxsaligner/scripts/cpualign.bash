@@ -13,6 +13,6 @@ bsub -q general \
   -R 'select[mem>80GB] rusage[mem=80GB] span[hosts=1]' \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
   bash /scripts/bwa_helperfqs4.bash
-bash bwa_helperfqs4base.bash
+bash /scripts/bwa_helperfqs4base.bash
 bwait -w "done(\"ngi-$USER-$FULLSMID-fqsalign\")"
 bash /scripts/md_helper.bash
