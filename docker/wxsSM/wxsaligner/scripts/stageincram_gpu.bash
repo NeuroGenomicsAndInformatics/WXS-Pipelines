@@ -9,7 +9,6 @@ pbrun bam2fq \
   --in-bam $(find $INDIR -name "*.cram") \
   --out-prefix ${INDIR} \
   --rg-tag PU \
-  --num-gpus 1 \
   --tmp-dir ${TMP_DIR}
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE

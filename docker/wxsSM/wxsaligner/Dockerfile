@@ -8,7 +8,6 @@ RUN apt-get update && \
   build-essential \
   zlib1g-dev \
   rsync \
-  python2 \
   python3 \
   && apt-get -y clean && \
 	apt-get -y autoclean && \
@@ -18,6 +17,8 @@ RUN git clone --recursive https://github.com/bwa-mem2/bwa-mem2.git \
   && cd bwa-mem2 \
   && make \
   && cp bwa-mem2* /usr/local/bin
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 COPY ./scripts/* /scripts/
 
