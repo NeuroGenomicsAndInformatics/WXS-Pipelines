@@ -50,6 +50,7 @@ LSF_DOCKER_ENTRYPOINT=/bin/bash \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align \
+  -Ne \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
   -R '{ select[gpuhost && mem>180GB] rusage[ngpus_physical=1:gmem=12GB, mem=180GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] span[hosts=1] }@10' \
