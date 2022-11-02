@@ -48,7 +48,7 @@ LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/bash \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
-  -J ${JOBNAME}-aligngpu \
+  -J ${JOBNAME}-align \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
   -R '{ select[gpuhost && mem>180GB] rusage[ngpus_physical=1:gmem=12GB, mem=180GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
@@ -58,29 +58,6 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
   bash /scripts/align.bash
 
-LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
-/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
-/scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_NETWORK=host \
-LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
-LSF_DOCKER_ENTRYPOINT=/bin/sh \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP_ALIGN} \
-  -J ${JOBNAME}-aligncpu \
-  -w "exit(\"${JOBNAME}-aligngpu\",66)" \
-  -n 1 \
-  -Ne \
-  -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R 'rusage[mem=10GB]' \
-  -G compute-fernandezv \
-  -q general \
-  -sp $PRIORITY_ALIGN \
-  -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-  bash /scripts/stageinfqsalign3.bash
-
 ## 2. BQSR
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
@@ -89,7 +66,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")" \
+  -w "done(\"${JOBNAME}-align\")" \
   -n 8 \
   -Ne \
   -sp $PRIORITY_BQSR \
@@ -148,7 +125,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-wgsmetrics \
-    -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
     -n 2 \
     -Ne \
     -sp $PRIORITY_QC \
@@ -164,7 +141,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
     -J ${JOBNAME}-freemix \
-    -w "(done(\"${JOBNAME}-aligngpu\") || done(\"${JOBNAME}-aligncpu\")) && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
     -Ne \
     -n 4 \
     -sp $PRIORITY_QC \
