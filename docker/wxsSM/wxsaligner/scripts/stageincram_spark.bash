@@ -2,7 +2,7 @@
 rsync -rL $STAGE_INDIR/ $INDIR
 ln -s $(find $INDIR -name "*.cram") /tmp/working.cram
 samtools index -@ $LSB_MAX_NUM_PROCESSORS /tmp/working.cram
-${GATK} --java-options "-Xmx:170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSamSpark \
     -I /tmp/working.cram \
     -O /tmp/reverted.bam \

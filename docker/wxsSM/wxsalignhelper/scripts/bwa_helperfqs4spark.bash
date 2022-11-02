@@ -8,5 +8,13 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${REF_FASTA} \
   ${FQ1} \
   ${FQ1/_1.fastq/_2.fastq} \
-  | samtools view -b -1 -o ${INDIR}/${FQ1##*/}.aln.bam \
+  | ${GATK} \
+  --java-options "-Xmx70g -XX:ParallelGCThreads=2" \
+  SortSam  \
+  -I /dev/stdin \
+  -O ${INDIR}/${FQ1##*/}.bam \
+  -R ${REF_FASTA} \
+  -SO queryname \
+  --MAX_RECORDS_IN_RAM 1000000 \
+  --CREATE_INDEX true \
   && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}

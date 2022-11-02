@@ -1,18 +1,19 @@
 #!/bin/bash
+THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 ))
 MD_INPUTS=()
 for BM in $(find $INDIR -name "*.f*q*.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 ${GATK} \
-  --java-options "-Xmx170g -XX:ParallelGCThreads=4 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+  --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   MarkDuplicatesSpark \
     ${MD_INPUTS[@]}\
     -O ${OUTDIR}/marked.bam \
-    --conf "spark.executor.cores=$LSB_MAX_NUM_PROCESSORS" \
+    --conf "spark.executor.cores=$(( THREADS - 2 ))" \
     --conf "spark.local.dir=$TMP_DIR" \
 && rm -R ${INDIR} \
 && ${GATK} \
-  --java-options "-Xmx170g -XX:ParallelGCThreads=4 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+  --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   SetNmMdAndUqTags \
     -I ${OUTDIR}/marked.bam \
     -O ${OUTDIR}/${CRAM} \

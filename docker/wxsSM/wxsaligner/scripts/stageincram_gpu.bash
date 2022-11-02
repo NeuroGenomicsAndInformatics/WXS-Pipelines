@@ -12,7 +12,7 @@ pbrun bam2fq \
   --tmp-dir ${TMP_DIR}
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
-for FQ in $(find $INDIR -name "*_1.fastq.gz"); do
+for FQ in $(find $INDIR -name "*_1.fastq*"); do
 SM=$(echo $FULLSMID | cut -d^ -f1)
 BARCODE=$(echo $FULLSMID | cut -d^ -f2)
 PROJECT=$(echo $FULLSMID | cut -d^ -f3)

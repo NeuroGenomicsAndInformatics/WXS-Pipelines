@@ -1,6 +1,10 @@
 ##########################################
 FROM nvcr.io/nvidia/clara/clara-parabricks:4.0.0-1
 
+ENV JAVA_LIBRARY_PATH /usr/lib/jni
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update && \
  	apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends \
@@ -9,6 +13,7 @@ RUN apt-get update && \
   zlib1g-dev \
   rsync \
   python3 \
+  openjdk-8-jre \
   && apt-get -y clean && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
