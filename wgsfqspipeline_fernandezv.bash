@@ -19,7 +19,6 @@ PRIORITY_QC=50
 
 ## Set up directories and job submission variables
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-JOB_GROUP_C="/${USER}/compute-cruchagac"
 JOB_GROUP_F="/${USER}/compute-fernandezv"
 JOB_GROUP_GPU="/${USER}/compute-fernandezv/gpu"
 JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
