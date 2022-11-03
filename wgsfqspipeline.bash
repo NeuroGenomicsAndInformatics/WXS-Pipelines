@@ -10,7 +10,7 @@ find $REF_DIR -true -exec touch '{}' \;
 [ ! -d /scratch1/fs1/cruchagac/${USER} ] && mkdir /scratch1/fs1/cruchagac/${USER}
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1in ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1in
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out
-[ ! -d /storage1/fs1/cruchagac/Active/${USER}/c1out ] && mkdir //storage1/fs1/cruchagac/Active/${USER}/c1out
+[ ! -d /storage1/fs1/cruchagac/Active/${USER}/c1out ] && mkdir /storage1/fs1/cruchagac/Active/${USER}/c1out
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs
 PRIORITY_ALIGN=60
 PRIORITY_BQSR=65

@@ -110,7 +110,7 @@ ln -s ${OUTDIR}/${CRAM} ${TMP_DIR}/working.cram
 ln -s ${OUTDIR}/${CRAM}.crai ${TMP_DIR}/working.cram.crai
 ${GATK} \
   --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
-  BaseRecalibratorSpark \
+  ApplyBQSRSpark \
     -I ${TMP_DIR}/working.cram \
     -bqsr ${TMP_DIR}/recal.txt \
     -R ${REF_FASTA} \
