@@ -1,9 +1,0 @@
-#!/bin/bash
-#BSUB -n 8
-#BSUB -N
-#BSUB -R 'select[mem>105000] rusage[mem=105000] span[hosts=1]'
-#BSUB -M 110000
-#BSUB -G compute-cruchagac
-#BSUB -q general
-#BSUB -a 'docker(mjohnsonngi/wxspipeline:dev)'
-/scripts/pipelineStage2.bash
