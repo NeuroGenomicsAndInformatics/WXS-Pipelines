@@ -25,7 +25,7 @@ echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
 echo -e "STATS_FILE=${OUTDIR}/${FULLSMID}.stats.csv" >> $ENV_FILE
 echo -e "TMP_DIR=${OUTDIR}/tmp" >> $ENV_FILE
-cat ./references_hydra.env >> $ENV_FILE
+cat ./BaseEnvs/references_hydra.env >> $ENV_FILE
 
 for VAR in $(cat $ENV_FILE); do export $VAR; done
 
