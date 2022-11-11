@@ -18,14 +18,16 @@ echo -e "INDIR=${INDIR}" >> $ENV_FILE
 [ ! -d ${RUN_OUTDIR} ] && mkdir ${RUN_OUTDIR}
 echo -e "OUTDIR=${RUN_OUTDIR}/${FULLSMID}" >> $ENV_FILE
 [ ! -d ${RUN_OUTDIR}/${FULLSMID} ] && mkdir ${RUN_OUTDIR}/${FULLSMID}
-echo -e "LOG_FILE=${OUTDIR}/${FULLSMID}.log" >> $ENV_FILE
+echo -e "LOG_FILE=${RUN_OUTDIR}/${FULLSMID}/${FULLSMID}.log" >> $ENV_FILE
 echo -e "RUN_TYPE=exome" >> $ENV_FILE
 echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
 echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
-echo -e "STATS_FILE=${OUTDIR}/${FULLSMID}.stats.csv" >> $ENV_FILE
-echo -e "TMP_DIR=${OUTDIR}/tmp" >> $ENV_FILE
+echo -e "STATS_FILE=${RUN_OUTDIR}/${FULLSMID}/${FULLSMID}.stats.csv" >> $ENV_FILE
+echo -e "TMP_DIR=${RUN_OUTDIR}/tmp" >> $ENV_FILE
 cat ./baseEnvs/references_hydra.env >> $ENV_FILE
+
+cp $ENV_FILE $OUTDIR
 
 for VAR in $(cat $ENV_FILE); do export $VAR; done
 
