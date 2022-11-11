@@ -27,9 +27,9 @@ echo -e "STATS_FILE=${RUN_OUTDIR}/${FULLSMID}/${FULLSMID}.stats.csv" >> $ENV_FIL
 echo -e "TMP_DIR=${RUN_OUTDIR}/tmp" >> $ENV_FILE
 cat ./baseEnvs/references_hydra.env >> $ENV_FILE
 
-cp $ENV_FILE $OUTDIR
-
 for VAR in $(cat $ENV_FILE); do export $VAR; done
+
+cp $ENV_FILE $OUTDIR
 
 ## 1. Align and Sort
 INFQ_FILE=${INDIR}/infqfile.txt
@@ -59,21 +59,21 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   SortSam  \
   -I /dev/stdin \
-  -O ${INDIR}/${FQ1##*/}.bam \
+  -O ${OUTDIR}/${FQ1##*/}.bam \
   -R ${REF_FASTA} \
   -SO coordinate \
   --MAX_RECORDS_IN_RAM 1000000 \
   --CREATE_INDEX true
 
 # 1.2 Extract exome by intersecting the aligned bam
-bedtools intersect -u -a -O ${INDIR}/${FQ1##*/}.bam -b $REF_PADBED > ${INDIR}/${FQ1##*/}.isec.bam \
-&& rm ${INDIR}/${FQ1##*/}.bam
+bedtools intersect -u -a -O ${OUTDIR}/${FQ1##*/}.bam -b $REF_PADBED > ${OUTDIR}/${FQ1##*/}.isec.bam \
+&& rm ${OUTDIR}/${FQ1##*/}.bam
 
 done
 
 # 1.3 Mark Duplicates
 MD_INPUTS=()
-for BM in $(find $INDIR -name "*.fastq*.isec.bam"); do
+for BM in $(find $OUTDIR -name "*.fastq*.isec.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 ${GATK} \
