@@ -2,8 +2,8 @@
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
-    -I $1 \
+    -I ${FINAL_OUTDIR}/${CRAM} \
     --INTERVALS ${REF_PADBED%.bed}.interval_list \
-    -O $1.wgsmetrics_paddedexome.txt \
+    -O ${FINAL_OUTDIR}/${CRAM}.wgsmetrics_paddedexome.txt \
     -R ${REF_FASTA} \
-    --TMP_DIR /tmp
+    --TMP_DIR ${TMP_DIR}

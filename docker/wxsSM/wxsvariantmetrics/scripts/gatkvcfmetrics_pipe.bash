@@ -1,15 +1,11 @@
 #!/bin/bash
-if [ -z $FULLSMID ]; then
 ${GATK} \
   --java-options "-Xmx30g -XX:ParallelGCThreads=1" \
   CollectVariantCallingMetrics \
-    -I $1 \
-    -O $1.vcfmetrics \
+    -I ${FINAL_OUTDIR}/${GVCF} \
+    -O ${FINAL_OUTDIR}/${GVCF##*/}.vcfmetrics \
     -R ${REF_FASTA} \
     --DBSNP ${REF_DBSNP} \
-    --THREAD_COUNT 3 \
+    --THREAD_COUNT 6 \
     --GVCF_INPUT true \
-    --TMP_DIR /tmp
-else
-  bash /scripts/gatkvcfmetrics_pipe.bash
-fi
+    --TMP_DIR ${TMP_DIR}

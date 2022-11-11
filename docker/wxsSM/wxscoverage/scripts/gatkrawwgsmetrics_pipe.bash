@@ -2,7 +2,7 @@
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectRawWgsMetrics \
-    -I $1 \
-    -O $1.rawwgsmetrics.txt \
+    -I ${FINAL_OUTDIR}/${CRAM} \
+    -O ${FINAL_OUTDIR}/${CRAM}.rawwgsmetrics.txt \
     -R ${REF_FASTA} \
-    --TMP_DIR /tmp
+    --TMP_DIR ${TMP_DIR}
