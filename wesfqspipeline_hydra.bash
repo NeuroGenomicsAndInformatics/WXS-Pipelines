@@ -63,8 +63,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R ${REF_FASTA} \
   -SO coordinate \
   --MAX_RECORDS_IN_RAM 1000000 \
-  --CREATE_INDEX true \
-  && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}
+  --CREATE_INDEX true
 
 # 1.2 Extract exome by intersecting the aligned bam
 bedtools intersect -u -a -O ${INDIR}/${FQ1##*/}.bam -b $REF_PADBED > ${INDIR}/${FQ1##*/}.isec.bam \
