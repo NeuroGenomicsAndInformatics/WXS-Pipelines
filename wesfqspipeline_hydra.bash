@@ -49,7 +49,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${FQ/_1.fastq/_2.fastq} \
   | ${GATK} \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
-  SortSam  \
+  SortSam \
   -I /dev/stdin \
   -O ${OUTDIR}/${FQ##*/}.bam \
   -R ${REF_FASTA} \
