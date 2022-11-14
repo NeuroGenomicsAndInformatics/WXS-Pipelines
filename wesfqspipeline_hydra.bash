@@ -63,11 +63,13 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R ${REF_FASTA} \
   -SO coordinate \
   --MAX_RECORDS_IN_RAM 1000000 \
-  --CREATE_INDEX true
+  --CREATE_INDEX true \
+  2> $LOG_FILE
 
 # 1.2 Extract exome by intersecting the aligned bam
 bedtools intersect -u -a -O ${OUTDIR}/${FQ1##*/}.bam -b $REF_PADBED > ${OUTDIR}/${FQ1##*/}.isec.bam \
-&& rm ${OUTDIR}/${FQ1##*/}.bam
+&& rm ${OUTDIR}/${FQ1##*/}.bam \
+2> $LOG_FILE
 
 done
 
@@ -85,7 +87,8 @@ ${GATK} \
     -M ${METDIR}/${FULLSMID}.dup.metrics.txt \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR} \
-rm -R ${INDIR}
+    2> $LOG_FILE
+#rm -R ${INDIR}
 samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
 
 ## 2. BQSR - Recalibrate Bases
@@ -103,7 +106,8 @@ ${GATK} \
     --known-sites ${REF_ONEKGP1} \
     -O "${TMP_DIR}/recal.txt" \
     -- \
-    --spark-master local[$THREADS]
+    --spark-master local[$THREADS] \
+    2> $LOG_FILE
 cp ${TMP_DIR}/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
 
 # 2.2 Apply Recal Table
@@ -118,7 +122,8 @@ ${GATK} \
     -L ${REF_PADBED%.bed}.interval_list \
     -O ${TMP_DIR}/recal.bam \
     -- \
-    --spark-master local[$THREADS]
+    --spark-master local[$THREADS] \
+    2> $LOG_FILE
 mv ${TMP_DIR}/recal.bam ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 3. Call Variants
@@ -132,7 +137,8 @@ ${GATK} \
     -ERC GVCF \
     -O ${OUTDIR}/${GVCF} \
     -G StandardAnnotation \
-    -G AS_StandardAnnotation
+    -G AS_StandardAnnotation \
+    2> $LOG_FILE
 
 rm ${OUTDIR}/${FULLSMID}.recal.bam
 
