@@ -32,9 +32,6 @@ for VAR in $(cat $ENV_FILE); do export $VAR; done
 cp $ENV_FILE $OUTDIR
 
 ## 1. Align and Sort
-INFQ_FILE=${INDIR}/infqfile.txt
-echo -n "" > $INFQ_FILE
-
 for FQ in $(find $INDIR -name "*_1.f*q.gz"); do
 SM=$(echo $FULLSMID | cut -d^ -f1)
 BARCODE=$(echo $FULLSMID | cut -d^ -f2)
@@ -44,22 +41,17 @@ LANE=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2)
 
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWCELL}_${LANE}.rgfile
 
-echo "${FQ} ${FQ/_1.fastq/_2.fastq} @RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
-done
-
-for FQ1 in $(cat ${INDIR}/infqfile.txt); do
-echo $FQ1
-RG="${OUTDIR}/${FULLSMID}.$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ1##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
+RG="${OUTDIR}/${FULLSMID}.$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R $(head -n1 ${RG}) \
   ${REF_FASTA} \
-  ${FQ1} \
-  ${FQ1/_1.fastq/_2.fastq} \
+  ${FQ} \
+  ${FQ/_1.fastq/_2.fastq} \
   | ${GATK} \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   SortSam  \
   -I /dev/stdin \
-  -O ${OUTDIR}/${FQ1##*/}.bam \
+  -O ${OUTDIR}/${FQ##*/}.bam \
   -R ${REF_FASTA} \
   -SO coordinate \
   --MAX_RECORDS_IN_RAM 1000000 \
@@ -67,8 +59,8 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   2> $LOG_FILE
 
 # 1.2 Extract exome by intersecting the aligned bam
-bedtools intersect -u -a -O ${OUTDIR}/${FQ1##*/}.bam -b $REF_PADBED > ${OUTDIR}/${FQ1##*/}.isec.bam \
-&& rm ${OUTDIR}/${FQ1##*/}.bam \
+bedtools intersect -u -a -O ${OUTDIR}/${FQ##*/}.bam -b $REF_PADBED > ${OUTDIR}/${FQ##*/}.isec.bam \
+&& rm ${OUTDIR}/${FQ##*/}.bam \
 2> $LOG_FILE
 
 done
