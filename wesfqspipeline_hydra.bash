@@ -41,25 +41,12 @@ LANE=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2)
 
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWCELL}_${LANE}.rgfile
 
-<<<<<<< HEAD
 RG="${OUTDIR}/${FULLSMID}.$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
-=======
-echo "${FQ} ${FQ/_1.fastq/_2.fastq} @RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
-done
-
-cat ${INDIR}/infqfile.txt | while read LINE; do
-FQ1=$(echo $LINE | cut -d ' ' -f1)
->>>>>>> fd62845ed33b0b87f2e4c5210cd6a019fc4aabf5
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R $(echo $LINE | cut -d ' ' -f3) \
   ${REF_FASTA} \
-<<<<<<< HEAD
   ${FQ} \
   ${FQ/_1.fastq/_2.fastq} \
-=======
-  $(echo $LINE | cut -d ' ' -f1) \
-  $(echo $LINE | cut -d ' ' -f2) \
->>>>>>> fd62845ed33b0b87f2e4c5210cd6a019fc4aabf5
   | ${GATK} \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   SortSam  \
