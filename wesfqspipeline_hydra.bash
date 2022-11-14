@@ -43,7 +43,7 @@ echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE
 
 RG="${OUTDIR}/${FULLSMID}.$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
-  -R $(echo $LINE | cut -d ' ' -f3) \
+  -R $(head -n1 $RG) \
   ${REF_FASTA} \
   ${FQ} \
   ${FQ/_1.fastq/_2.fastq} \
