@@ -9,8 +9,8 @@ LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../baseEnvs/references_2_0.env \
 bsub -g ${JOB_GROUP_QC} \
     -J ngi-${USER}-freemix \
     -Ne \
-    -n 4 \
-    -R 'rusage[mem=80GB,tmp=2GB]' \
+    -n 2 \
+    -R 'rusage[mem=20GB,tmp=2GB]' \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \

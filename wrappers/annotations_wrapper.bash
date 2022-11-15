@@ -10,8 +10,8 @@ LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../baseEnvs/references_2_0.env \
 bsub -g ${JOB_GROUP_QC} \
     -J ngi-${USER}-snpeff \
     -Ne \
-    -n 4 \
-    -R 'rusage[mem=120GB]' \
+    -n 2 \
+    -R 'rusage[mem=25GB]' \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \

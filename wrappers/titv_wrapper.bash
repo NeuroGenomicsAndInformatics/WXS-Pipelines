@@ -9,8 +9,8 @@ LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../baseEnvs/references_2_0.env \
 bsub -g ${JOB_GROUP_QC} \
     -J ngi-${USER}-vcfmetrics \
     -Ne \
-    -n 8 \
-    -R 'rusage[mem=40GB,tmp=2GB]' \
+    -n 4 \
+    -R 'rusage[mem=10GB,tmp=2GB]' \
     -G compute-cruchagac \
     -q general \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
