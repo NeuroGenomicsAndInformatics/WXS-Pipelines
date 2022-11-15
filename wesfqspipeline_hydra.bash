@@ -78,6 +78,7 @@ ${GATK} \
     -M ${OUTDIR}/${FULLSMID}.dup.metrics.txt \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR} \
+    --CREATE_INDEX true \
     2>> $LOG_FILE
 #rm -R ${INDIR}
 samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
@@ -109,6 +110,7 @@ ${GATK} \
     -O ${OUTDIR}/${FULLSMID}.recal.bam \
     -- \
     --spark-master local[$THREADS] \
+    --CREATE_INDEX true \
     2>> $LOG_FILE
 
 ## 3. Call Variants
