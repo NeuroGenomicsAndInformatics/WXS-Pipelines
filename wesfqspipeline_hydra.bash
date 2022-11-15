@@ -75,7 +75,6 @@ ${GATK} \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
     -O ${OUTDIR}/${CRAM} \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -M ${METDIR}/${FULLSMID}.dup.metrics.txt \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR} \
