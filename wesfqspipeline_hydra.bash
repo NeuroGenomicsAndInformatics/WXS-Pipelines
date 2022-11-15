@@ -102,17 +102,13 @@ ${GATK} \
 # 2.2 Apply Recal Table
 ${GATK} \
   --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
-  ApplyBQSRSpark \
+  ApplyBQSR \
     -I ${OUTDIR}/${BAM} \
     -bqsr ${OUTDIR}/${FULLSMID}.recal.txt \
     -R ${REF_FASTA} \
     -L ${REF_PADBED} \
     -O ${OUTDIR}/${FULLSMID}.recal.bam \
-    -- \
-    --spark-master local[$THREADS]
     2>> $LOG_FILE
-
-samtools index ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 3. Call Variants
 ${GATK} \
@@ -121,14 +117,14 @@ ${GATK} \
     -I ${OUTDIR}/${FULLSMID}.recal.bam \
     -R ${REF_FASTA} \
     --dbsnp ${REF_DBSNP} \
-    -L ${REF_PADBED%.bed}.interval_list \
+    -L ${REF_PADBED} \
     -ERC GVCF \
     -O ${OUTDIR}/${GVCF} \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     2>> $LOG_FILE
 
-rm ${OUTDIR}/${FULLSMID}.recal.bam
+#rm ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 5. QC
 #5.1 Coverage
