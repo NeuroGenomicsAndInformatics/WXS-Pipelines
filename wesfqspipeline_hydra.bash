@@ -74,8 +74,8 @@ ${GATK} \
   --java-options "-Xmx80g -XX:ParallelGCThreads=1" \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
-    -O ${OUTDIR}/${CRAM} \
-    -M ${METDIR}/${FULLSMID}.dup.metrics.txt \
+    -O ${OUTDIR}/${BAM} \
+    -M ${OUTDIR}/${FULLSMID}.dup.metrics.txt \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR} \
     2>> $LOG_FILE
@@ -84,38 +84,32 @@ samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
 
 ## 2. BQSR - Recalibrate Bases
 # 2.1 Generate Recal Table
-ln -s ${OUTDIR}/${CRAM} ${TMP_DIR}/working.cram
-ln -s ${OUTDIR}/${CRAM}.crai ${TMP_DIR}/working.cram.crai
 ${GATK} \
   --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
   BaseRecalibratorSpark \
-    -I ${TMP_DIR}/working.cram \
+    -I ${OUTDIR}/${BAM} \
     -R ${REF_FASTA} \
-    -L ${REF_PADBED%.bed}.interval_list \
+    -L ${REF_PADBED} \
     --known-sites ${REF_MILLS_GOLD} \
     --known-sites ${REF_DBSNP} \
     --known-sites ${REF_ONEKGP1} \
-    -O "${TMP_DIR}/recal.txt" \
+    -O ${OUTDIR}/${FULLSMID}.recal.txt \
     -- \
     --spark-master local[$THREADS] \
     2>> $LOG_FILE
-cp ${TMP_DIR}/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
 
 # 2.2 Apply Recal Table
-ln -s ${OUTDIR}/${CRAM} ${TMP_DIR}/working.cram
-ln -s ${OUTDIR}/${CRAM}.crai ${TMP_DIR}/working.cram.crai
 ${GATK} \
   --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
   ApplyBQSRSpark \
-    -I ${TMP_DIR}/working.cram \
-    -bqsr ${TMP_DIR}/recal.txt \
+    -I ${OUTDIR}/${BAM} \
+    -bqsr ${OUTDIR}/${FULLSMID}.recal.txt \
     -R ${REF_FASTA} \
-    -L ${REF_PADBED%.bed}.interval_list \
-    -O ${TMP_DIR}/recal.bam \
+    -L ${REF_PADBED} \
+    -O ${OUTDIR}/${FULLSMID}.recal.bam \
     -- \
     --spark-master local[$THREADS] \
     2>> $LOG_FILE
-mv ${TMP_DIR}/recal.bam ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 3. Call Variants
 ${GATK} \
