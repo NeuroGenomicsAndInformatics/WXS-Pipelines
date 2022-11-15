@@ -82,7 +82,6 @@ ${GATK} \
     --CREATE_INDEX true \
     2>> $LOG_FILE
 #rm -R ${INDIR}
-samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
 
 ## 2. BQSR - Recalibrate Bases
 # 2.1 Generate Recal Table
@@ -110,9 +109,10 @@ ${GATK} \
     -L ${REF_PADBED} \
     -O ${OUTDIR}/${FULLSMID}.recal.bam \
     -- \
-    --spark-master local[$THREADS] \
-    --CREATE_INDEX true \
+    --spark-master local[$THREADS]
     2>> $LOG_FILE
+
+samtools index ${OUTDIR}/${FULLSMID}.recal.bam
 
 ## 3. Call Variants
 ${GATK} \
