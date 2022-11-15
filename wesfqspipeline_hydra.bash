@@ -30,6 +30,7 @@ cat ./baseEnvs/references_hydra.env >> $ENV_FILE
 for VAR in $(cat $ENV_FILE); do export $VAR; done
 
 cp $ENV_FILE $OUTDIR
+echo -n "" > $LOG_FILE
 
 ## 1. Align and Sort
 for FQ in $(find $INDIR -name "*_1.f*q.gz"); do
