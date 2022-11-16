@@ -124,7 +124,7 @@ ${GATK} \
     -G AS_StandardAnnotation \
     2>> $LOG_FILE
 
-#rm ${OUTDIR}/${FULLSMID}.recal.bam
+rm ${OUTDIR}/${FULLSMID}.recal.ba*
 
 ## 5. QC
 #5.1 Coverage
