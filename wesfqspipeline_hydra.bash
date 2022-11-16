@@ -143,19 +143,19 @@ ${GATK} \
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
-    -I ${OUTDIR}/${CRAM} \
-    -O ${OUTDIR}/${CRAM}.wgsmetrics.txt \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
+    -I ${OUTDIR}/${BAM} \
+    -O ${OUTDIR}/${BAM}.wgsmetrics.txt \
+    -L ${REF_PADBED} \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR}
 
 #5.2 FREEMIX
 VerifyBamID2 \
-  --BamFile ${OUTDIR}/${CRAM} \
+  --BamFile ${OUTDIR}/${BAM} \
   --SVDPrefix /VerifyBamID/resource/1000g.phase3.100k.b38.vcf.gz.dat \
   --Reference ${REF_FASTA} \
   --NumThread ${THREADS} \
-  --Output ${OUTDIR}/${CRAM}.vbid2 \
+  --Output ${OUTDIR}/${BAM}.vbid2 \
   --max-depth 1000 \
 
 #5.3 Variant Calling Metrics
@@ -164,7 +164,7 @@ ${GATK} \
   CollectVariantCallingMetrics \
     -I ${OUTDIR}/${GVCF} \
     -O ${OUTDIR}/${GVCF##*/}.vcfmetrics \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
+    -L ${REF_PADBED} \
     -R ${REF_FASTA} \
     --DBSNP ${REF_DBSNP} \
     --THREAD_COUNT 6 \
