@@ -2,7 +2,8 @@
 THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 ))
 MD_INPUTS=()
 for BM in $(find $INDIR -name "*.f*q*.bam"); do
-MD_INPUTS+="-I ${BM} "
+ln -s $BM /tmp/${BM##*/}
+MD_INPUTS+="-I /tmp/${BM##*/} "
 done
 ${GATK} \
   --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
