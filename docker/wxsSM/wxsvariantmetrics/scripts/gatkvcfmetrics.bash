@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -z $FULLSMID ]; then
 ${GATK} \
-  --java-options "-Xmx30g -XX:ParallelGCThreads=1" \
+  --java-options "-Xmx10g -XX:ParallelGCThreads=1" \
   CollectVariantCallingMetrics \
     -I $1 \
     -O $1.vcfmetrics \

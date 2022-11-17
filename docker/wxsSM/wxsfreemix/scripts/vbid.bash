@@ -6,4 +6,4 @@ VerifyBamID \
   --Reference ${REF_FASTA} \
   --NumThread $LSB_MAX_NUM_PROCESSORS \
   --Output ${FINAL_OUTDIR}/${CRAM}.vbid2 \
-  --max-depth 1000 \
+  --max-depth 1000
