@@ -23,7 +23,6 @@ JOB_GROUP_F="/${USER}/compute-fernandezv"
 JOB_GROUP_GPU="/${USER}/compute-fernandezv/gpu"
 JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 JOB_GROUP_QC="/${USER}/compute-fernandezv/qc"
-[[ -z "$(bjgroup | grep $JOB_GROUP_C)" ]] && bgadd -L 10 ${JOB_GROUP_C}
 [[ -z "$(bjgroup | grep $JOB_GROUP_F)" ]] && bgadd -L 300 ${JOB_GROUP_F}
 [[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 10 ${JOB_GROUP_GPU}
 [[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 10 ${JOB_GROUP_ALIGN}
@@ -159,7 +158,7 @@ bsub -g ${JOB_GROUP_QC} \
     -n 4 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=10GB,tmp=2GB]' \
-    -G compute-cruchagac \
+    -G compute-fernandezv \
     -q general-interactive \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
     bash /scripts/gatkvcfmetrics.bash
@@ -178,7 +177,7 @@ bsub -g ${JOB_GROUP_QC} \
     -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
     -R 'rusage[mem=25GB]' \
     -G compute-fernandezv \
-    -q general \
+    -q general-interactive \
     -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
   	bash /scripts/keygene_annotate.bash
 
