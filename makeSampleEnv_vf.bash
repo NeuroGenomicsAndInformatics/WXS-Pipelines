@@ -8,11 +8,11 @@ echo -e "ENV_FILE=${ENV_FILE}" > $ENV_FILE
 echo -e "FULLSMID=${FULLSMID}" >> $ENV_FILE
 echo -e "STAGE_INDIR=/storage1/fs1/cruchagac/Active/$USER/c1in/${FULLSMID}" >> $ENV_FILE
 [ ! -d /scratch1/fs1/fernandezv/${USER}/c1in/$FULLSMID ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1in/$FULLSMID
-echo -e "INDIR=/scratch1/fs1/cruchagac/${USER}/c1in/${FULLSMID}" >> $ENV_FILE
+echo -e "INDIR=/scratch1/fs1/fernandezv/${USER}/c1in/${FULLSMID}" >> $ENV_FILE
 [ ! -d /scratch1/fs1/fernandezv/${USER}/c1out/$FULLSMID ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1out/$FULLSMID
-echo -e "OUTDIR=/scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}" >> $ENV_FILE
+echo -e "OUTDIR=/scratch1/fs1/fernandezv/${USER}/c1out/${FULLSMID}" >> $ENV_FILE
 [ ! -d /scratch1/fs1/fernandezv/${USER}/c1out/${FULLSMID}/metrics ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1out/${FULLSMID}/metrics
-echo -e "METDIR=/scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}/metrics" >> $ENV_FILE
+echo -e "METDIR=/scratch1/fs1/fernandezv/${USER}/c1out/${FULLSMID}/metrics" >> $ENV_FILE
 [ ! -d /storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID} ] && mkdir /storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID}
 echo -e "FINAL_OUTDIR=/storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID}" >> $ENV_FILE
 [ ! -d /scratch1/fs1/fernandezv/${USER}/c1out/logs/$FULLSMID ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1out/logs/$FULLSMID
