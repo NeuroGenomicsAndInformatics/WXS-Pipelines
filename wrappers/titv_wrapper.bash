@@ -11,7 +11,7 @@ bsub -g ${JOB_GROUP_QC} \
     -Ne \
     -n 4 \
     -R 'rusage[mem=10GB,tmp=2GB]' \
-    -G compute-cruchagac \
+    -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
     bash /scripts/gatkvcfmetrics.bash $1
