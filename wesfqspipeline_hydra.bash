@@ -49,7 +49,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${REF_FASTA} \
   ${FQ} \
   ${FQ/_1.fastq/_2.fastq} \
-  | ${GATK} \
+  | gatk \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   SortSam \
   -I /dev/stdin \
@@ -72,7 +72,7 @@ MD_INPUTS=()
 for BM in $(find $OUTDIR -name "*.fastq*.isec.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
-${GATK} \
+gatk \
   --java-options "-Xmx80g -XX:ParallelGCThreads=1" \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
@@ -101,7 +101,7 @@ ${GATK} \
     2>> $LOG_FILE
 
 # 2.2 Apply Recal Table
-${GATK} \
+gatk \
   --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
   ApplyBQSR \
     -I ${OUTDIR}/${BAM} \
@@ -112,7 +112,7 @@ ${GATK} \
     2>> $LOG_FILE
 
 ## 3. Call Variants
-${GATK} \
+gatk \
   --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   HaplotypeCaller \
     -I ${OUTDIR}/${FULLSMID}.recal.bam \
@@ -130,7 +130,7 @@ rm ${OUTDIR}/${FULLSMID}.recal.ba*
 ## 5. QC
 #5.1 Coverage
 #5.1a Raw WES Coverage
-${GATK} \
+gatk \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectRawWgsMetrics \
     -I ${OUTDIR}/${CRAM} \
@@ -140,12 +140,12 @@ ${GATK} \
     --TMP_DIR ${TMP_DIR}
 
 #5.1b WES Coverage
-${GATK} \
+gatk \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
     -I ${OUTDIR}/${BAM} \
     -O ${OUTDIR}/${BAM}.wgsmetrics.txt \
-    -L ${REF_PADBED} \
+    --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR}
 
@@ -159,12 +159,12 @@ VerifyBamID2 \
   --max-depth 1000 \
 
 #5.3 Variant Calling Metrics
-${GATK} \
+gatk \
   --java-options "-Xmx30g -XX:ParallelGCThreads=1" \
   CollectVariantCallingMetrics \
     -I ${OUTDIR}/${GVCF} \
     -O ${OUTDIR}/${GVCF##*/}.vcfmetrics \
-    -L ${REF_PADBED} \
+    --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --DBSNP ${REF_DBSNP} \
     --THREAD_COUNT 6 \

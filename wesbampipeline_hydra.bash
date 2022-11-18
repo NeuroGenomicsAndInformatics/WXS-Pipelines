@@ -154,8 +154,8 @@ rm ${OUTDIR}/${FULLSMID}.recal.bam
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectRawWgsMetrics \
-    -I ${OUTDIR}/${CRAM} \
-    -O ${OUTDIR}/${CRAM}.rawwgsmetrics.txt \
+    -I ${OUTDIR}/${BAM} \
+    -O ${OUTDIR}/${BAM}.rawwgsmetrics.txt \
     --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR}
@@ -164,15 +164,15 @@ ${GATK} \
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
-    -I ${OUTDIR}/${CRAM} \
-    -O ${OUTDIR}/${CRAM}.wgsmetrics.txt \
+    -I ${OUTDIR}/${BAM} \
+    -O ${OUTDIR}/${BAM}.wgsmetrics.txt \
     --INTERVALS ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --TMP_DIR ${TMP_DIR}
 
 #5.2 FREEMIX
 VerifyBamID2 \
-  --BamFile ${OUTDIR}/${CRAM} \
+  --BamFile ${OUTDIR}/${BAM} \
   --SVDPrefix /VerifyBamID/resource/1000g.phase3.100k.b38.vcf.gz.dat \
   --Reference ${REF_FASTA} \
   --NumThread ${THREADS} \
