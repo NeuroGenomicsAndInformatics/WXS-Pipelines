@@ -40,7 +40,7 @@ ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USE
     -O /dev/stdout \
     -SO queryname \
     --COMPRESSION_LEVEL 0 \
-    --VALIDATION_STRINGENCY SILENT
+    --VALIDATION_STRINGENCY SILENT \
 | ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   SamToFastq \
     -I /dev/stdin \
