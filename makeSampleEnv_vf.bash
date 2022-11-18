@@ -16,7 +16,8 @@ echo -e "METDIR=/scratch1/fs1/fernandezv/${USER}/c1out/${FULLSMID}/metrics" >> $
 [ ! -d /storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID} ] && mkdir /storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID}
 echo -e "FINAL_OUTDIR=/storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID}" >> $ENV_FILE
 [ ! -d /scratch1/fs1/fernandezv/${USER}/c1out/logs/$FULLSMID ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1out/logs/$FULLSMID
-echo -e "LOGDIR=/scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}" >> $ENV_FILE
+echo -e "LOGDIR=/scratch1/fs1/fernandezv/${USER}/c1out/logs/${FULLSMID}" >> $ENV_FILE
+echo -e "REF_DIR=/scratch1/fs1/fernandezv/WXSref" >> $ENV_FILE
 echo -e "RUN_TYPE=genome" >> $ENV_FILE
 echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
 echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
