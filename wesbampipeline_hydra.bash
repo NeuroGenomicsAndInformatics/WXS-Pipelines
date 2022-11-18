@@ -20,8 +20,8 @@ echo -e "OUTDIR=${RUN_OUTDIR}/${FULLSMID}" >> $ENV_FILE
 [ ! -d ${RUN_OUTDIR}/${FULLSMID} ] && mkdir ${RUN_OUTDIR}/${FULLSMID}
 echo -e "LOG_FILE=${RUN_OUTDIR}/${FULLSMID}/${FULLSMID}.log" >> $ENV_FILE
 echo -e "RUN_TYPE=exome" >> $ENV_FILE
-echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
-echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
+echo -e "BAM=${FULLSMID}.aln.srt.isec.mrk.bam" >> $ENV_FILE
+echo -e "CRAM=${FULLSMID}.aln.srt.isec.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
 echo -e "STATS_FILE=${RUN_OUTDIR}/${FULLSMID}/${FULLSMID}.stats.csv" >> $ENV_FILE
 echo -e "TMP_DIR=${RUN_OUTDIR}/tmp" >> $ENV_FILE
@@ -100,7 +100,7 @@ ${GATK} \
     --CREATE_INDEX true \
     2>> $LOG_FILE
 #rm -R ${INDIR}
-
+rm $OUTDIR/*.isec.bam
 ## 2. BQSR - Recalibrate Bases
 # 2.1 Generate Recal Table
 ${GATK} \
