@@ -173,10 +173,10 @@ ${GATK} \
 #5.2 FREEMIX
 VerifyBamID2 \
   --BamFile ${OUTDIR}/${BAM} \
-  --SVDPrefix /VerifyBamID/resource/1000g.phase3.100k.b38.vcf.gz.dat \
+  --SVDPrefix ${REF_VBID} \
   --Reference ${REF_FASTA} \
   --NumThread ${THREADS} \
-  --Output ${OUTDIR}/${CRAM}.vbid2 \
+  --Output ${OUTDIR}/${BAM}.vbid2 \
   --max-depth 1000 \
 
 #5.3 Variant Calling Metrics
