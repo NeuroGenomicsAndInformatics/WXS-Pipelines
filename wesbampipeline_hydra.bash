@@ -40,7 +40,7 @@ ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USE
     -O /dev/stdout \
     -SO queryname \
     --COMPRESSION_LEVEL 0 \
-    --VALIDATION_STRINGENCY SILENT \
+    --VALIDATION_STRINGENCY SILENT
 | ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   SamToFastq \
     -I /dev/stdin \
@@ -79,7 +79,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
 
 # 1.2 Extract exome by intersecting the aligned bam
 bedtools intersect -u -a ${OUTDIR}/${FQ##*/}.bam -b $REF_PADBED > ${OUTDIR}/${FQ##*/}.isec.bam \
-&& rm ${OUTDIR}/${FQ##*/}.bam \
+&& rm ${OUTDIR}/${FQ##*/}.ba* \
 2>> $LOG_FILE
 
 done
@@ -100,7 +100,7 @@ ${GATK} \
     --CREATE_INDEX true \
     2>> $LOG_FILE
 #rm -R ${INDIR}
-rm $OUTDIR/*.isec.bam
+rm $OUTDIR/*isec.ba*
 ## 2. BQSR - Recalibrate Bases
 # 2.1 Generate Recal Table
 ${GATK} \
@@ -191,6 +191,11 @@ ${GATK} \
     --THREAD_COUNT 6 \
     --GVCF_INPUT true \
     --TMP_DIR ${TMP_DIR}
+
+#CREATE CRAM
+samtools view -C -T $REF_FASTA -h -o $OUTDIR/$CRAM $OUTDIR/$BAM \
+&& samtools index $OUTDIR/$CRAM \
+&& rm $OUTDIR/$BAM
 
 #5.4 SNPeff Annotations
 # Creates Fields file local to gVCF
