@@ -3,7 +3,7 @@
 # First argument is either a directory named with the FULLSMID that holds FQs, or
 # a workfile of directories with the last directory being named with the FULLSMID
 if [[ -f $1 ]]; then INDIRS=($(cat $1)); else INDIRS=($1); fi
-export THREADS=16
+export THREADS=8
 # Second argument is the directory where all samples will end up in
 RUN_OUTDIR=$2
 
@@ -62,7 +62,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
 
 # 1.2 Extract exome by intersecting the aligned bam
 bedtools intersect -u -a ${OUTDIR}/${FQ##*/}.bam -b $REF_PADBED > ${OUTDIR}/${FQ##*/}.isec.bam \
-&& rm ${OUTDIR}/${FQ##*/}.bam \
+&& rm ${OUTDIR}/${FQ##*/}.ba* \
 2>> $LOG_FILE
 
 done
@@ -73,7 +73,7 @@ for BM in $(find $OUTDIR -name "*.fastq*.isec.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 gatk \
-  --java-options "-Xmx80g -XX:ParallelGCThreads=1" \
+  --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
     -O ${OUTDIR}/${BAM} \
@@ -83,11 +83,12 @@ gatk \
     --CREATE_INDEX true \
     2>> $LOG_FILE
 #rm -R ${INDIR}
+rm $OUTDIR/*isec.ba*
 
 ## 2. BQSR - Recalibrate Bases
 # 2.1 Generate Recal Table
 ${GATK} \
-  --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
+  --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   BaseRecalibratorSpark \
     -I ${OUTDIR}/${BAM} \
     -R ${REF_FASTA} \
@@ -102,7 +103,7 @@ ${GATK} \
 
 # 2.2 Apply Recal Table
 gatk \
-  --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
+  --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   ApplyBQSR \
     -I ${OUTDIR}/${BAM} \
     -bqsr ${OUTDIR}/${FULLSMID}.recal.txt \
@@ -132,22 +133,25 @@ rm ${OUTDIR}/${FULLSMID}.recal.ba*
 #5.1a Raw WES Coverage
 gatk \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
-  CollectRawWgsMetrics \
+  DepthOfCoverage \
     -I ${OUTDIR}/${CRAM} \
     -O ${OUTDIR}/${CRAM}.rawwgsmetrics.txt \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
+    -L ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
-    --TMP_DIR ${TMP_DIR}
-
-#5.1b WES Coverage
-gatk \
-  --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
-  CollectWgsMetrics \
-    -I ${OUTDIR}/${BAM} \
-    -O ${OUTDIR}/${BAM}.wgsmetrics.txt \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
-    -R ${REF_FASTA} \
-    --TMP_DIR ${TMP_DIR}
+    --summary-coverage-threshold 10 \
+    --summary-coverage-threshold 15 \
+    --summary-coverage-threshold 20 \
+    --summary-coverage-threshold 30 \
+    --summary-coverage-threshold 40 \
+    --summary-coverage-threshold 50 \
+    --summary-coverage-threshold 60 \
+    --summary-coverage-threshold 70 \
+    --summary-coverage-threshold 80 \
+    --summary-coverage-threshold 90 \
+    --summary-coverage-threshold 100 \
+    --omit-depth-output-at-each-base true \
+    --omit-interval-statistics true \
+    --omit-locus-table true
 
 #5.2 FREEMIX
 VerifyBamID2 \
@@ -170,6 +174,11 @@ gatk \
     --THREAD_COUNT 6 \
     --GVCF_INPUT true \
     --TMP_DIR ${TMP_DIR}
+
+#CREATE CRAM
+samtools view -C -T $REF_FASTA -h -o $OUTDIR/$CRAM $OUTDIR/$BAM \
+&& samtools index $OUTDIR/$CRAM \
+&& rm $OUTDIR/$BAM
 
 #5.4 SNPeff Annotations
 # Creates Fields file local to gVCF
