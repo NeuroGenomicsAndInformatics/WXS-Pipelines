@@ -120,14 +120,12 @@ ${GATK} \
 # 2.2 Apply Recal Table
 ${GATK} \
   --java-options "-Xmx100g -XX:ParallelGCThreads=1" \
-  ApplyBQSRSpark \
+  ApplyBQSR \
     -I ${OUTDIR}/${BAM} \
     -bqsr ${OUTDIR}/${FULLSMID}.recal.txt \
     -R ${REF_FASTA} \
     -L ${REF_PADBED} \
     -O ${OUTDIR}/${FULLSMID}.recal.bam \
-    -- \
-    --spark-master local[$THREADS]
     2>> $LOG_FILE
 
 samtools index ${OUTDIR}/${FULLSMID}.recal.bam
