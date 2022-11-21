@@ -171,16 +171,6 @@ ${GATK} \
     --omit-interval-statistics true \
     --omit-locus-table true
 
-#5.1b WES Coverage
-${GATK} \
-  --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
-  CollectWgsMetrics \
-    -I ${OUTDIR}/${BAM} \
-    -O ${OUTDIR}/${BAM}.wgsmetrics.txt \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
-    -R ${REF_FASTA} \
-    --TMP_DIR ${TMP_DIR}
-
 #5.2 FREEMIX
 VerifyBamID2 \
   --BamFile ${OUTDIR}/${BAM} \
