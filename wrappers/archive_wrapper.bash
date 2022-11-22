@@ -1,4 +1,7 @@
 #!/bin/bash
+CRAM=$1
+OUTDIR=$2
+
 REF_DIR="/scratch1/fs1/fernandezv/WXSref"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP_QC="/${USER}/compute-fernandezv/qc"
@@ -14,4 +17,4 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsarchiver:2.0)' \
-    bash /scripts/archive_cram.bash $1 $2
+    bash /scripts/archive_cram.bash $CRAM $OUTDIR

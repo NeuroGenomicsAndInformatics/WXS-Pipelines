@@ -1,4 +1,6 @@
 #!/bin/bash
+FULL_GVCF=$1
+
 REF_DIR="/scratch1/fs1/fernandezv/WXSref"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP_QC="/${USER}/compute-fernandezv/qc"
@@ -15,4 +17,4 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
-  	bash /scripts/keygene_annotate.bash $1
+  	bash /scripts/keygene_annotate.bash $FULL_GVCF

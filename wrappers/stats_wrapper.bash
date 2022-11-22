@@ -16,4 +16,4 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsstager:2.0)' \
-    bash /scripts/statsupdate.bash $1
+    bash /scripts/statsupdate.bash $FINAL_OUTDIR

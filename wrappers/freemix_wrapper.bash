@@ -1,4 +1,6 @@
 #!/bin/bash
+FULL_CRAM=$1
+
 REF_DIR="/scratch1/fs1/fernandezv/WXSref"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP_QC="/${USER}/compute-fernandezv/qc"
@@ -14,4 +16,4 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
-    bash /scripts/vbid.bash $1
+    bash /scripts/vbid.bash $FULL_CRAM
