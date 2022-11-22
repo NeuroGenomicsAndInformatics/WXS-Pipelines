@@ -178,7 +178,7 @@ VerifyBamID2 \
   --Reference ${REF_FASTA} \
   --NumThread ${THREADS} \
   --Output ${OUTDIR}/${BAM}.vbid2 \
-  --max-depth 1000 \
+  --max-depth 1000
 
 #5.3 Variant Calling Metrics
 ${GATK} \
