@@ -1,6 +1,6 @@
 #!/bin/bash
-[ -z $FULLSMID ] && FULLSMID=$1
-[ -z $FINAL_OUTDIR ] && FINAL_OUTDIR=/storage1/fs1/cruchagac/Active/$USER/c1out/$FULLSMID
+[ -z $FULLSMID ] && FULLSMID=${1##*/}
+[ -z $FINAL_OUTDIR ] && FINAL_OUTDIR=$1
 [ -z $STATS_FILE ] && STATS_FILE=${FINAL_OUTDIR}/${FULLSMID}.stats.csv
 
 ## RG comparison
