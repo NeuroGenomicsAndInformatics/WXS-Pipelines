@@ -186,7 +186,7 @@ ${GATK} \
   CollectVariantCallingMetrics \
     -I ${OUTDIR}/${GVCF} \
     -O ${OUTDIR}/${GVCF##*/}.vcfmetrics \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
+    -TI ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --DBSNP ${REF_DBSNP} \
     --THREAD_COUNT 6 \
@@ -194,7 +194,7 @@ ${GATK} \
     --TMP_DIR ${TMP_DIR}
 
 #CREATE CRAM
-samtools view -C -T $REF_FASTA -h -o $OUTDIR/$CRAM $OUTDIR/$BAM \
+samtools view -C -T $REF_FASTA --output-fmt-option archive --output-fmt-option embed_ref -o $OUTDIR/$CRAM $OUTDIR/$BAM \
 && samtools index $OUTDIR/$CRAM \
 && rm $OUTDIR/$BAM
 
