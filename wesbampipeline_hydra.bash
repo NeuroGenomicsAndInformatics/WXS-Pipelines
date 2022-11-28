@@ -152,8 +152,8 @@ rm ${OUTDIR}/${FULLSMID}.recal.bam
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   DepthOfCoverage \
-    -I ${OUTDIR}/${CRAM} \
-    -O ${OUTDIR}/${CRAM}.rawwgsmetrics.txt \
+    -I ${OUTDIR}/${BAM} \
+    -O ${OUTDIR}/${BAM}.rawwgsmetrics.txt \
     -L ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --summary-coverage-threshold 10 \
