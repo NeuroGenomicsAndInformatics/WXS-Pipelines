@@ -25,19 +25,21 @@ TOTAL_TITV=$(bc -l <<<"($PCT_DBSNP*$DBSNP_TITV)+((1-$PCT_DBSNP)*$NOVEL_TITV)")
 
 ## Get Annotation stats
 FIELDS_FILE="${FINAL_OUTDIR}/${FULLSMID}*.vcf.gz.snpeff-5.1-FIELDS.txt"
-GENES=(APP PSEN1 PSEN2 GRN MAPT TREM2)
-CAN_TS=(ENST00000346798.8 ENST00000324501 ENST00000366783.8 ENST00000053867.8 ENST00000262410.10 ENST00000373113.8)
+GENES=(APP PSEN1 PSEN2 GRN MAPT MAPT MAPT TREM2)
+CAN_TS=(ENST00000346798.8 ENST00000324501 ENST00000366783.8 ENST00000053867.8 ENST00000262410.10 ENST00000629368.2 ENST00000618029.3 ENST00000373113.8)
+NUM_ANNS=()
+NUM_ANNS_HM=()
+for TS in ${CAN_TS[@]}; do
+  NUM_ANNS+=($(grep -c ${TS} ${FIELDS_FILE}))
+  NUM_ANNS_HM+=($(grep ${TS} ${FIELDS_FILE} | grep -c -E 'HIGH|MODERATE'))
+done
 
 ## Set Header Line
 echo -n "FULLSMID,RGs in,Cram RGs,Raw Mean Coverage,Mean Coverage,Padded Exome Mean Coverage,FREEMIX,Total TITV,PCT dbSNP,dbSNP TITV,Novel TITV,Num SNPs,Num Indels," > ${STATS_FILE}
-for GENE in ${GENES[@]}; do echo -n "$GENE Mane Annotations count,$GENE HM count,$GENE Annotations," >> ${STATS_FILE}; done
+for GENE in ${GENES[@]}; do echo -n "$GENE Mane Annotations,$GENE HM," >> ${STATS_FILE}; done
 echo "" >> ${STATS_FILE}
 ## Add stats
 echo -n "${FULLSMID},${IN_RGS},${CRAM_RGS},${RAW_COV},${WGS_COV},${PADEX_COV},${FREEMIX},${TOTAL_TITV},${PCT_DBSNP},${DBSNP_TITV},${NOVEL_TITV},${TOTAL_SNPS},${TOTAL_INDELS}," >> ${STATS_FILE}
-## Add Annotations
-for TS in ${CAN_TS[@]}; do
-echo -n "$(grep -c ${TS} ${FIELDS_FILE}),$(grep ${TS} ${FIELDS_FILE} | grep -c -E 'HIGH|MODERATE')," >> ${STATS_FILE}
-for VAR in $(grep ${TS} ${FIELDS_FILE} | grep -E 'HIGH|MODERATE' | cut -f14); do echo -n "$VAR " >> ${STATS_FILE}; done
-echo -n "," >> ${STATS_FILE}
-done
+for ((i = 0 ; i < ${#CAN_TS[@]} ; i++)); do
+echo -n "${NUM_ANNS[$i]},${NUM_ANNS_HM[$i]}," >> ${STATS_FILE}; done
 echo "" >> ${STATS_FILE}
