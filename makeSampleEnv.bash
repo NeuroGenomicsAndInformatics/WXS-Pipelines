@@ -18,11 +18,11 @@ echo -e "FINAL_OUTDIR=/storage1/fs1/cruchagac/Active/$USER/c1out/${FULLSMID}" >>
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs/$FULLSMID ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs/$FULLSMID
 echo -e "LOGDIR=/scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}" >> $ENV_FILE
 echo -e "REF_DIR=/scratch1/fs1/cruchagac/WXSref" >> $ENV_FILE
+echo -e "TMP_DIR=/scratch1/fs1/fernandezv/${USER}/parabricks-tmp" >> $ENV_FILE
 echo -e "RUN_TYPE=genome" >> $ENV_FILE
 echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
 echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
-cat ${BASE_ENVS_DIR}/pipelinebase_2_0.env >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references_2_0.env >> $ENV_FILE
 [ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID} ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}
 rsync $ENV_FILE /scratch1/fs1/cruchagac/${USER}/c1out/${FULLSMID}/
