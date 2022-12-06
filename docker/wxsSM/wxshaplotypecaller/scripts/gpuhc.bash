@@ -12,4 +12,5 @@ pbrun haplotypecaller \
   --tmp-dir ${TMP_DIR} \
   --annotation-group StandardAnnotation \
   --annotation-group StandardHCAnnotation \
-  --annotation-group AS_StandardAnnotation
+  --annotation-group AS_StandardAnnotation \
+&& rm -R $STAGE_INDIR
