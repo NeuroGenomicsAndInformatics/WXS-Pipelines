@@ -80,7 +80,8 @@ bsub -g ${JOB_GROUP_F} \
   bash /scripts/bqsrspark.bash
 
 ## 3. Call Variants
-LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac:/storage1/fs1/cruchagac \
+/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
 /scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 /scratch1/fs1/ris/application/parabricks:/opt/parabricks \
 ${REF_DIR}:/ref \
