@@ -119,7 +119,7 @@ bsub -g ${JOB_GROUP_F} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsstager:2.0)' \
-    bash /scripts/stageout.bash
+    bash /scripts/stageout.bash\; sleep 100
 
 ## 5. QC
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \

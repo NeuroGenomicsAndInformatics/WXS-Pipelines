@@ -112,7 +112,7 @@ bsub -g ${JOB_GROUP_F} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(mjohnsonngi/wxsstager:2.0)' \
-    bash /scripts/stageout.bash
+    bash /scripts/stageout.bash\; sleep 100
 
 ## 5. QC
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
@@ -127,7 +127,7 @@ bsub -g ${JOB_GROUP_QC} \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=25GB,tmp=2GB]' \
     -G compute-fernandezv \
-    -q general-interactive \
+    -q general \
     -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
     bash /scripts/get_all_wgsmetrics.bash
 
@@ -143,7 +143,7 @@ bsub -g ${JOB_GROUP_QC} \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=20GB,tmp=2GB]' \
     -G compute-fernandezv \
-    -q general-interactive \
+    -q general \
     -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
     bash /scripts/vbid.bash
 
@@ -159,7 +159,7 @@ bsub -g ${JOB_GROUP_QC} \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=10GB,tmp=2GB]' \
     -G compute-fernandezv \
-    -q general-interactive \
+    -q general \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
     bash /scripts/gatkvcfmetrics.bash
 
@@ -177,7 +177,7 @@ bsub -g ${JOB_GROUP_QC} \
     -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
     -R 'rusage[mem=25GB]' \
     -G compute-fernandezv \
-    -q general-interactive \
+    -q general \
     -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
   	bash /scripts/keygene_annotate.bash
 
