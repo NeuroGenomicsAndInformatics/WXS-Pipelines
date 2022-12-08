@@ -53,7 +53,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R 'select[gpuhost && mem>180GB] rusage[mem=180GB] span[hosts=1]' \
+  -R 'select[gpuhost && mem>200GB] rusage[mem=200GB] span[hosts=1]' \
   -gpu "num=1:j_exclusive=yes" \
   -G compute-fernandezv \
   -q general \
