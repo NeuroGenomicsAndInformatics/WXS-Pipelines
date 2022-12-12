@@ -1,7 +1,8 @@
 #!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ENVS_DIR="/scratch1/fs1/cruchagac/${USER}/c1in/envs"
 [ ! -d $ENVS_DIR ] && mkdir $ENVS_DIR
-BASE_ENVS_DIR="./baseEnvs"
+BASE_ENVS_DIR="${SCRIPT_DIR}/baseEnvs"
 FULLSMID="$1"
 ENV_FILE="$ENVS_DIR/${FULLSMID}.env"
 echo -e "ENV_FILE=${ENV_FILE}" > $ENV_FILE
