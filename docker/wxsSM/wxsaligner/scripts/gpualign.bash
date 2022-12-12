@@ -6,6 +6,7 @@ pbrun fq2bam \
     --out-duplicate-metrics ${METDIR}/${FULLSMID}.dup.metrics.txt \
     --num-gpus 1 \
     --tmp-dir ${TMP_DIR} \
-    || exit 66
+    || (rm -R $INDIR && exit 66)
 samtools view -@ $LSB_MAX_NUM_PROCESSORS -C -T ${REF_FASTA} -o $OUTDIR/$CRAM $INDIR/$BAM
-samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM && rm -R $INDIR
+rm -R $INDIR
+samtools index -@ $LSB_MAX_NUM_PROCESSORS $OUTDIR/$CRAM
