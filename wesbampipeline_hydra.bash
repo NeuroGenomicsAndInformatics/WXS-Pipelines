@@ -231,7 +231,7 @@ bcftools view -R ${KEYGENES} ${OUTDIR}/${GVCF} \
   PCT_DBSNP=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f5)
   NOVEL_TITV=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f7)
   DBSNP_TITV=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f6)
-  let "TOTAL_TITV=(($PCT_DBSNP * $DBSNP_TITV) + ((1-$PCT_DBSNP) * $NOVEL_TITV)"
+  TOTAL_TITV=$(bc -l <<<"($PCT_DBSNP*$DBSNP_TITV)+((1-$PCT_DBSNP)*$NOVEL_TITV)")
 
   ## Get Annotation stats
   FIELDS_FILE="${OUTDIR}/${FULLSMID}*.vcf.gz.snpeff-5.1-FIELDS.txt"
