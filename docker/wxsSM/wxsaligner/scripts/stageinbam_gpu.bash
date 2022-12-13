@@ -6,7 +6,7 @@ rsync -rL $STAGE_INDIR/ $INDIR
 for BM in $(find $INDIR -name "*.bam"); do
 samtools index -@ $LSB_MAX_NUM_PROCESSORS $BM
 pbrun bam2fq \
-  --in-bam $(find $INDIR -name "*.bam") \
+  --in-bam $BM \
   --out-prefix ${INDIR}/${FULLSMID} \
   --rg-tag PU \
   --tmp-dir ${TMP_DIR}
