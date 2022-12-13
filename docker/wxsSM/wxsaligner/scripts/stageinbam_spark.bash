@@ -1,6 +1,7 @@
 #!/bin/bash
 rsync -rL $STAGE_INDIR/ $INDIR
-ln -s $(find $INDIR -name "*.bam") /tmp/working.bam
+for BM in $(find $INDIR -name "*.bam"); do
+ln -s $BM /tmp/working.bam
 samtools index -@ $LSB_MAX_NUM_PROCESSORS /tmp/working.bam
 ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSamSpark \
@@ -23,6 +24,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 10000000
 rm /tmp/*
+done
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
 for FQ in $(find $INDIR -name "*_1.fastq.gz"); do

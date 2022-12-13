@@ -3,12 +3,14 @@ for VAR in $(printenv | grep CUDA_VISIBLE_DEVICES); do
 export ${VAR/CUDA/NVIDIA}
 done
 rsync -rL $STAGE_INDIR/ $INDIR
-samtools index -@ $LSB_MAX_NUM_PROCESSORS $(find $INDIR -name "*.bam")
+for BM in $(find $INDIR -name "*.bam"); do
+samtools index -@ $LSB_MAX_NUM_PROCESSORS $BM
 pbrun bam2fq \
   --in-bam $(find $INDIR -name "*.bam") \
   --out-prefix ${INDIR}/${FULLSMID} \
   --rg-tag PU \
   --tmp-dir ${TMP_DIR}
+done
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
 for FQ in $(find $INDIR -name "*_1.fastq*"); do
