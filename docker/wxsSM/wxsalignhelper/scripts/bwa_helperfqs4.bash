@@ -18,6 +18,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -SO coordinate \
   --MAX_RECORDS_IN_RAM 1000000 \
   --CREATE_INDEX true \
+  --TMP_DIR $TMP_DIR \
   && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}
 else
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
@@ -35,6 +36,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -SO coordinate \
   --MAX_RECORDS_IN_RAM 1000000 \
   --CREATE_INDEX true \
+  --TMP_DIR $TMP_DIR \
 && rm ${FQ1} && rm ${FQ1/_1.fastq/_2.fastq}
 rm ${INDIR}/${FQ1##*/}.aln.bam
 fi
