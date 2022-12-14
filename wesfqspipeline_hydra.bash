@@ -69,7 +69,7 @@ done
 
 # 1.3 Mark Duplicates
 MD_INPUTS=()
-for BM in $(find $OUTDIR -name "*.fastq*.isec.bam"); do
+for BM in $(find $OUTDIR -name "*.isec.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 gatk \
