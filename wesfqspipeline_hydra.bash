@@ -112,6 +112,8 @@ gatk \
     -O ${OUTDIR}/${FULLSMID}.recal.bam \
     2>> $LOG_FILE
 
+samtools index ${OUTDIR}/${FULLSMID}.recal.bam
+
 ## 3. Call Variants
 gatk \
   --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
