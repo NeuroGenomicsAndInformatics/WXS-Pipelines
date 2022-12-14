@@ -134,8 +134,8 @@ rm ${OUTDIR}/${FULLSMID}.recal.ba*
 gatk \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   DepthOfCoverage \
-    -I ${OUTDIR}/${CRAM} \
-    -O ${OUTDIR}/${CRAM}.rawwgsmetrics.txt \
+    -I ${OUTDIR}/${BAM} \
+    -O ${OUTDIR}/${BAM}.rawwgsmetrics.txt \
     -L ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --summary-coverage-threshold 10 \
@@ -160,7 +160,7 @@ VerifyBamID2 \
   --Reference ${REF_FASTA} \
   --NumThread ${THREADS} \
   --Output ${OUTDIR}/${BAM}.vbid2 \
-  --max-depth 1000 \
+  --max-depth 1000
 
 #5.3 Variant Calling Metrics
 gatk \
