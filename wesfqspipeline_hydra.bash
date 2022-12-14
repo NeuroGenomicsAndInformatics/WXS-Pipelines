@@ -178,7 +178,7 @@ gatk \
     --TMP_DIR ${TMP_DIR}
 
 #CREATE CRAM
-samtools view -C -T $REF_FASTA -h -o $OUTDIR/$CRAM $OUTDIR/$BAM \
+samtools view -C -T $REF_FASTA --output-fmt-option archive --output-fmt-option embed_ref -o $OUTDIR/$CRAM $OUTDIR/$BAM \
 && samtools index $OUTDIR/$CRAM \
 && rm $OUTDIR/$BAM
 
