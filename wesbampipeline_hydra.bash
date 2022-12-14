@@ -6,7 +6,7 @@ if [[ -f $1 ]]; then INDIRS=($(cat $1)); else INDIRS=($1); fi
 export THREADS=8
 # Second argument is the directory where all samples will end up in
 RUN_OUTDIR=$2
-
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 for INDIR in ${INDIRS[@]}; do
 
 ##0. Set up environment for processing
@@ -25,7 +25,7 @@ echo -e "CRAM=${FULLSMID}.aln.srt.isec.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
 echo -e "STATS_FILE=${RUN_OUTDIR}/${FULLSMID}/${FULLSMID}.stats.csv" >> $ENV_FILE
 echo -e "TMP_DIR=${RUN_OUTDIR}/tmp" >> $ENV_FILE
-cat ./baseEnvs/references_hydra.env >> $ENV_FILE
+cat ${SCRIPT_DIR}/baseEnvs/references_hydra.env >> $ENV_FILE
 
 for VAR in $(cat $ENV_FILE); do export $VAR; done
 
