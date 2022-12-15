@@ -12,5 +12,5 @@ bsub -q general \
   -a 'docker(mjohnsonngi/wxsalignhelper:2.0)' \
   bash /scripts/bwa_helperfqs4.bash
 bash /scripts/bwa_helperfqs4base.bash
-bwait -w "done(\"ngi-$USER-$FULLSMID-fqsalign\")" || exit 67
+[[ $JOBS_IN_ARRAY -eq 1 ]] || bwait -w "done(\"ngi-$USER-$FULLSMID-fqsalign\")" || exit 67
 bash /scripts/md_helper.bash
