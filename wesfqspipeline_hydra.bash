@@ -170,7 +170,7 @@ gatk \
   CollectVariantCallingMetrics \
     -I ${OUTDIR}/${GVCF} \
     -O ${OUTDIR}/${GVCF##*/}.vcfmetrics \
-    --INTERVALS ${REF_PADBED%.bed}.interval_list \
+    -TI ${REF_PADBED%.bed}.interval_list \
     -R ${REF_FASTA} \
     --DBSNP ${REF_DBSNP} \
     --THREAD_COUNT 6 \
