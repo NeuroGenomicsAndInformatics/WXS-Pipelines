@@ -54,7 +54,30 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -q general \
   -sp $PRIORITY_ALIGN \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-  bash /scripts/align_cram.bash "$2"
+  bash /scripts/align.bash "$2"
+
+## Fallback if GPU fails
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+/scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_NETWORK=host \
+LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
+LSF_DOCKER_ENTRYPOINT=/bin/bash \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
+bsub -g ${JOB_GROUP_ALIGN} \
+  -J ${JOBNAME}-align \
+  -w "exit(\"${JOBNAME}-align\",66)" \
+  -n8 \
+  -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
+  -R 'select[mem>180GB] rusage[mem=180GB/job] span[hosts=1]' \
+  -G compute-fernandezv \
+  -q general \
+  -sp $PRIORITY_ALIGN \
+  -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
+  bash /scripts/align.bash "$2"
 
 ## 2. BQSR
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
@@ -75,7 +98,8 @@ bsub -g ${JOB_GROUP_F} \
   bash /scripts/bqsrspark.bash
 
 ## 3. Call Variants
-LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
 /scratch1/fs1/ris/application/parabricks:/opt/parabricks \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \

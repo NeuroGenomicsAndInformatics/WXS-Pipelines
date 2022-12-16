@@ -3,14 +3,15 @@
 export PATH="/opt/miniconda/bin:$PATH"
 
 ## Set up variables and update touch references
-REF_DIR="/scratch1/fs1/fernandezv/WXSref"
+STORAGE_REF_DIR="/storage1/fs1/cruchagac/Active/matthew.j/REF/WXSref"
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 find $REF_DIR -true -exec touch '{}' \;
 
-[ ! -d /scratch1/fs1/fernandezv/${USER} ] && mkdir /scratch1/fs1/fernandezv/${USER}
-[ ! -d /scratch1/fs1/fernandezv/${USER}/c1in ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1in
-[ ! -d /scratch1/fs1/fernandezv/${USER}/c1out ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1out
+[ ! -d /scratch1/fs1/cruchagac/${USER} ] && mkdir /scratch1/fs1/cruchagac/${USER}
+[ ! -d /scratch1/fs1/cruchagac/${USER}/c1in ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1in
+[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out
 [ ! -d /storage1/fs1/cruchagac/Active/${USER}/c1out ] && mkdir /storage1/fs1/cruchagac/Active/${USER}/c1out
-[ ! -d /scratch1/fs1/fernandezv/${USER}/c1out/logs ] && mkdir /scratch1/fs1/fernandezv/${USER}/c1out/logs
+[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs
 PRIORITY_ALIGN=60
 PRIORITY_BQSR=65
 PRIORITY_HC=70
@@ -19,25 +20,28 @@ PRIORITY_QC=50
 
 ## Set up directories and job submission variables
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+JOB_GROUP_C="/${USER}/compute-cruchagac"
 JOB_GROUP_F="/${USER}/compute-fernandezv"
 JOB_GROUP_GPU="/${USER}/compute-fernandezv/gpu"
 JOB_GROUP_ALIGN="/${USER}/compute-fernandezv/align"
 JOB_GROUP_QC="/${USER}/compute-fernandezv/qc"
+[[ -z "$(bjgroup | grep $JOB_GROUP_C)" ]] && bgadd -L 10 ${JOB_GROUP_C}
 [[ -z "$(bjgroup | grep $JOB_GROUP_F)" ]] && bgadd -L 300 ${JOB_GROUP_F}
 [[ -z "$(bjgroup | grep $JOB_GROUP_GPU)" ]] && bgadd -L 10 ${JOB_GROUP_GPU}
-[[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 10 ${JOB_GROUP_ALIGN}
-[[ -z "$(bjgroup | grep $JOB_GROUP_QC)" ]] && bgadd -L 10 ${JOB_GROUP_QC}
+[[ -z "$(bjgroup | grep $JOB_GROUP_ALIGN)" ]] && bgadd -L 20 ${JOB_GROUP_ALIGN}
+[[ -z "$(bjgroup | grep $JOB_GROUP_QC)" ]] && bgadd -L 20 ${JOB_GROUP_QC}
 
 if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
-bash ${SCRIPT_DIR}/makeSampleEnv_vf.bash ${FULLSMID}
+bash ${SCRIPT_DIR}/makeSampleEnv.bash ${FULLSMID}
 JOBNAME="ngi-${USER}-${FULLSMID}"
-ENV_FILE="/scratch1/fs1/fernandezv/${USER}/c1in/envs/$FULLSMID.env"
-LOGDIR=/scratch1/fs1/fernandezv/${USER}/c1out/logs/${FULLSMID}
+ENV_FILE="/scratch1/fs1/cruchagac/${USER}/c1in/envs/$FULLSMID.env"
+LOGDIR=/scratch1/fs1/cruchagac/${USER}/c1out/logs/${FULLSMID}
 
 ## 1. Align
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 /scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
@@ -54,10 +58,34 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -q general \
   -sp $PRIORITY_ALIGN \
   -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
-  bash /scripts/align.bash
+  bash /scripts/align.bash "$2"
+
+## Fallback if GPU fails
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
+/scratch1/fs1/ris/application/parabricks-license:/opt/parabricks \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_NETWORK=host \
+LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
+LSF_DOCKER_ENTRYPOINT=/bin/bash \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
+bsub -g ${JOB_GROUP_ALIGN} \
+  -J ${JOBNAME}-align \
+  -w "exit(\"${JOBNAME}-align\",66)" \
+  -n8 \
+  -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
+  -R 'select[mem>180GB] rusage[mem=180GB/job] span[hosts=1]' \
+  -G compute-fernandezv \
+  -q general \
+  -sp $PRIORITY_ALIGN \
+  -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
+  bash /scripts/align.bash "$2"
 
 ## 2. BQSR
 LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
@@ -75,8 +103,9 @@ bsub -g ${JOB_GROUP_F} \
   bash /scripts/bqsrspark.bash
 
 ## 3. Call Variants
-LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac:/storage1/fs1/cruchagac \
 /scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 /scratch1/fs1/ris/application/parabricks:/opt/parabricks \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
@@ -100,7 +129,7 @@ bsub -g ${JOB_GROUP_GPU} \
 
 ## 4. Stage out data
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
@@ -117,7 +146,7 @@ bsub -g ${JOB_GROUP_F} \
 
 ## 5. QC
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
@@ -133,7 +162,7 @@ bsub -g ${JOB_GROUP_QC} \
     bash /scripts/get_all_wgsmetrics.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
@@ -149,7 +178,7 @@ bsub -g ${JOB_GROUP_QC} \
     bash /scripts/vbid.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
@@ -159,13 +188,13 @@ bsub -g ${JOB_GROUP_QC} \
     -n 4 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=10GB,tmp=2GB]' \
-    -G compute-fernandezv \
+    -G compute-cruchagac \
     -q general \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
     bash /scripts/gatkvcfmetrics.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
@@ -174,7 +203,7 @@ bsub -g ${JOB_GROUP_QC} \
     -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
     -Ne \
     -n 2 \
-    -sp $PRIORITY_HC \
+    -sp $PRIORITY_QC \
     -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
     -R 'rusage[mem=25GB]' \
     -G compute-fernandezv \
@@ -183,10 +212,10 @@ bsub -g ${JOB_GROUP_QC} \
   	bash /scripts/keygene_annotate.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
-/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+/scratch1/fs1/cruchagac:/scratch1/fs1/cruchagac \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP_F} \
+bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stageout \
     -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
     -n 1 \
