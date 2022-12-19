@@ -86,7 +86,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-align\")" \
+  -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" \
   -n 8 \
   -Ne \
   -sp $PRIORITY_BQSR \
@@ -145,7 +145,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-wgsmetrics \
-    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
+    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\")) && done(\"${JOBNAME}-stageout\")" \
     -n 2 \
     -Ne \
     -sp $PRIORITY_QC \
@@ -161,7 +161,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-freemix \
-    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
+    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\")) && done(\"${JOBNAME}-stageout\")" \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
