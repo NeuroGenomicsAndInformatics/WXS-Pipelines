@@ -49,7 +49,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ select[gpuhost && mem>220GB] rusage[ngpus_physical=1:gmem=12GB, mem=220GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
+  -R '{ select[gpuhost && mem>220GB] rusage[ngpus_physical=1:gmem=12GB, mem=220GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=220GB/job] }@10' \
   -G compute-fernandezv \
   -q general \
   -sp $PRIORITY_ALIGN \
@@ -114,7 +114,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -Ne \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
-  -R 'select[gpuhost && mem>140GB] rusage[mem=140GB] span[hosts=1]' \
+  -R 'select[gpuhost && mem>180GB] rusage[mem=180GB] span[hosts=1]' \
   -gpu "num=1:gmem=12GB:j_exclusive=yes" \
   -G compute-fernandezv \
   -q general \
