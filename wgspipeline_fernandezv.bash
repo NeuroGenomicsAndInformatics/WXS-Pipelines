@@ -69,7 +69,7 @@ LSF_DOCKER_ENTRYPOINT=/bin/bash \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align2 \
-  -w "exit(\"${JOBNAME}-align\",66)" \
+  -w "exit(\"${JOBNAME}-align\")" \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
   -R 'select[mem>180GB] rusage[mem=180GB/job] span[hosts=1]' \
