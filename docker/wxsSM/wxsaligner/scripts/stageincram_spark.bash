@@ -7,7 +7,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     -I /tmp/working.cram \
     -O /tmp/reverted.bam \
     -R /ref/$UNWRAP_FASTA \
-    --tmp-dir /scratch1/fs1/cruchagac/${USER}/parabricks-tmp \
+    --tmp-dir $TMP_DIR \
     --sort-order queryname \
     --read-validation-stringency SILENT \
     -- \
@@ -20,10 +20,11 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --OUTPUT_PER_RG true \
     --OUTPUT_DIR $INDIR \
     -RG_TAG PU \
-    --TMP_DIR /scratch1/fs1/cruchagac/${USER}/parabricks-tmp \
+    --TMP_DIR $TMP_DIR \
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 10000000
 rm /tmp/*
+sleep 10
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
 for FQ in $(find $INDIR -name "*_1.fastq.gz"); do

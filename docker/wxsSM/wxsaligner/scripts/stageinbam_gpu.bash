@@ -11,6 +11,7 @@ pbrun bam2fq \
   --rg-tag PU \
   --tmp-dir ${TMP_DIR}
 done
+sleep 10
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
 for FQ in $(find $INDIR -name "*_1.fastq*"); do
