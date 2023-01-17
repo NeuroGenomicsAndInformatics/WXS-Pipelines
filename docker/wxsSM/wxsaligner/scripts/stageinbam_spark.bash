@@ -12,7 +12,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --read-validation-stringency SILENT \
     -- \
     --spark-master local[14] \
-&& rm $(find $INDIR -name "*.bam") \
+&& rm $BM \
 && ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   SamToFastq \
     -I /tmp/reverted.bam \
