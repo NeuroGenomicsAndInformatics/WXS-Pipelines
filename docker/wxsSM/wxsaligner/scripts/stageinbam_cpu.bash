@@ -7,7 +7,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
   RevertSam \
     -I $BM \
     -O /dev/stdout \
-    --TMP-DIR $TMP_DIR \
+    --TMP_DIR $TMP_DIR \
     -SO queryname \
     --COMPRESSION_LEVEL 0 \
     --VALIDATION_STRINGENCY SILENT \

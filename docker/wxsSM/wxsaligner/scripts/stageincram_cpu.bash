@@ -8,7 +8,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     -I $CRAM \
     -O /dev/stdout \
     -R /ref/$UNWRAP_FASTA \
-    --TMP-DIR $TMP_DIR \
+    --TMP_DIR $TMP_DIR \
     -SO queryname \
     --VALIDATION_STRINGENCY SILENT \
 | ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
