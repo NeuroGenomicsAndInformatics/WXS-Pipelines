@@ -39,7 +39,6 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_F} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-align\")" \
   -n 8 \
   -Ne \
   -sp $PRIORITY_BQSR \
@@ -63,6 +62,7 @@ LSF_DOCKER_ENTRYPOINT=/bin/sh \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
+  -w "done(\"${JOBNAME}-bqsr\")" \
   -n 8 \
   -Ne \
   -sp $PRIORITY_HC \
