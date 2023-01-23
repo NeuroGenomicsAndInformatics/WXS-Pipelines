@@ -33,7 +33,8 @@ ENV_FILE=/scratch1/fs1/fernandezv/${USER}/c1in/envs/${FULLSMID}.env
 LOGDIR=/scratch1/fs1/fernandezv/${USER}/c1out/logs/${FULLSMID}
 
 ## 2. BQSR
-LSF_DOCKER_VOLUMES="/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
+LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
+/scratch1/fs1/fernandezv:/scratch1/fs1/fernandezv \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
