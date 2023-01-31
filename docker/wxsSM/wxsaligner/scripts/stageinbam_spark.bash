@@ -2,30 +2,28 @@
 rsync -rL $STAGE_INDIR/ $INDIR
 for BM in $(find $INDIR -name "*.bam"); do
 ln -s $BM /tmp/working.bam
-samtools index -@ $LSB_MAX_NUM_PROCESSORS /tmp/working.bam
 ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSamSpark \
     -I /tmp/working.bam \
-    -O /tmp/reverted.bam \
+    -O $TMP_DIR/reverted$LSB_JOBID.bam \
     --tmp-dir $TMP_DIR \
     --sort-order queryname \
     --read-validation-stringency SILENT \
     -- \
     --spark-master local[14] \
-&& rm $BM \
+&& rm $BM && rm /tmp/working.bam && mkdir $INDIR/${BM##*/} \
 && ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   SamToFastq \
-    -I /tmp/reverted.bam \
+    -I $TMP_DIR/reverted$LSB_JOBID.bam \
     --COMPRESS_OUTPUTS_PER_RG true \
     --OUTPUT_PER_RG true \
-    --OUTPUT_DIR $INDIR \
+    --OUTPUT_DIR $INDIR/${BM##*/} \
     -RG_TAG PU \
     --TMP_DIR $TMP_DIR \
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 10000000
-rm /tmp/*
+rm $TMP_DIR/reverted$LSB_JOBID.bam
 done
-sleep 10
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
 for FQ in $(find $INDIR -name "*_1.fastq.gz"); do

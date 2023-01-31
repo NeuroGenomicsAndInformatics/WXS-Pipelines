@@ -1,11 +1,10 @@
 #!/bin/bash
 rsync -rL $STAGE_INDIR/ $INDIR
 sleep 10
-for BM in $(find $INDIR -name "*.bam"); do
-samtools index -@ $LSB_MAX_NUM_PROCESSORS $BM
-${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+samtools merge -@ 7 -cu -l 0 - $INDIR/*.bam \
+| ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSam \
-    -I $BM \
+    -I /dev/stdin \
     -O /dev/stdout \
     --TMP_DIR $TMP_DIR \
     -SO queryname \
@@ -21,8 +20,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --TMP_DIR $TMP_DIR \
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 10000000
-rm $BM
-done
+rm $INDIR/*.bam
 sleep 10
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE

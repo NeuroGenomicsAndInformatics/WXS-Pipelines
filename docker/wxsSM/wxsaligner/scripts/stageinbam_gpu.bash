@@ -3,14 +3,14 @@ for VAR in $(printenv | grep CUDA_VISIBLE_DEVICES); do
 export ${VAR/CUDA/NVIDIA}
 done
 rsync -rL $STAGE_INDIR/ $INDIR
-for BM in $(find $INDIR -name "*.bam"); do
-samtools index -@ $LSB_MAX_NUM_PROCESSORS $BM
+samtools merge -@ 7 -cu -l 0 $INDIR/merged.bam $INDIR/*.bam
+for BM in $(find $INDIR -name "*.bam" | grep -v merged); do rm $BM; done
 pbrun bam2fq \
-  --in-bam $BM \
+  --in-bam $INDIR/merged.bam \
   --out-prefix ${INDIR}/${FULLSMID} \
   --rg-tag PU \
   --tmp-dir ${TMP_DIR}
-done
+rm $INDIR/*.bam
 sleep 10
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
@@ -23,4 +23,3 @@ LANE=$(echo ${FQ##*/} | cut -d_ -f2 | cut -d. -f2)
 echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWCELL}_${LANE}.rgfile
 echo "${FQ} ${FQ/_1.fastq/_2.fastq} @RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
 done
-rm $(find $INDIR -name "*.bam")
