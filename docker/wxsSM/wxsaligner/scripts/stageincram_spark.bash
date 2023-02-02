@@ -2,6 +2,7 @@
 rsync -rL $STAGE_INDIR/ $INDIR
 for CRM in $(find $INDIR -name "*.cram"); do
 ln -s $CRM /tmp/working.cram
+samtools index -@ 8 /tmp/working.cram
 ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSamSpark \
     -I /tmp/working.cram \
@@ -12,7 +13,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --read-validation-stringency SILENT \
     -- \
     --spark-master local[14] \
-&& rm $CRM && rm /tmp/working.cram && mkdir $INDIR/${CRM##*/} \
+&& rm $CRM && rm /tmp/working.cra* && mkdir $INDIR/${CRM##*/} \
 && ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   SamToFastq \
     -I $TMP_DIR/reverted$LSB_JOBID.bam \
