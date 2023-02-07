@@ -1,6 +1,6 @@
 #!/bin/bash
 MD_INPUTS=()
-for BM in $(find $INDIR -name "*.fastq*.bam"); do
+for BM in $(find $INDIR -name "*.f*q*.bam"); do
 MD_INPUTS+="-I ${BM} "
 done
 ${GATK} \
