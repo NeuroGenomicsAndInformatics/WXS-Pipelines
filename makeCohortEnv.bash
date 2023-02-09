@@ -1,22 +1,21 @@
 #!/bin/bash
-ENVS_DIR="/scratch1/fs1/cruchagac/$USER/c1in/envs"
-BASE_ENVS_DIR="./baseEnvs"
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+ENVS_DIR="/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs"
+[ ! -d $ENVS_DIR ] && mkdir $ENVS_DIR
 COHORT="$1"
-#SAMPLE_MAP="$2"
-INTERVAL="$2"
-ENV_FILE="$ENVS_DIR/${COHORT}_${INTERVAL}.env"
+CHR="$2"
+ENV_FILE="$ENVS_DIR/${COHORT}_${CHR}.env"
 echo -e "COHORT=${COHORT}" > $ENV_FILE
-echo -e "INTERVAL=${INTERVAL}" >> $ENV_FILE
-echo -e "STAGE_INDIR=/storage1/fs1/cruchagac/Active/$USER/c1in/${COHORT}" >> $ENV_FILE
-[ ! -d /scratch1/fs1/cruchagac/$USER/c1in/${COHORT} ] && mkdir /scratch1/fs1/cruchagac/$USER/c1in/${COHORT}
-echo -e "INDIR=/input/${COHORT}" >> $ENV_FILE
-[ ! -d /scratch1/fs1/cruchagac/$USER/c1out/${COHORT}_${INTERVAL} ] && mkdir /scratch1/fs1/cruchagac/$USER/c1out/${COHORT}_${INTERVAL}
-echo -e "OUTDIR=/output/${COHORT}_${INTERVAL}" >> $ENV_FILE
-[ ! -d /storage1/fs1/cruchagac/Active/$USER/c1out/${COHORT}_${INTERVAL} ] && mkdir /storage1/fs1/cruchagac/Active/$USER/c1out/${COHORT}_${INTERVAL}
-echo -e "FINAL_OUTDIR=/final_output/${COHORT}_${INTERVAL}" >> $ENV_FILE
-echo -e "LOGFILE=/output/${COHORT}_${INTERVAL}/${COHORT}_${INTERVAL}_runlog.txt" >> $ENV_FILE
-#echo -e "SAMPLE_MAP=$2" >> $ENV_FILE
-[ ! -d /scratch1/fs1/cruchagac/${USER}/c1out/logs/${COHORT}_${INTERVAL} ] && mkdir /scratch1/fs1/cruchagac/${USER}/c1out/logs/${COHORT}_${INTERVAL}
-cat ${BASE_ENVS_DIR}/pipelineBaseJoint.env >> $ENV_FILE
-cat ${BASE_ENVS_DIR}/references.env >> $ENV_FILE
-rsync $ENV_FILE /scratch1/fs1/cruchagac/$USER/c1out/${COHORT}_${INTERVAL}
+echo -e "CHR=${CHR}" >> $ENV_FILE
+echo -e "INDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/${COHORT}" >> $ENV_FILE
+[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}
+[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/joint_vcfs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/joint_vcfs
+[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/dbs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/dbs
+echo -e "OUTDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}" >> $ENV_FILE
+[ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR} ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}
+echo -e "FINAL_OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}" >> $ENV_FILE
+echo -e "JOINT_VCF=${FINAL_OUTDIR}/${COHORT}.${CHR}.wgs.joint.vcf.gz" >> $ENV_FILE
+[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}_${CHR} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}_${CHR}
+cat $SCRIPT_DIR/baseEnvs/references.env >> $ENV_FILE
+rsync $ENV_FILE /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}
+echo $ENV_FILE
