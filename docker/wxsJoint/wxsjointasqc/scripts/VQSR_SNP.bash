@@ -1,7 +1,7 @@
 #!/bin/bash
 MODE="SNP"
 NAMEBASE="${JOINT_VCF%.*.*}.AS.${CHR}.${MODE}"
-/ref/gatk-4.2.6.1_mod/gatk \
+${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	VariantRecalibrator \
 	-AS \

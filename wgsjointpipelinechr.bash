@@ -27,7 +27,7 @@ bsub -g ${JOB_GROUP} \
     -Ne \
     -sp 70
     -n 8 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s2.${CHR}.%J.%I.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${CHR}.joint_s1.%J.%I.out \
     -R 'select[mem>240GB] rusage[mem=240GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
@@ -44,7 +44,7 @@ bsub -g ${JOB_GROUP} \
     -N \
     -n 4 \
     -sp 80 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${CHR}.joint_s3.%J.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${CHR}.joint_s2.%J.out \
     -R 'select[mem>220GB] rusage[mem=220GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
@@ -66,3 +66,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
+    bash /scripts/VQCPipeline.bash
