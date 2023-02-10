@@ -25,7 +25,7 @@ LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-call[1-${SHARDS}] \
     -Ne \
-    -sp 70
+    -sp 70 \
     -n 8 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${CHR}.joint_s1.%J.%I.out \
     -R 'select[mem>240GB] rusage[mem=240GB] span[hosts=1]' \
