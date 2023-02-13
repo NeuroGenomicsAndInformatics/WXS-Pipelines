@@ -3,7 +3,7 @@ pbrun fq2bam \
     --ref ${REF_FASTA} \
     --in-fq-list ${INDIR}/infqfile.txt \
     --out-bam ${INDIR}/${BAM} \
-    --out-duplicate-metrics ${METDIR}/${FULLSMID}.dup.metrics.txt \
+    --out-duplicate-metrics ${OUTDIR}/${FULLSMID}.dup.metrics.txt \
     --num-gpus 1 \
     --tmp-dir ${TMP_DIR} \
     || (rm -R $INDIR && exit 66)

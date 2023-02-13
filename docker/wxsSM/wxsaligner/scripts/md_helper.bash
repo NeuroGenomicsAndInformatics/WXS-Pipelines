@@ -8,7 +8,7 @@ ${GATK} \
   MarkDuplicates \
     ${MD_INPUTS[@]}\
     -O ${OUTDIR}/${CRAM} \
-    -M ${METDIR}/${FULLSMID}.dup.metrics.txt \
+    -M ${OUTDIR}/${FULLSMID}.dup.metrics.txt \
     -R ${REF_FASTA} \
     --SORTING_COLLECTION_SIZE_RATIO 0.25 \
     --TMP_DIR ${TMP_DIR} \
