@@ -16,6 +16,6 @@ echo -e "OUTDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}" >>
 echo -e "FINAL_OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}" >> $ENV_FILE
 echo -e "JOINT_VCF=${FINAL_OUTDIR}/${COHORT}.${CHR}.wgs.joint.vcf.gz" >> $ENV_FILE
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}_${CHR} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}_${CHR}
-cat $SCRIPT_DIR/baseEnvs/references.env >> $ENV_FILE
+cat $SCRIPT_DIR/baseEnvs/references_2_0.env >> $ENV_FILE
 rsync $ENV_FILE /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}
 echo $ENV_FILE
