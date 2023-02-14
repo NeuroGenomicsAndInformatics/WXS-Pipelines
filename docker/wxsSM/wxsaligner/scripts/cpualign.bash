@@ -2,8 +2,8 @@
 JOBS_IN_ARRAY=$(wc -l ${INDIR}/infqfile.txt | cut -d ' ' -f1)
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -q general \
-  -g /matthew.j/compute-fernandezv \
-  -G compute-fernandezv \
+  -g /matthew.j/compute-${COMPUTE_USER} \
+  -G compute-${COMPUTE_USER} \
   -J ngi-$USER-$FULLSMID-fqsalign[1-$(( JOBS_IN_ARRAY - 1 ))] \
   -n 4 \
   -sp 55 \
