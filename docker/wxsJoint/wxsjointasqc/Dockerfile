@@ -37,7 +37,7 @@ RUN apt-get update && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
 
-RUN install2.r gfortran ggplot2 gsalib gplots reshape
+RUN install2.r gfortran ggplot2 gsalib gplots reshape data.table
 
 RUN wget -q -P /tmp https://github.com/samtools/samtools/releases/download/${SAM_VER}/samtools-${SAM_VER}.tar.bz2 \
   && tar xjvf /tmp/samtools-${SAM_VER}.tar.bz2 -C /tmp \
