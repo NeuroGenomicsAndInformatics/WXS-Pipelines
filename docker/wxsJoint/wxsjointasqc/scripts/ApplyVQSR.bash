@@ -8,7 +8,7 @@ ${GATK} \
 	ApplyVQSR \
 	-AS \
 	-R ${REF_FASTA} \
-	-L ${REGION} \
+	-L ${CHR} \
 	-V ${CUR_VCF} \
 	-mode ${MODE} \
 	--truth-sensitivity-filter-level 99.7 \
