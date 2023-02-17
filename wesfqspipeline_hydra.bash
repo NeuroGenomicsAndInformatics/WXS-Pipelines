@@ -48,7 +48,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R $(head -n1 $RG) \
   ${REF_FASTA} \
   ${FQ} \
-  ${FQ/_1.fastq/_2.fastq} \
+  ${FQ/_1.f/_2.f} \
   | gatk \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   SortSam \
