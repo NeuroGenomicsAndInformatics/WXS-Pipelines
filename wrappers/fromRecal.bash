@@ -1,11 +1,18 @@
 #!/bin/bash
+## This wrapper script takes the data from a failed pipeline run and tries to generate a gvcf
+# This wrapper assumes the cram and BQSR report are in the output directory on Active storage
+# The argument for this wrapper script is a FULLSMID or workfile
+# This script is essentially a subset of the job submissions from the pipeline script
+
 ## Needed for Parabricks
 export PATH="/opt/miniconda/bin:$PATH"
+
 REF_DIR="/scratch1/fs1/fernandezv/WXSref"
 export COMPUTE_USER=fernandezv
 export SCRATCH_USER=cruchagac
 export STORAGE_USER=cruchagac
 
+## Set up directories and job submission variables
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1in ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1in
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out
@@ -17,7 +24,6 @@ PRIORITY_HC=70
 PRIORITY_UTIL=80
 PRIORITY_QC=50
 
-## Set up directories and job submission variables
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP="/${USER}/compute-${COMPUTE_USER}"
 JOB_GROUP_GPU="/${USER}/compute-${COMPUTE_USER}/gpu"
