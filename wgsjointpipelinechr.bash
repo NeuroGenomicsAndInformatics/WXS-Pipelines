@@ -18,7 +18,7 @@ ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv.bash $COHORT $CHR)
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}-${CHR}"
 JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
-[[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 20 ${JOB_GROUP}
+[[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # This component is to find the number of jobs to use in an array for calling

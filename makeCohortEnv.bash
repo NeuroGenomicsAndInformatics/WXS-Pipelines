@@ -8,10 +8,10 @@ ENV_FILE="$ENVS_DIR/${COHORT}_${CHR}.env"
 echo -e "COHORT=${COHORT}" > $ENV_FILE
 echo -e "CHR=${CHR}" >> $ENV_FILE
 echo -e "INDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/${COHORT}" >> $ENV_FILE
-[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}
-[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/joint_vcfs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/joint_vcfs
-[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/dbs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}/dbs
-echo -e "OUTDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}_${CHR}" >> $ENV_FILE
+[ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR} ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}
+[ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}/joint_vcfs ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}/joint_vcfs
+[ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}/dbs ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}/dbs
+echo -e "OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}" >> $ENV_FILE
 [ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR} ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}
 echo -e "FINAL_OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}" >> $ENV_FILE
 echo -e "JOINT_VCF=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_${CHR}/${COHORT}.${CHR}.wgs.joint.vcf.gz" >> $ENV_FILE
