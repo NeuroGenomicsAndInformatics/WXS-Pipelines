@@ -86,7 +86,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
-bsub -g ${JOB_GROUP_F} \
+bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-stageout \
   -w "ended(\"${JOBNAME}-hc\")" \
   -n1 \
