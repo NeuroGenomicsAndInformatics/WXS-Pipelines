@@ -47,7 +47,6 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-align\")" \
   -n 8 \
   -Ne \
   -sp $PRIORITY_BQSR \
@@ -73,6 +72,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
   -n 8 \
   -Ne \
+  -w "done(\"${JOBNAME}-bqsr\")" \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
   -R 'select[gpuhost && mem>180GB] rusage[mem=180GB] span[hosts=1]' \
