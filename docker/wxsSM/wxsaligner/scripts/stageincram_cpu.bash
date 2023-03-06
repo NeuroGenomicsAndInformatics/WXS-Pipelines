@@ -17,7 +17,7 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --COMPRESS_OUTPUTS_PER_RG true \
     --OUTPUT_PER_RG true \
     --OUTPUT_DIR ${CRM%.cram} \
-    -RG_TAG PU \
+    -RG_TAG ID \
     --TMP_DIR $TMP_DIR \
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 10000000
