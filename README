@@ -1,4 +1,4 @@
-This WXS-Pipelines repository is designed for processing whole genome
+# This WXS-Pipelines repository is designed for processing whole genome
 and exome sequencing data on WUSTL's compute1 HPC cluster.
 
 ![WGS Workflow](Diagrams/WXS_SM_Workflow.png)
