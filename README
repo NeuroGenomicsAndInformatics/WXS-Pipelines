@@ -1,7 +1,7 @@
 This WXS-Pipelines repository is designed for processing whole genome
 and exome sequencing data on WUSTL's compute1 HPC cluster.
 
-![WGS Workflow](Diagrams/WXS_SM_Workflow.jpg)
+![WGS Workflow](Diagrams/WXS_SM_Workflow.png)
 
 Inputs:
 1. A text file with sample names (FULLSMID) separated by whitespace. Spaces, tabs, or newlines are acceptable.
