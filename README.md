@@ -19,8 +19,10 @@ The WXS pipelines were written for use on Washington University in St. Louis's c
 
  CPU and GPU infrastructures are utilized in the pipeline. Alignments first try GPUs, but then use CPUs if the GPU version failed or if GPUs aren’t available. The whole genome pipeline requires GPUs for variant calling using NVDIA’s Clara Parabricks tool haplotypecaller. This GPU requirement may limit its use in some circumstances. For the complete guide to running this pipeline, see [this guide](WGSpipeline_guide.txt).
 
-### WGS Joint Pipeline
-The WGS joint pipeline can be run with the [wgsjointpipelinechr.bash](wgsjointpipelinechr.bash) script. This pipeline utilizes the gvcfs created from the sample pipeline and performs joint calling on the population. The pipeline also performs allele-specific VQSR operations and some hard filtering. Filters include:
+### WGS Joint Calling Pipeline
+The WGS joint calling pipeline can be run with the [wgsjointpipelinechr.bash](wgsjointpipelinechr.bash) script. This pipeline utilizes the gvcfs created from the sample pipeline and performs joint calling on the population by first importing them into genomicsDB datastores and then jointly calling with GenotypGVCFs. The pipeline runs per chromosome and utilizes the WGS interval list provided in the GATK Resource Bundle to perform joint calling on each interval and then merge the interval vcfs into chromosome vcfs.
+
+The pipeline also performs allele-specific VQSR operations and some hard filtering. Filters include:
 - VQSR
 - Non-variants
 - Depth
@@ -28,7 +30,7 @@ The WGS joint pipeline can be run with the [wgsjointpipelinechr.bash](wgsjointpi
 - Allele fraction
 - Allele balance
 
-The pipeline runs per chromosome and utilizes the WGS interval list provided in the GATK Resource Bundle. The QC has some hardcoded values that may require changing and also follows the [allele-specific](https://gatk.broadinstitute.org/hc/en-us/articles/360035890551-Allele-specific-annotation-and-filtering-of-germline-short-variants) paradigm. If you choose to make changes that don't use allele-specific annotations, the sample data produced by the WGS pipeline will still work.
+The QC has some hardcoded values that may require changing and also follows the [allele-specific](https://gatk.broadinstitute.org/hc/en-us/articles/360035890551-Allele-specific-annotation-and-filtering-of-germline-short-variants) paradigm. If you choose to make changes that don't use allele-specific annotations, the sample data produced by the WGS pipeline will still work.
 
 ### Server Code
 There is code for WES processing in the [Hydra](Hydra) folder, named for the NGI Center's server. This code has few hardcoded values and can similarly be augmented to be used on your server.
