@@ -30,7 +30,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-call[1-${SHARDS}] \
+    -J ${JOBNAME}-call \
     -Ne \
     -sp 70 \
     -n 8 \
