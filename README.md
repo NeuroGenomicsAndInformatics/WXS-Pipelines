@@ -17,9 +17,12 @@ The WXS pipelines were written for use on Washington University in St. Louis's c
 - VerifyBamID report
 - Variant Calling Metrics
 
- CPU and GPU infrastructures are utilized in the pipeline. Alignments first try GPUs, but then use CPUs if the GPU version failed or if GPUs aren’t available. The whole genome pipeline requires GPUs for variant calling using NVDIA’s Clara Parabricks tool haplotypecaller. This GPU requirement may limit its use in some circumstances. For the complete guide to running this pipeline, see [this guide](WGSpipeline_guide.txt).
+ CPU and GPU infrastructures are utilized in the pipeline. Alignments first try GPUs, but then use CPUs if the GPU version failed or if GPUs aren’t available. The whole genome pipeline requires GPUs for variant calling using NVDIA’s Clara Parabricks tool haplotypecaller. This GPU requirement may limit its use in some circumstances. For the complete guide to running this pipeline, see [this guide](README-Compute1-MJ.docx).
 
 ### WGS Joint Calling Pipeline
+
+![WGS Workflow](Diagrams/WXS_SMonly.jpg)
+
 The WGS joint calling pipeline can be run with the [wgsjointpipelinechr.bash](wgsjointpipelinechr.bash) script. This pipeline utilizes the gvcfs created from the sample pipeline and performs joint calling on the population by first importing them into genomicsDB datastores and then jointly calling with GenotypGVCFs. The pipeline runs per chromosome and utilizes the WGS interval list provided in the GATK Resource Bundle to perform joint calling on each interval and then merge the interval vcfs into chromosome vcfs.
 
 The pipeline also performs allele-specific VQSR operations and some hard filtering. Filters include:
