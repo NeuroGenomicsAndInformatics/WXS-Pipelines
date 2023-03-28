@@ -8,7 +8,7 @@ ${REF_DIR}:/ref" \
 bsub -g ${JOB_GROUP} \
     -J ngi-${USER}-plink19 \
     -n 8 \
-    -Ne \
+    -N \
     -R 'rusage[mem=100GB]' \
     -G compute-fernandezv \
     -q general \
