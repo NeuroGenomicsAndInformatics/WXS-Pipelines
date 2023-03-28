@@ -12,5 +12,5 @@ bsub -g ${JOB_GROUP} \
     -R 'rusage[mem=100GB]' \
     -G compute-fernandezv \
     -q general \
-    -a 'docker(biocontainers/plink1.9)' \
+    -a 'docker(biocontainers/plink1.9:v1.90b6.6-181012-1-deb_cv1)' \
     $@
