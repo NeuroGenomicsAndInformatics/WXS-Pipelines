@@ -86,7 +86,7 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointsorter:2.0)' \
-    bash /scripts/sortvcfs.bash
+    bash /scripts/mergevcfs.bash
 
 ## 3. Joint QC
 # This step performs VQSR filtering and a host of other filters on the CHR joint vcf

@@ -10,7 +10,7 @@ ${GATK4261} --java-options "-Xms200g -Xmx200g -XX:ConcGCThreads=2 -XX:ParallelGC
     --interval-padding 200 \
     --sample-name-map ${INDIR}/SampleMap.txt \
     --genomicsdb-workspace-path $DATABASE \
-    --batch-size 150 \
+    --batch-size 100 \
     --consolidate true \
     --genomicsdb-shared-posixfs-optimizations true \
     --genomicsdb-vcf-buffer-size 655360 \
