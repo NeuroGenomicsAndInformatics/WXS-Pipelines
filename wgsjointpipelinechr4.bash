@@ -23,7 +23,7 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
 
 # This component is to find the number of jobs to use in an array for calling
 # The number echoed represents the number of intervals in the interval list for that CHR
-SHARDS=100
+SHARDS=50
 echo $SHARDS
 
 ## 1a. Joint Call on Intervals - genomicsDB
@@ -35,7 +35,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-calla[1-${SHARDS}] \
+    -J ${JOBNAME}-call[1-${SHARDS}] \
     -Ne \
     -sp 70 \
     -n 2 \
@@ -44,28 +44,7 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointcaller:2.0)' \
-    bash /scripts/jointcallintervalstage1div.bash
-
-## 1b. Joint Call on Intervals - GenotypeGVCFs
-# This first job is an array of jobs based on the number of intervals in the interval list for the CHR given
-# These jobs joint call the variants in the interval from the previous step.
-# The outcome from this step should be a joint vcf for each interval
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-$REF_DIR:/ref" \
-LSF_DOCKER_ENV_FILE=$ENV_FILE \
-bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-callb[1-${SHARDS}] \
-    -w "done(${JOBNAME}-calla[*])" \
-    -Ne \
-    -sp 75 \
-    -n 2 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${CHR}.joint_s1.%J.%I.out \
-    -R 'select[mem>240GB] rusage[mem=240GB] span[hosts=1]' \
-    -G compute-${COMPUTE_USER} \
-    -q general \
-    -a 'docker(mjohnsonngi/wxsjointcaller:2.0)' \
-    bash /scripts/jointcallintervalstage2div.bash
+    bash /scripts/jointcallinterval4.bash
 
 ## 2. Sort Vcfs
 # This step takes all of the joint vcfs from the previous step and combines them into a chromosome joint vcf
@@ -76,7 +55,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-callb)" \
+    -w "done(${JOBNAME}-call)" \
     -J ${JOBNAME}-sort \
     -N \
     -n 4 \
