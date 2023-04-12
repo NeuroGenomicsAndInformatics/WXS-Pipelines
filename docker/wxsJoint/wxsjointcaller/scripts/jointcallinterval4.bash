@@ -11,6 +11,8 @@ ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGC
     --sample-name-map ${INDIR}/SampleMap.txt \
     --genomicsdb-workspace-path $DATABASE \
     --batch-size 50 \
+    --consolidate true \
+    --genomicsdb-shared-posixfs-optimizations true \
     --genomicsdb-vcf-buffer-size 65536 \
     --tmp-dir ${TMP_DIR} \
 && ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
@@ -21,6 +23,7 @@ ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGC
     --interval-padding 200 \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
+    --genomicsdb-shared-posixfs-optimizations true \
     --tmp-dir ${TMP_DIR}
 SUCCEEDED=$?
 rm -R $TMP_DIR
