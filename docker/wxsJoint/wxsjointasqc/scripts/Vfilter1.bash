@@ -3,7 +3,7 @@ RECAL_VCF="$1"
 NAMEBASE="${RECAL_VCF%.*.*}"
 COUNT_FILE="${NAMEBASE}.counts.csv"
 
-echo "Recal,${NAMEBASE}.vcf.gz,$(zcat ${NAMEBASE}.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "Recal,${NAMEBASE}.vcf.gz,$(zcat ${NAMEBASE}.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
@@ -15,7 +15,7 @@ ${GATK} \
 	-O ${NAMEBASE}-PASS.vcf.gz \
 && rm $RECAL_VCF
 
-echo "Filtered,${NAMEBASE}-PASS.vcf.gz,$(zcat ${NAMEBASE}-PASS.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "Filtered,${NAMEBASE}-PASS.vcf.gz,$(zcat ${NAMEBASE}-PASS.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
@@ -42,7 +42,7 @@ ${GATK} \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz \
 && rm ${NAMEBASE}-PASS.vcf.gz*
 
-echo "DP Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "DP Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 	
 LCR="/scripts/LCR-hs38.bed"
 bedtools subtract -header -A -a ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz -b ${LCR} | bgzip -c > ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz 
@@ -62,7 +62,7 @@ ${GATK} \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
 && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz*
 
-echo "Non-Variant Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "Non-Variant Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
@@ -74,7 +74,7 @@ ${GATK} \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
 && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz*
 
-echo "AF Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "AF Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 java -Xmx80g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -XX:+UseSerialGC \
 	-jar /ref/GATK360.jar \
@@ -85,7 +85,7 @@ java -Xmx80g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -XX:+UseSerialGC \
 	-o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
 && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz*
 
-echo "AB Annotated,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "AB Annotated,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
@@ -98,5 +98,5 @@ ${GATK} \
 SUCCESS=$?
 [[ $SUCCESS ]] && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz*
 
-echo "AB Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
+echo "AB Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 exit $SUCCESS
