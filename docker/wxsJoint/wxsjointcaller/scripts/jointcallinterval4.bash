@@ -7,7 +7,6 @@ INT_LISTS=($(ls /tmp | grep scattered))
 ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
     GenomicsDBImport \
     -L /tmp/${INT_LISTS[${LSB_JOBINDEX}-1]} \
-    --interval-padding 200 \
     --sample-name-map ${INDIR}/SampleMap.txt \
     --genomicsdb-workspace-path $DATABASE \
     --batch-size 50 \
@@ -20,7 +19,6 @@ ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGC
     -R ${REF_FASTA} \
     -V gendb://${DATABASE} \
     -O "${OUTDIR}/${LSB_JOBINDEX}.joint.vcf.gz" \
-    --interval-padding 200 \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --genomicsdb-shared-posixfs-optimizations true \
