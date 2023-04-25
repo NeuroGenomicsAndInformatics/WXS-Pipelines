@@ -12,8 +12,7 @@ ${GATK} \
 	-L ${CHR} \
 	-V ${NAMEBASE}.vcf.gz \
 	--exclude-filtered \
-	-O ${NAMEBASE}-PASS.vcf.gz \
-&& rm $RECAL_VCF
+	-O ${NAMEBASE}-PASS.vcf.gz
 
 echo "Filtered,${NAMEBASE}-PASS.vcf.gz,$(zcat ${NAMEBASE}-PASS.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
