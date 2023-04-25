@@ -39,16 +39,13 @@ ${GATK} \
 	-L ${CHR} \
 	-V ${NAMEBASE}-PASS.vcf.gz \
 	-select "DP <= ${SNV_DP_TR}" \
-	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz \
-&& rm ${NAMEBASE}-PASS.vcf.gz*
+	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz
 
 echo "DP Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 	
 LCR="/scripts/LCR-hs38.bed"
 bedtools subtract -header -A -a ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz -b ${LCR} | bgzip -c > ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz 
 bcftools index -t --threads $LSB_MAX_NUM_PROCESSORS ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz
-
-rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz*
 
 echo "LCR Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
 
@@ -59,8 +56,7 @@ ${GATK} \
 	-L ${CHR} \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz \
 	--exclude-non-variants \
-	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
-&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz*
+	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz
 
 echo "Non-Variant Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
@@ -71,8 +67,7 @@ ${GATK} \
 	-L ${CHR} \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
 	-select 'vc.hasGenotypes() && vc.getCalledChrCount(vc.getAltAlleleWithHighestAlleleCount())/(1.0*vc.getCalledChrCount()) < 1.0'  \
-	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
-&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz*
+	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz
 
 echo "AF Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
@@ -82,8 +77,7 @@ java -Xmx80g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -XX:+UseSerialGC \
 	-A AlleleBalance \
 	-R /ref/20190812_GATK_38_googlebundle/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
-	-o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
-&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz*
+	-o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz
 
 echo "AB Annotated,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
@@ -96,7 +90,6 @@ ${GATK} \
 	-select '(!vc.hasAttribute("ABHet")) || (ABHet >= 0.30 && ABHet <= 0.70)' \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz
 SUCCESS=$?
-[[ $SUCCESS ]] && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz*
 
 echo "AB Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 exit $SUCCESS
