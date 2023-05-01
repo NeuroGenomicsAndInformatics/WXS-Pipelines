@@ -14,11 +14,11 @@ export SCRATCH_USER=cruchagac
 REF_DIR=/scratch1/fs1/fernandezv/WXSref
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv.bash $COHORT $CHR)
+ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv.bash $COHORT $CHR)
 
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}-${CHR}"
-JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
+JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint-rescue"
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
