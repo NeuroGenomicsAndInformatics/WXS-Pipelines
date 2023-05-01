@@ -1,8 +1,10 @@
 #!/bin/bash
-## This script runs the joint pipeline on a single chromosome
-# The two arguments are the COHORT and the CHR to be run
+## This script runs the joint calling portion of the pipeline on a single interval
+# The script should be used when one of the jobs in an array exits
+# The three arguments are the COHORT, the CHR, and the INTERVAL to be run
 # The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1in
 # The CHR argument is the chromosome to be run (ex. chr1, chrX)
+# The INTERVAL argument is the job number in the array that failed
 COHORT=$1
 CHR=$2
 INTERVAL=$3
@@ -23,14 +25,14 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint-rescue"
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # This component is to find the number of jobs to use in an array for calling
-# The number echoed represents the number of intervals in the interval list for that CHR
 SHARDS=50
 echo $SHARDS
 
-## 1a. Joint Call on Intervals - genomicsDB
+## 1a. Joint Call on Intervals - genomicsDBImport & GenotypeGVCFs
 # This first job is an array of jobs based on the number of intervals in the interval list for the CHR given
-# These jobs each add the intervals from all input gvcfs to a genomicsdb.
-# The outcome from this step should be a genomicsDB for each interval
+# These jobs each add the intervals from all input gvcfs to a genomicsdb
+# This genomicsdb is then used to joint call the variants in the interval
+# The outcome of this step is a joint vcf the covers a single interval
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 $REF_DIR:/ref" \
