@@ -21,7 +21,7 @@ gatk --java-options "-Xms40g -Xmx40g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
     GenotypeGVCFs \
     -R ${REF_DIR}/20190812_GATK_38_googlebundle/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta \
     -V gendb://${DATABASE} \
-    -O "${OUTDIR}/${$JOBID}.joint.vcf.gz" \
+    -O "${OUTDIR}/${JOBID}.joint.vcf.gz" \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --tmp-dir ${TMP_DIR}
