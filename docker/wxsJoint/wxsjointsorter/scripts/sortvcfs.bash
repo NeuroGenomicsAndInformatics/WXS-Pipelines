@@ -1,5 +1,6 @@
 #!/bin/bash
 VCF_SHARDS=($(find ${OUTDIR} -maxdepth 1 -name "*joint.vcf.gz"))
+echo ${#VCF_SHARDS[@]}
 VCF_INPUTS=()
 for VCF in ${VCF_SHARDS[@]}; do
   VCF_INPUTS+="-I ${VCF} "
