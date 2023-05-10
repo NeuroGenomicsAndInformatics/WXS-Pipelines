@@ -10,7 +10,5 @@ ${GATK} --java-options "-Xms200g -Xmx200g -XX:ConcGCThreads=1 -XX:ParallelGCThre
     -R ${REF_FASTA} \
     ${VCF_INPUTS[@]}\
     --TMP_DIR ${OUTDIR}/tmp \
-    -O ${JOINT_VCF}
-CODE=$?
-rm -R $OUTDIR
-exit $CODE
+    -O ${JOINT_VCF} \
+&& rm -R $OUTDIR
