@@ -46,7 +46,8 @@ echo "DP Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz,$(zcat ${NAMEBASE}-P
 	
 LCR="/scripts/LCR-hs38.bed"
 bedtools subtract -header -A -a ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz -b ${LCR} | bgzip -c > ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz 
-bcftools index -t --threads $LSB_MAX_NUM_PROCESSORS ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz
+bcftools index -t --threads $LSB_MAX_NUM_PROCESSORS ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz \
+&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz
 
 
 echo "LCR Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz | grep -v '#' | wc -l)" >> $COUNT_FILE
