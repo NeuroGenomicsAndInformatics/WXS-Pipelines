@@ -38,4 +38,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/VQCPipeline.bash
+    bash /scripts/VQCPipelinekeep.bash
