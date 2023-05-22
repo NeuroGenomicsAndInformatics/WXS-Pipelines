@@ -16,13 +16,7 @@ RUN apt-get update && \
   rsync \
   tabix \
 	python2 \
-  python3-matplotlib \
-  texlive-latex-base \
-  texlive-latex-recommended \
-  texlive-latex-extra \
-  texlive-fonts-recommended \
   vcftools \
-  bedtools \
   libncurses5-dev \
   libncursesw5-dev \
   zlib1g \

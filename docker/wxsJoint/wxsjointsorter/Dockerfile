@@ -1,8 +1,7 @@
 ##########################################
 FROM rocker/r-ver:4.1.3
 
-ARG BWA_VER=0.7.17
-ARG SAM_VER=1.10
+ARG SAM_VER=1.15.1
 ARG BCF_VER=1.15.1
 ENV JAVA_LIBRARY_PATH /usr/lib/jni
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
@@ -12,18 +11,11 @@ RUN apt-get update && \
 	apt-get install -y --no-install-recommends \
   build-essential \
   wget \
-	less \
   libz-dev \
 	libbz2-dev \
   rsync \
   tabix \
 	python2 \
-  python3-matplotlib \
-  texlive-latex-base \
-  texlive-latex-recommended \
-  texlive-latex-extra \
-  texlive-fonts-recommended \
-  bedtools \
   libncurses5-dev \
   libncursesw5-dev \
   zlib1g \
@@ -36,7 +28,7 @@ RUN apt-get update && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
 
-RUN install2.r gfortran ggplot2 gsalib gplots reshape
+RUN install2.r gfortran gsalib
 
 RUN wget -q -P /tmp https://github.com/samtools/samtools/releases/download/${SAM_VER}/samtools-${SAM_VER}.tar.bz2 \
   && tar xjvf /tmp/samtools-${SAM_VER}.tar.bz2 -C /tmp \
