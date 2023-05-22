@@ -23,10 +23,6 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint-rescue"
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
-# This component is to find the number of jobs to use in an array for calling
-SHARDS=50
-echo $SHARDS
-
 ## 2. Sort Vcfs
 # This step takes all of the joint vcfs from the previous step and combines them into a chromosome joint vcf
 # The sorting may be mostly unnecessary, but it does eliminate a problem if the interval vcfs are out of order
@@ -36,7 +32,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-sort-$CHR-rescue \
+    -J ${JOBNAME}-sort-rescue \
     -N \
     -n 4 \
     -sp 80 \
