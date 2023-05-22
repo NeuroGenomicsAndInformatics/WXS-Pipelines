@@ -27,6 +27,7 @@ RUN apt-get update && \
   texlive-latex-extra \
   texlive-fonts-recommended \
   bedtools \
+  vcftools \
   libncurses5-dev \
   libncursesw5-dev \
   zlib1g \

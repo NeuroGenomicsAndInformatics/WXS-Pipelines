@@ -10,7 +10,6 @@ RUN apt-get update && \
  	apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends \
   build-essential \
-  git \
   wget \
 	unzip \
 	less \
@@ -24,7 +23,6 @@ RUN apt-get update && \
   texlive-latex-recommended \
   texlive-latex-extra \
   texlive-fonts-recommended \
-  bedtools \
   libncurses5-dev \
   libncursesw5-dev \
   zlib1g \
