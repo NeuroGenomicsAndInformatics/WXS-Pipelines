@@ -3,7 +3,6 @@ FROM openjdk:11-jre
 RUN apt-get update && \
  	apt-get upgrade -y && \
 	apt-get install -y --no-install-recommends \
-	unzip \
 	bzip2 \
 	zlib1g \
 	zlib1g-dev \
