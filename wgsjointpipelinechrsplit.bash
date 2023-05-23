@@ -4,7 +4,7 @@
 # The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1in
 # The CHR argument is the chromosome to be run (ex. chr1, chrX)
 COHORT=$1
-NUM_INTERVALS=$2
+CHR=$2
 
 # These variables can be changed to run for other users
 export COMPUTE_USER=fernandezv
@@ -13,19 +13,18 @@ export SCRATCH_USER=cruchagac
 REF_DIR=/scratch1/fs1/fernandezv/WXSref
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv5.bash $COHORT)
+ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv.bash $COHORT $CHR)
 
 # Pipeline variable setup for running the jobs
-JOBNAME="ngi-${USER}-${COHORT}"
+JOBNAME="ngi-${USER}-${COHORT}-${CHR}"
 JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # This component is to find the number of jobs to use in an array for calling
 # The number echoed represents the number of intervals in the interval list for that CHR
-echo $NUM_INTERVALS
-
-for ((i=0 ; i < $NUM_INTERVALS ; i++)); do
+SHARDS=50
+echo $SHARDS
 
 ## 1a. Joint Call on Intervals - genomicsDB
 # This first job is an array of jobs based on the number of intervals in the interval list for the CHR given
@@ -36,18 +35,17 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-call-$i \
+    -J ${JOBNAME}-call[1-${SHARDS}] \
     -Ne \
     -sp 70 \
     -n 2 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${i}.joint_s1.%J.%I.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${CHR}.joint_s1.%J.%I.out \
     -R 'select[mem>120GB] rusage[mem=120GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointcaller:2.0)' \
-    bash /scripts/jointcallinterval5.bash $i
+    bash /scripts/jointcallchrsplitinterval.bash
 
-done
 ## 2. Sort Vcfs
 # This step takes all of the joint vcfs from the previous step and combines them into a chromosome joint vcf
 # The sorting may be mostly unnecessary, but it does eliminate a problem if the interval vcfs are out of order
@@ -57,7 +55,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-call-\*)" \
+    -w "done(${JOBNAME}-call)" \
     -J ${JOBNAME}-sort \
     -N \
     -n 4 \
@@ -72,7 +70,6 @@ bsub -g ${JOB_GROUP} \
 ## 3. Joint QC
 # This step performs VQSR filtering and a host of other filters on the CHR joint vcf
 # The outcome from this step is a file containing counts of the variants in each step and a final filtered joing vcf for the CHR
-for CHR in chr{1..22} chrX chrY;
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 $REF_DIR:/ref" \

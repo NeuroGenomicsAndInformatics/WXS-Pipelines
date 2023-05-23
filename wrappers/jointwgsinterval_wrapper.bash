@@ -47,4 +47,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointcaller:2.0)' \
-    bash /scripts/jointcallinterval4_rescue.bash $INTERVAL
+    bash /scripts/jointcallchrsplitinterval_rescue.bash $INTERVAL
