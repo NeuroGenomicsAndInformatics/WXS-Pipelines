@@ -57,7 +57,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-call-\*)" \
+    -w "done(${JOBNAME}-call-*)" \
     -J ${JOBNAME}-sort \
     -N \
     -n 4 \
@@ -72,7 +72,7 @@ bsub -g ${JOB_GROUP} \
 ## 3. Joint QC
 # This step performs VQSR filtering and a host of other filters on the CHR joint vcf
 # The outcome from this step is a file containing counts of the variants in each step and a final filtered joing vcf for the CHR
-for CHR in chr{1..22} chrX chrY;
+for CHR in chr{1..22} chrX chrY; do 
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 $REF_DIR:/ref" \
@@ -89,3 +89,4 @@ bsub -g ${JOB_GROUP} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
     bash /scripts/VQCPipeline.bash
+done
