@@ -1,6 +1,6 @@
 #!/bin/bash
 INTERVAL=$1
-bash /scripts/splitintschrdivide.bash
+bash /scripts/splitintsdivide.bash
 TMP_DIR=${OUTDIR}/tmp${INTERVAL} && mkdir ${TMP_DIR}
 DATABASE=$TMP_DIR/db
 rm -R $DATABASE
