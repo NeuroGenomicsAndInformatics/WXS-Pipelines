@@ -1,10 +1,9 @@
 #!/bin/bash
-## This script runs the joint calling portion of the pipeline on a single interval
+## This script runs the sorting portion of the pipeline on a single chromosome
 # The script should be used when one of the jobs in an array exits
-# The three arguments are the COHORT, the CHR, and the INTERVAL to be run
+# The two arguments are the COHORT and the CHR
 # The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1in
 # The CHR argument is the chromosome to be run (ex. chr1, chrX)
-# The INTERVAL argument is the job number in the array that failed
 COHORT=$1
 CHR=$2
 

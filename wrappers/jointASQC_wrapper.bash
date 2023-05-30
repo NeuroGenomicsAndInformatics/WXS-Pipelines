@@ -1,5 +1,5 @@
 #!/bin/bash
-## This script runs the joint pipeline on a single chromosome
+## This script runs the QC pipeline on a single chromosome
 # The two arguments are the COHORT and the CHR to be run
 # The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1out
 # The CHR argument is the chromosome to be run (ex. chr1, chrX)
