@@ -13,7 +13,7 @@ export SCRATCH_USER=cruchagac
 REF_DIR=/scratch1/fs1/fernandezv/WXSref
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv5.bash $COHORT)
+ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv5.bash $COHORT $NUM_INTERVALS)
 
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}"
