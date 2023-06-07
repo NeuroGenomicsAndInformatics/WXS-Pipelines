@@ -48,17 +48,16 @@ bsub -g ${JOB_GROUP} \
     bash /scripts/jointcallsplitinterval.bash $i
 
 done
-## 2. Sort Vcfs
+## 2. Merge Vcfs
 # This step takes all of the joint vcfs from the previous step and combines them into a chromosome joint vcf
-# The sorting may be mostly unnecessary, but it does eliminate a problem if the interval vcfs are out of order
-# The outcome of this step is a single joint vcf that covers the CHR given
+# The outcome of this step is a set of per-chromosome vcfs
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
     -w "done(${JOBNAME}-call-*)" \
-    -J ${JOBNAME}-sort \
+    -J ${JOBNAME}-merge \
     -N \
     -n 4 \
     -sp 80 \
@@ -66,19 +65,20 @@ bsub -g ${JOB_GROUP} \
     -R 'select[mem>220GB] rusage[mem=220GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsjointsorter:2.0)' \
-    bash /scripts/sortvcfs.bash
+    -a 'docker(mjohnsonngi/wxsjointmerger:2.0)' \
+    bash /scripts/mergevcfssplit.bash
 
 ## 3. Joint QC
 # This step performs VQSR filtering and a host of other filters on the CHR joint vcf
 # The outcome from this step is a file containing counts of the variants in each step and a final filtered joing vcf for the CHR
 for CHR in chr{1..22} chrX chrY; do 
+CHR=$CHR \
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-sort)" \
+    -w "done(${JOBNAME}-merge)" \
     -J ${JOBNAME}-qc \
     -N \
     -n 4 \
