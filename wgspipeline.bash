@@ -255,7 +255,8 @@ bsub -g ${JOB_GROUP_QC} \
 # This job produces a csv with a header line and a line of data from the QC reports
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-$HOME:$HOME" \
+$HOME:$HOME \
+$REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stageout \
