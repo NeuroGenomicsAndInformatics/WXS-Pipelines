@@ -11,15 +11,12 @@ RUN apt-get update && \
   libz-dev \
 	libbz2-dev \
   rsync \
-	python2 \
   libncurses5-dev \
   libncursesw5-dev \
   zlib1g \
   zlib1g-dev \
   liblzma-dev \
-	openjdk-8-jdk \
   software-properties-common && \
-  ln -s /usr/bin/python2.7 /usr/bin/python && \
   apt-get -y clean && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
