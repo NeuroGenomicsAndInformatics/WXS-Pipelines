@@ -10,4 +10,4 @@ SEX_RATIO=$(bc -l <<<"$XCOV/$YCOV")
 SEX_CALL="NA"
 if (( $(echo "$SEX_RATIO > 10" | bc -l) )); then SEX_CALL=F; fi
 if (( $(echo "$SEX_RATIO < 10" | bc -l) )); then SEX_CALL=M; fi
-echo "${CRAM},${XCOV},${YCOV},${SEX_RATIO}" >> $SEX_FILE
+echo "${CRAM},${XCOV},${YCOV},${SEX_RATIO},${SEX_CALL}" >> $SEX_FILE
