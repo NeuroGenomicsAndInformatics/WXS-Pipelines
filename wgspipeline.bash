@@ -262,7 +262,7 @@ bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stageout \
     -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
     -n 1 \
-    -N \
+    -Ne \
     -sp $PRIORITY_UTIL \
     -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
     -R 'rusage[mem=4GB]' \
