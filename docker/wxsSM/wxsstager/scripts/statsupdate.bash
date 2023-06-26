@@ -43,12 +43,4 @@ done
 echo "" >> ${STATS_FILE}
 
 ## Get sex information
-SEX_FILE="${FINAL_OUTDIR}/${FULLSMID}.sex.csv"
-echo "FULLSMID,X coverage,Y coverage,ratio,sex call" > $SEX_FILE
-XCOV=$(samtools coverage --reference $REF_FASTA -r chrX ${FINAL_OUTDIR}/${FULLSMID}*.cram | tail -n1 | cut -f6)
-YCOV=$(samtools coverage --reference $REF_FASTA -r chrY ${FINAL_OUTDIR}/${FULLSMID}*.cram | tail -n1 | cut -f6)
-SEX_RATIO=$(bc -l <<<"$XCOV/$YCOV")
-SEX_CALL="NA"
-if (( $(echo "$SEX_RATIO > 3" | bc -l) )); then SEX_CALL=F; fi
-if (( $(echo "$SEX_RATIO < 2" | bc -l) )); then SEX_CALL=M; fi
-echo "${FULLSMID},${XCOV},${YCOV},${SEX_RATIO}" >> $SEX_FILE
+bash /scripts/sex_check_coverage.bash ${FINAL_OUTDIR}/${FULLSMID}*.cram
