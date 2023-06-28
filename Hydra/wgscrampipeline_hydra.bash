@@ -32,11 +32,12 @@ for VAR in $(cat $ENV_FILE); do export $VAR; done
 cp $ENV_FILE $OUTDIR
 echo -n "" > $LOG_FILE
 
-samtools index $(find $INDIR -name "*am")
+for CRAM in $(find $INDIR -name "*am"); do
+samtools index $CRAM
 
 ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSam \
-    -I $(find $INDIR -name "*.cram") \
+    -I $CRAM \
     -R $REF_FASTA \
     -O /dev/stdout \
     -SO queryname \
@@ -50,6 +51,7 @@ ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USE
     --OUTPUT_DIR $INDIR \
     -RG_TAG PU \
     --VALIDATION_STRINGENCY SILENT
+done
 
 ## 1. Align and Sort
 for FQ in $(find $INDIR -name "*_1.f*q.gz"); do
