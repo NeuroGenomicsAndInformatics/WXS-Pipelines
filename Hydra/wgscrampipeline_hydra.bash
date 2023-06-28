@@ -6,6 +6,7 @@ if [[ -f $1 ]]; then INDIRS=($(cat $1)); else INDIRS=($1); fi
 export THREADS=8
 # Second argument is the directory where all samples will end up in
 RUN_OUTDIR=$2
+UNWRAP_FASTA=$3
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 for INDIR in ${INDIRS[@]}; do
 
@@ -38,7 +39,7 @@ samtools index $CRAM
 ${GATK} --java-options "-Xmx40g -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   RevertSam \
     -I $CRAM \
-    -R $REF_FASTA \
+    -R $UNWRAP_FASTA \
     -O /dev/stdout \
     -SO queryname \
     --COMPRESSION_LEVEL 0 \
