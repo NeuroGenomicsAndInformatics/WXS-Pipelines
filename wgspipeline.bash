@@ -6,7 +6,7 @@ export PATH="/opt/miniconda/bin:$PATH"
 export COMPUTE_USER=fernandezv
 export SCRATCH_USER=cruchagac
 export STORAGE_USER=cruchagac
-export REF_DIR="/scratch1/fs1/fernandezv/WXSref"
+export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 ## Touch the references so that compute1 doesn't remove them
 find $REF_DIR -true -exec touch '{}' \;

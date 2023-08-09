@@ -5,7 +5,7 @@ TMP_DIR=${OUTDIR}/tmp${INTERVAL} && mkdir ${TMP_DIR}
 DATABASE=$TMP_DIR/db
 rm -R $DATABASE
 INT_LISTS=($(ls /tmp | grep scattered))
-${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+${GATK4261} --java-options "-Xms100g -Xmx100g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
     GenomicsDBImport \
     -L /tmp/${INT_LISTS[$INTERVAL]} \
     --sample-name-map ${INDIR}/SampleMap.txt \
@@ -15,7 +15,7 @@ ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGC
     --genomicsdb-shared-posixfs-optimizations true \
     --genomicsdb-vcf-buffer-size 65536 \
     --tmp-dir ${TMP_DIR} \
-&& ${GATK4261} --java-options "-Xms100g -Xmx100g -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+&& ${GATK4261} --java-options "-Xms100g -Xmx100g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
     GenotypeGVCFs \
     -R ${REF_FASTA} \
     -V gendb://${DATABASE} \

@@ -10,7 +10,7 @@ NUM_INTERVALS=$2
 export COMPUTE_USER=fernandezv
 export STORAGE_USER=cruchagac
 export SCRATCH_USER=cruchagac
-REF_DIR=/scratch1/fs1/fernandezv/WXSref
+REF_DIR=/scratch1/fs1/cruchagac/WXSref
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv5.bash $COHORT $NUM_INTERVALS)
@@ -39,7 +39,7 @@ bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-call-$i \
     -Ne \
     -sp 70 \
-    -n 2 \
+    -n 1 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${i}.joint_s1.%J.out \
     -R 'select[mem>120GB] rusage[mem=120GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
