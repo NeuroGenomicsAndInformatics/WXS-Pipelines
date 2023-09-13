@@ -1,11 +1,11 @@
 #!/bin/bash
-# This wrapper generates a stats.csv file from the various QC reports
-# The argument for this wrapper is a path to the sample's output directory on Active storage
+# This wrapper generates a sex.csv file from the cram
+# The argument for this wrapper is a cram file
 CRAM=$1
 
 STORAGE_USER=cruchagac
 COMPUTE_USER=fernandezv
-REF_DIR="/scratch1/fs1/fernandezv/WXSref"
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP_QC="/${USER}/compute-${COMPUTE_USER}/qc"
