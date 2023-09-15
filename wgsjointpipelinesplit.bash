@@ -40,7 +40,7 @@ bsub -g ${JOB_GROUP} \
     -sp 70 \
     -n 1 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${i}.joint_s1.%J.out \
-    -R 'select[mem>80GB && tmp>10GB] rusage[mem=80GB,tmp=10GB] span[hosts=1]' \
+    -R 'select[mem>80GB && tmp>6GB] rusage[mem=80GB,tmp=6GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointcaller:2.0)' \
