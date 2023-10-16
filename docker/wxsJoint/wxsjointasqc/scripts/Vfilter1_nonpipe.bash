@@ -16,7 +16,7 @@ ${GATK} \
 	-V ${NAMEBASE}.vcf.gz \
 	--exclude-filtered \
 	-O ${NAMEBASE}-PASS.vcf.gz \
-&& rm $RECAL_VCF
+&& rm ${RECAL_VCF} && ${RECAL_VCF/INDEL/SNP}
 
 echo "Filtered,${NAMEBASE}-PASS.vcf.gz,$(zcat ${NAMEBASE}-PASS.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 echo "${NAMEBASE}-PASS.vcf.gz" >> ${NAMEBASE}-PASS.vcftools.log; zcat ${NAMEBASE}-PASS.vcf.gz | vcf-annotate --fill-type | grep -oP "TYPE=\w+" | sort | uniq -c >> ${NAMEBASE}-PASS.vcftools.log
