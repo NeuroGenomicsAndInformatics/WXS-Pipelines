@@ -36,7 +36,7 @@ LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-qc \
     -Ne \
-    -n 4 \
+    -n 2 \
     -sp 90 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${INTERVAL}.joint_s3.%J.out \
     -R 'select[mem>100GB && tmp>10GB] rusage[mem=100GB,tmp=10G] span[hosts=1]' \
