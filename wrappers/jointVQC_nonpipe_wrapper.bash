@@ -43,4 +43,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/VQCPipe_nonpipe.bash $JOINT_VCF $SNP_RECAL_TABLE $INDEL_RECAL_TABLE $INTERVAL
+    bash /scripts/VQCPipe_noVQSR.bash $JOINT_VCF $SNP_RECAL_TABLE $INDEL_RECAL_TABLE $INTERVAL
