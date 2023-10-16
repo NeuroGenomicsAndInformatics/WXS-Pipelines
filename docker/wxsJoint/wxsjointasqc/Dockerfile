@@ -17,6 +17,7 @@ RUN apt-get update && \
   tabix \
 	python2 \
   vcftools \
+  bedtools \
   libncurses5-dev \
   libncursesw5-dev \
   zlib1g \
