@@ -12,6 +12,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
+	-L ${INT_LIST} \
 	-V ${NAMEBASE}.vcf.gz \
 	--exclude-filtered \
 	-O ${NAMEBASE}-PASS.vcf.gz \
@@ -24,6 +25,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	VariantsToTable \
 	-R ${REF_FASTA} \
+	-L ${INT_LIST} \
 	-V ${NAMEBASE}-PASS.vcf.gz \
 	--show-filtered \
 	--split-multi-allelic \
@@ -38,6 +40,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
+	-L ${INT_LIST} \
 	-V ${NAMEBASE}-PASS.vcf.gz \
 	-select "DP <= ${SNV_DP_TR}" \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz \
@@ -58,6 +61,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
+	-L ${INT_LIST} \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz \
 	--exclude-non-variants \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
@@ -70,6 +74,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
+	-L ${INT_LIST} \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
 	-select 'vc.hasGenotypes() && vc.getCalledChrCount(vc.getAltAlleleWithHighestAlleleCount())/(1.0*vc.getCalledChrCount()) < 1.0'  \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
@@ -91,6 +96,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
+	-L ${INT_LIST} \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
 	-select '(!vc.hasAttribute("ABHet")) || (ABHet >= 0.30 && ABHet <= 0.70)' \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz
