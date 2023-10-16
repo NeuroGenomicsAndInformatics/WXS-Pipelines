@@ -35,7 +35,7 @@ $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-qc \
-    -N \
+    -Ne \
     -n 4 \
     -sp 90 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${INTERVAL}.joint_s3.%J.out \
