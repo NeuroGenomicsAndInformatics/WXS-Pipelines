@@ -10,7 +10,7 @@ NUM_INTERVALS=$2
 export COMPUTE_USER=fernandezv
 export STORAGE_USER=cruchagac
 export SCRATCH_USER=cruchagac
-REF_DIR=/scratch1/fs1/cruchagac/WXSref
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv5.bash $COHORT $NUM_INTERVALS)

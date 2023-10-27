@@ -6,7 +6,7 @@
 
 ## Needed for Parabricks
 export PATH="/opt/miniconda/bin:$PATH"
-REF_DIR="/scratch1/fs1/fernandezv/WXSref"
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 export COMPUTE_USER=fernandezv
 export SCRATCH_USER=cruchagac

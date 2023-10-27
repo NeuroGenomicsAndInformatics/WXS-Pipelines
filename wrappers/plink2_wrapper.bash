@@ -1,5 +1,5 @@
 #!/bin/bash
-REF_DIR="/scratch1/fs1/fernandezv/WXSref"
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP="/${USER}/compute-fernandezv"
 

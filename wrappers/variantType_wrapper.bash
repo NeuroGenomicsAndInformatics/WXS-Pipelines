@@ -6,7 +6,7 @@ VCF=$1
 SCRATCH_USER=fernandezv
 STORAGE_USER=cruchagac
 COMPUTE_USER=fernandezv
-REF_DIR="/scratch1/fs1/fernandezv/WXSref"
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 JOB_GROUP_QC="/${USER}/compute-${COMPUTE_USER}/qc"
