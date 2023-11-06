@@ -5,8 +5,7 @@
 # The NUM_INTERVALS argument is the number of intervals to split the genome into
 COHORT=$1
 NUM_INTERVALS=$2
-export CHR=$3
-RECAL_VCF=$4
+RECAL_VCF=$3
 
 # These variables can be changed to run for other users
 export COMPUTE_USER=fernandezv
@@ -35,9 +34,9 @@ bsub -g ${JOB_GROUP} \
     -Ne \
     -n 2 \
     -sp 90 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${INTERVAL}.joint_s3.%J.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s3.%J.out \
     -R 'select[mem>100GB] rusage[mem=100GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/Vfilter1.bash $RECAL_VCF
+    bash /scripts/Vfilter1_noCHR.bash $RECAL_VCF
