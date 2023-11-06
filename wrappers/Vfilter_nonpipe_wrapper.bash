@@ -36,7 +36,7 @@ bsub -g ${JOB_GROUP} \
     -n 2 \
     -sp 90 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${INTERVAL}.joint_s3.%J.out \
-    -R 'select[mem>40GB] rusage[mem=40GB] span[hosts=1]' \
+    -R 'select[mem>100GB] rusage[mem=100GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
