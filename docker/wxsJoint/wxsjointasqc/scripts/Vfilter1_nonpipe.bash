@@ -1,7 +1,11 @@
 #!/bin/bash
 RECAL_VCF="$1"
-NAMEBASE="${RECAL_VCF%.*.*}"
+CHR="$2"
+NAMEBASE="${RECAL_VCF%.*.*}.${LSB_JOBINDEX}"
 COUNT_FILE="${NAMEBASE}.counts.csv"
+bash /scripts/splitintschr.bash
+INT_LISTS=($(ls /tmp | grep scattered))
+INT_LIST="/tmp/${INT_LISTS[${$LSB_JOBINDEX}]}"
 
 echo "Filter,File Location,Number Variants" > $COUNT_FILE
 
@@ -15,8 +19,7 @@ ${GATK} \
 	-L ${INT_LIST} \
 	-V ${NAMEBASE}.vcf.gz \
 	--exclude-filtered \
-	-O ${NAMEBASE}-PASS.vcf.gz \
-&& rm ${RECAL_VCF} && ${RECAL_VCF/INDEL/SNP}
+	-O ${NAMEBASE}-PASS.vcf.gz
 
 echo "Filtered,${NAMEBASE}-PASS.vcf.gz,$(zcat ${NAMEBASE}-PASS.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 echo "${NAMEBASE}-PASS.vcf.gz" >> ${NAMEBASE}-PASS.vcftools.log; zcat ${NAMEBASE}-PASS.vcf.gz | vcf-annotate --fill-type | grep -oP "TYPE=\w+" | sort | uniq -c >> ${NAMEBASE}-PASS.vcftools.log
