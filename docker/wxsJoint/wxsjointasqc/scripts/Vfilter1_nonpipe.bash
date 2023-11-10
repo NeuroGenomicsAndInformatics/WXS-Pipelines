@@ -3,9 +3,9 @@ RECAL_VCF="$1"
 CHR="$2"
 NAMEBASE="${RECAL_VCF%.*.*}.${LSB_JOBINDEX}"
 COUNT_FILE="${NAMEBASE}.counts.csv"
-bash /scripts/splitintschr.bash
+bash /scripts/splitintschr.bash $CHR
 INT_LISTS=($(ls /tmp | grep scattered))
-INT_LIST="/tmp/${INT_LISTS[${$LSB_JOBINDEX}]}"
+INT_LIST="/tmp/${INT_LISTS[${LSB_JOBINDEX}]}"
 
 echo "Filter,File Location,Number Variants" > $COUNT_FILE
 
@@ -17,7 +17,7 @@ ${GATK} \
 	SelectVariants \
 	-R ${REF_FASTA} \
 	-L ${INT_LIST} \
-	-V ${NAMEBASE}.vcf.gz \
+	-V ${RECAL_VCF} \
 	--exclude-filtered \
 	-O ${NAMEBASE}-PASS.vcf.gz
 

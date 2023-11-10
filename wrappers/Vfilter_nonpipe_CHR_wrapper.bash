@@ -35,7 +35,7 @@ bsub -g ${JOB_GROUP} \
     -Ne \
     -n 2 \
     -sp 90 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s3.%J.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s3.%J.%I.out \
     -R 'select[mem>100GB] rusage[mem=100GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
