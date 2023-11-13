@@ -7,6 +7,7 @@ COHORT=$1
 NUM_INTERVALS=$2
 RECAL_VCF=$3
 CHR=$4
+INTERVAL=$5
 
 # These variables can be changed to run for other users
 export COMPUTE_USER=fernandezv
@@ -31,7 +32,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-qc[1-50] \
+    -J ${JOBNAME}-qc-rescue[{$INTERVAL}] \
     -Ne \
     -n 2 \
     -sp 90 \
@@ -40,4 +41,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/Vfilter1_nonpipe.bash $RECAL_VCF $CHR
+    bash /scripts/Vfilter1_nonpipe.bash $RECAL_VCF $CHR $INTERVAL
