@@ -1,11 +1,14 @@
 #!/bin/bash
 RECAL_VCF="$1"
 CHR="$2"
-NAMEBASE="${RECAL_VCF%.*.*}.${LSB_JOBINDEX}"
+INTERVAL="$3"
+[[ -z $INTERVAL ]] && INTERVAL=${LSB_JOBINDEX}
+
+NAMEBASE="${RECAL_VCF%.*.*}.${INTERVAL}"
 COUNT_FILE="${NAMEBASE}.counts.csv"
 bash /scripts/splitintschr.bash $CHR
 INT_LISTS=($(ls /tmp | grep scattered))
-INT_LIST="/tmp/${INT_LISTS[${LSB_JOBINDEX}]}"
+INT_LIST="/tmp/${INT_LISTS[${INTERVAL}-1]}"
 
 echo "Filter,File Location,Number Variants" > $COUNT_FILE
 
