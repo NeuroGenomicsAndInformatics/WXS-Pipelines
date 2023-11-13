@@ -32,7 +32,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-qc-rescue[{$INTERVAL}] \
+    -J ${JOBNAME}-qc-rescue-${CHR}-${INTERVAL} \
     -Ne \
     -n 2 \
     -sp 90 \
