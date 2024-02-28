@@ -5,8 +5,7 @@ COUNT_FILE="${NAMEBASE}.counts.csv"
 
 echo "Filter,File Location,Number Variants" > $COUNT_FILE
 
-echo "Recal,${NAMEBASE}.vcf.gz,$(zcat ${NAMEBASE}.vcf.gz | grep -v '^#' | wc -l)" > $COUNT_FILE
-echo "${NAMEBASE}.vcf.gz" > ${NAMEBASE}.vcftools.log; zcat ${NAMEBASE}.vcf.gz | vcf-annotate --fill-type | grep -oP "TYPE=\w+" | sort | uniq -c >> ${NAMEBASE}.vcftools.log
+echo "Recal,${NAMEBASE}.vcf.gz,$(zcat ${NAMEBASE}.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
@@ -25,7 +24,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	VariantsToTable \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
+	-L /intlists/${CHR}.interval_list \
 	-V ${NAMEBASE}-PASS.vcf.gz \
 	--show-filtered \
 	--split-multi-allelic \
@@ -40,7 +39,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
+	-L /intlists/${CHR}.interval_list \
 	-V ${NAMEBASE}-PASS.vcf.gz \
 	-select "DP <= ${SNV_DP_TR}" \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}.vcf.gz \
@@ -61,7 +60,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
+	-L /intlists/${CHR}.interval_list \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR.vcf.gz \
 	--exclude-non-variants \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
@@ -74,7 +73,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
+	-L /intlists/${CHR}.interval_list \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants.vcf.gz \
 	-select 'vc.hasGenotypes() && vc.getCalledChrCount(vc.getAltAlleleWithHighestAlleleCount())/(1.0*vc.getCalledChrCount()) < 1.0'  \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
@@ -96,7 +95,7 @@ ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	SelectVariants \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
+	-L /intlists/${CHR}.interval_list \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
 	-select '(!vc.hasAttribute("ABHet")) || (ABHet >= 0.30 && ABHet <= 0.70)' \
 	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz
