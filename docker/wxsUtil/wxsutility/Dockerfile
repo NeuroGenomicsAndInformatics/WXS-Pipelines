@@ -3,7 +3,7 @@ FROM rocker/r-ver:4.1.3
 
 ARG BWA_VER=0.7.17
 ARG SAM_VER=1.16.1
-ARG BCF_VER=1.15.1
+ARG BCF_VER=1.16.1
 ENV JAVA_LIBRARY_PATH /usr/lib/jni
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
@@ -15,6 +15,7 @@ RUN apt-get update && \
   bc \
   wget \
 	unzip \
+  pigz \
 	less \
   libz-dev \
 	libbz2-dev \
@@ -23,10 +24,6 @@ RUN apt-get update && \
   emacs \
 	python2 \
   python3-matplotlib \
-  texlive-latex-base \
-  texlive-latex-recommended \
-  texlive-latex-extra \
-  texlive-fonts-recommended \
   bedtools \
   vcftools \
   libncurses5-dev \
@@ -35,13 +32,15 @@ RUN apt-get update && \
   zlib1g-dev \
   liblzma-dev \
 	openjdk-8-jdk \
+  plink1.9 \
+  plink2 \
   software-properties-common && \
   ln -s /usr/bin/python2.7 /usr/bin/python && \
   apt-get -y clean && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
 
-RUN install2.r gfortran ggplot2 gsalib gplots reshape
+RUN install2.r gfortran ggplot2 tidyverse
 
 RUN git clone --recursive https://github.com/bwa-mem2/bwa-mem2.git \
   && cd bwa-mem2 \
