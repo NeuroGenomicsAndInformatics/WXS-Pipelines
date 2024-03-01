@@ -6,7 +6,7 @@ JOB_GROUP="/${USER}/compute-fernandezv"
 LSF_DOCKER_VOLUMES="/storage1/fs1/cruchagac/Active:/storage1/fs1/cruchagac/Active \
 ${REF_DIR}:/ref" \
 bsub -g ${JOB_GROUP} \
-    -J ngi-${USER}-plink19 \
+    -J ngi-${USER}-plink2 \
     -n 8 \
     -Ne \
     -R 'rusage[mem=100GB]' \
