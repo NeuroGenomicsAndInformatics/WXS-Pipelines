@@ -18,7 +18,7 @@ echo -e "FINAL_OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/$USER/c1out/${FULLSMI
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/$FULLSMID ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/$FULLSMID
 echo -e "LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}" >> $ENV_FILE
 echo -e "REF_DIR=${REF_DIR}" >> $ENV_FILE
-echo -e "TMP_DIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/tmp" >> $ENV_FILE
+[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/tmp ] && echo -e "TMP_DIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/tmp" >> $ENV_FILE
 echo -e "RUN_TYPE=padded_exome" >> $ENV_FILE
 echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
 echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
