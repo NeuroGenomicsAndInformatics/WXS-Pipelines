@@ -61,6 +61,7 @@ LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align \
   -n 8 \
+  -Ne \
   -o ${LOGDIR}/${FULLSMID}.align.%J.out \
   -R 'select[mem>80GB] rusage[mem=80GB/job] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
