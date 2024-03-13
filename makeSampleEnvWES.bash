@@ -5,7 +5,6 @@ ENVS_DIR="/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs"
 BASE_ENVS_DIR="${SCRIPT_DIR}/baseEnvs"
 FULLSMID="$1"
 ENV_FILE="$ENVS_DIR/${FULLSMID}.env"
-mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/tmp
 echo -e "ENV_FILE=${ENV_FILE}" > $ENV_FILE
 echo -e "FULLSMID=${FULLSMID}" >> $ENV_FILE
 echo -e "STAGE_INDIR=/storage1/fs1/${STORAGE_USER}/Active/$USER/c1in/${FULLSMID}" >> $ENV_FILE
