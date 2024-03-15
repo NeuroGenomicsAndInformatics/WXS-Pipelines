@@ -2,7 +2,7 @@
 ${GATK} \
   --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   HaplotypeCaller \
-    -I ${OUTDIR}/${FULLSMID}.recal.bam \
+    -I ${OUTDIR}/${FULLSMID}.recal.cram \
     -R ${REF_FASTA} \
     --dbsnp ${REF_DBSNP} \
     -L ${REF_PADBED} \
@@ -11,4 +11,4 @@ ${GATK} \
     -G StandardAnnotation \
     -G AS_StandardAnnotation
 
-rm ${OUTDIR}/${FULLSMID}.recal.bam
+rm ${OUTDIR}/${FULLSMID}.recal.cram*

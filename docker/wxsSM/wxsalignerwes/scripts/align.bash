@@ -7,4 +7,4 @@ elif [[ -n $(find $STAGE_INDIR -name "*.bam") ]]; then
 else
   bash /scripts/stageinfqs.bash
 fi
-&& bash /scripts/cpualign.bash
+bash /scripts/cpualign.bash

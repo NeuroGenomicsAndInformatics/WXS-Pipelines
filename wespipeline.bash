@@ -148,7 +148,7 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
-    bash /scripts/gatkwgsmetrics_ex.bash ${FULLSMID}
+    bash /scripts/gatkwgsmetrics_ex_pipe.bash 
 
 # 5.2 FREEMIX
 # This job uses VerifyBamID2 to create a report on possible contamination for the sample

@@ -21,9 +21,9 @@ cp /tmp/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
 ${GATK} \
   --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   ApplyBQSR \
-    -I ${OUTDIR}/${BAM} \
+    -I /tmp/working.cram \
     -bqsr ${OUTDIR}/${FULLSMID}.recal.txt \
     -R ${REF_FASTA} \
     -L ${REF_PADBED} \
-    -O ${OUTDIR}/${FULLSMID}.recal.bam
-samtools index ${OUTDIR}/${FULLSMID}.recal.bam
+    -O ${OUTDIR}/${FULLSMID}.recal.cram
+samtools index ${OUTDIR}/${FULLSMID}.recal.cram
