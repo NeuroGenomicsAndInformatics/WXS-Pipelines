@@ -34,21 +34,32 @@ cp $ENV_FILE $OUTDIR
 echo -n "" > $LOG_FILE
 
 ## 1. Align and Sort
-for FQ in $(find $INDIR -name "*_1.f*q.gz"); do
+for FQ in $(find $INDIR -name "*1.f*q.gz"); do
 SM=$(echo $FULLSMID | cut -d^ -f1)
 BARCODE=$(echo $FULLSMID | cut -d^ -f2)
 PROJECT=$(echo $FULLSMID | cut -d^ -f3)
-FLOWCELL=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)
-LANE=$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2)
+HEAD=$(zcat ${FQ} | head -n1)
+HEAD_CHECK="${HEAD//[^:]}"
+if [[ ${#HEAD_CHECK} -eq 4 ]]; then
+FLOWCELL=$(zcat ${FQ} | head -n1 | cut -d: -f1 | cut -d '@' -f2)
+LANE=$(zcat ${FQ} | head -n1 | cut -d: -f2)
+FLOWLANE="${FLOWCELL}.${LANE}"
+elif [[ ${#HEAD_CHECK} -gt 4 ]]; then
+FLOWCELL=$(zcat ${FQ} | head -n1 | cut -d: -f3)
+LANE=$(zcat ${FQ} | head -n1 | cut -d: -f4)
+FLOWLANE="${FLOWCELL}.${LANE}"
+else
+FLOWLANE=$(echo ${FQ##*/} | rev | cut -d_ -f2- | rev)
+fi
 
-echo "@RG\tID:${FLOWCELL}:${LANE}\tPL:illumina\tPU:${FLOWCELL}:${LANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWCELL}_${LANE}.rgfile
+echo "@RG\tID:${FLOWLANE}\tPL:illumina\tPU:${FLOWLANE}:${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWLANE}.rgfile
 
-RG="${OUTDIR}/${FULLSMID}.$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f1)_$(echo ${FQ##*/} | cut -d_ -f1 | cut -d. -f2).rgfile"
+RG="${OUTDIR}/${FULLSMID}.${FLOWLANE}.rgfile"
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R $(head -n1 $RG) \
   ${REF_FASTA} \
   ${FQ} \
-  ${FQ/_1.f/_2.f} \
+  ${FQ/1.f/2.f} \
   | gatk \
   --java-options "-Xmx70g -XX:ParallelGCThreads=1" \
   SortSam \
