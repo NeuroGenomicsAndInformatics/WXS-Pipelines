@@ -8,7 +8,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R $(head -n $LSB_JOBINDEX ${INDIR}/infqfile.txt | tail -n1 | cut -d ' ' -f3) \
   ${REF_FASTA} \
   ${FQ1} \
-  ${FQ1/_1.f/_2.f} \
+  ${FQ1/1.f/2.f} \
   | ${GATK} \
   --java-options "-Xmx70g -XX:ParallelGCThreads=2" \
   SortSam  \
@@ -19,13 +19,13 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   --MAX_RECORDS_IN_RAM 1000000 \
   --CREATE_INDEX true \
   --TMP_DIR $TMP_DIR \
-  && rm ${FQ1} && rm ${FQ1/_1.f/_2.f}
+  && rm ${FQ1} && rm ${FQ1/1.f/2.f}
 else
 bwa-mem2 mem -M -t $THREADS -K 10000000 \
   -R $(head -n $LSB_JOBINDEX ${INDIR}/infqfile.txt | tail -n1 | cut -d ' ' -f3) \
   ${REF_FASTA} \
   ${FQ1} \
-  ${FQ1/_1.f/_2.f} \
+  ${FQ1/1.f/2.f} \
   | samtools view -b -1 -o ${FQ1}.aln.bam \
   && ${GATK} \
   --java-options "-Xmx70g -XX:ParallelGCThreads=2" \
@@ -37,5 +37,5 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   --MAX_RECORDS_IN_RAM 1000000 \
   --CREATE_INDEX true \
   --TMP_DIR $TMP_DIR \
-&& rm ${FQ1} && rm ${FQ1/_1.f/_2.f} && rm ${FQ1}.aln.bam
+&& rm ${FQ1} && rm ${FQ1/1.f/2.f} && rm ${FQ1}.aln.bam
 fi

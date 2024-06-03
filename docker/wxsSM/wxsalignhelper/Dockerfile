@@ -11,6 +11,7 @@ RUN apt-get update && \
   build-essential \
   git \
   wget \
+  bedtools \
   libz-dev \
 	libbz2-dev \
   rsync \
