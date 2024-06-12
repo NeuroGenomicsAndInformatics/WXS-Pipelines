@@ -139,7 +139,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
-    -J ${JOBNAME}-wgsmetrics \
+    -J ${JOBNAME}-docmetrics \
     -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
     -n 2 \
     -Ne \
@@ -148,7 +148,7 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
-    bash /scripts/gatkwgsmetrics_ex_pipe.bash 
+    bash /scripts/gatkdepthofcoveragewes_pipe.bash 
 
 # 5.2 FREEMIX
 # This job uses VerifyBamID2 to create a report on possible contamination for the sample

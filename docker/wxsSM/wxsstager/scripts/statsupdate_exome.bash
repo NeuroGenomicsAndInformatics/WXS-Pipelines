@@ -8,7 +8,7 @@ IN_RGS=$(ls ${FINAL_OUTDIR} | grep -c rgfile)
 CRAM_RGS=$(samtools view -H ${FINAL_OUTDIR}/${FULLSMID}*.cram | grep -wc '^@RG')
 
 ## Get Coverage Stats
-PADEX_COV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.cram.wgsmetrics_paddedexome.txt | tail -n1 | cut -f2)
+PADEX_COV=$(head -n2 ${FINAL_OUTDIR}/${FULLSMID}*.cram.docmetrics_paddedexome.sample_summary | tail -n1 | cut -d, -f3)
 
 ## Get FREEMIX
 FREEMIX=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.cram.vbid2.selfSM | cut -f7)
