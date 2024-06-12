@@ -6,6 +6,5 @@ ${GATK} \
     -L ${REF_PADBED%.bed}.interval_list \
     -O $1.docmetrics_paddedexome \
     -R ${REF_FASTA} \
-    --TMP_DIR /tmp \
     --omit-depth-output-at-each-base \
     --omit-interval-statistics
