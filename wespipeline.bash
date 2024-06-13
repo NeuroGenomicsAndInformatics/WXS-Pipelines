@@ -187,7 +187,7 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
-    bash /scripts/gatkvcfmetrics.bash
+    bash /scripts/gatkvcfmetrics_exome.bash
 
 ## 5.4 Key Gene Annotations
 # This job produces an annotation file using SnpEff
