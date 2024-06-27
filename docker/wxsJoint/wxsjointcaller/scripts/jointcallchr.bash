@@ -1,5 +1,5 @@
 #!/bin/bash
-TMP_DIR=${OUTDIR}/tmp${LSB_JOBINDEX} && mkdir ${TMP_DIR}
+TMP_DIR=${OUTDIR}/tmp${LSB_JOBID} && mkdir ${TMP_DIR}
 DATABASE=$TMP_DIR/db
 rm -R $DATABASE
 ${GATK4261} --java-options "-Xms200g -Xmx200g -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
