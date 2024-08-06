@@ -15,7 +15,7 @@ ${GATK4261} --java-options "-Xms200g -Xmx200g -XX:ConcGCThreads=2 -XX:ParallelGC
     GenotypeGVCFs \
     -R ${REF_FASTA} \
     -V gendb://${DATABASE} \
-    -O "${OUTDIR}/${LSB_JOBINDEX}.joint.vcf.gz" \
+    -O "${OUTDIR}/${CHR}.joint.vcf.gz" \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
     --tmp-dir ${TMP_DIR}

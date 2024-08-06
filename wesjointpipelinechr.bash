@@ -19,7 +19,7 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 for CHR in chr{1..22} chrX chrY; do
-JOBNAME="ngi-${USER}-${COHORT}-${CHR}"
+JOBNAME="ngi-${USER}-${COHORT}"
 ENV_FILE=$(bash ${SCRIPT_DIR}/makeCohortEnv.bash $COHORT $CHR)
 ## 1. Joint Call on Intervals
 # This first job is an array of jobs based on the number of intervals in the interval list for the CHR given
@@ -30,7 +30,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-call \
+    -J ${JOBNAME}-call-${CHR} \
     -Ne \
     -sp 70 \
     -n 8 \
