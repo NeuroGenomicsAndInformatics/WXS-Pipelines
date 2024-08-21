@@ -34,7 +34,7 @@ JOB_GROUP_ALIGN="/${USER}/compute-${COMPUTE_USER}/align"
 
 if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
-bash $SCRIPT_DIR/../makeSampleEnv.bash ${FULLSMID}
+bash $SCRIPT_DIR/../makeSampleEnvWGS.bash ${FULLSMID}
 JOBNAME="ngi-${USER}-${FULLSMID}"
 ENV_FILE=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs/${FULLSMID}.env
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}
