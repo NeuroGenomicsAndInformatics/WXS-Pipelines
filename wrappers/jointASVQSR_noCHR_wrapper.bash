@@ -4,6 +4,7 @@
 # The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1out
 # The CHR argument is the chromosome to be run (ex. chr1, chrX)
 COHORT=$1
+JOINT_VCF=$2
 
 # These variables can be changed to run for other users
 export COMPUTE_USER=fernandezv
@@ -12,7 +13,7 @@ export SCRATCH_USER=cruchagac
 REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv.bash $COHORT)
+ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv2.bash $COHORT)
 
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}"
@@ -37,4 +38,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/VQSRpipe_noCHR.bash
+    bash /scripts/VQSRpipe_noCHR.bash ${JOINT_VCF}

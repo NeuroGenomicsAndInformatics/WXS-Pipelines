@@ -1,7 +1,8 @@
 #!/bin/bash
-SNP_RECAL_TABLE=$(/scripts/VQSR_SNP_nonpipe.bash | tail -n1)
+JOINT_VCF=$1
+SNP_RECAL_TABLE=$(/scripts/VQSR_SNP_nonpipe.bash ${JOINT_VCF} | tail -n1)
 echo -e "\n\n ${SNP_RECAL_TABLE} \n\n"
-INDEL_RECAL_TABLE=$(/scripts/VQSR_INDEL_nonpipe.bash | tail -n1)
+INDEL_RECAL_TABLE=$(/scripts/VQSR_INDEL_nonpipe.bash ${JOINT_VCF} | tail -n1)
 echo -e "\n\n ${INDEL_RECAL_TABLE} \n\n"
 SNP_RECAL_VCF=$(/scripts/ApplyVQSR_nonpipe.bash ${JOINT_VCF} SNP ${SNP_RECAL_TABLE} | tail -n1)
 echo -e "\n\n ${SNP_RECAL_VCF} \n\n"
