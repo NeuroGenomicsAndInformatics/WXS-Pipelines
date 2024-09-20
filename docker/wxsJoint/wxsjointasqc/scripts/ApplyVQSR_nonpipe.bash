@@ -9,7 +9,6 @@ ${GATK} \
 	ApplyVQSR \
 	-AS \
 	-R ${REF_FASTA} \
-	-L ${INT_LIST} \
 	-V ${CUR_VCF} \
 	-mode ${MODE} \
 	--truth-sensitivity-filter-level 99.7 \
