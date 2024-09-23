@@ -12,3 +12,4 @@ else
 BOTH_RECAL_VCF=${SNP_RECAL_VCF}
 fi
 echo -e "\n\n ${BOTH_RECAL_VCF} \n\n"
+bash /scripts/Vfilter1_noCHR.bash ${BOTH_RECAL_VCF}

@@ -38,4 +38,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/VQSRpipe_noCHR.bash ${JOINT_VCF}
+    bash /scripts/VQCpipe_noCHR.bash ${JOINT_VCF}
