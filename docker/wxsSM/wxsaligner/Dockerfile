@@ -1,5 +1,5 @@
 ##########################################
-FROM nvcr.io/nvidia/clara/clara-parabricks:4.0.0-1
+FROM nvcr.io/nvidia/clara/clara-parabricks:4.3.1-1
 
 ENV JAVA_LIBRARY_PATH /usr/lib/jni
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
