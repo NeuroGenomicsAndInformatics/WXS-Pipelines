@@ -14,7 +14,6 @@ ${GATK} \
 	--resource:dbsnp,known=true,training=false,truth=false,prior=2.0 ${REF_DBSNP} \
 	-an QD -an MQ -an MQRankSum -an ReadPosRankSum -an FS -an SOR -an DP \
 	-mode $MODE \
-	--max-gaussians 2 \
 	--trust-all-polymorphic \
 	-tranche 100.0 -tranche 99.9 -tranche 99.8 -tranche 99.7 -tranche 99.6 -tranche 99.5 -tranche 99.4 -tranche 99.3 -tranche 99.2 -tranche 99.0 -tranche 90.0 \
 	-O ${NAMEBASE}_recalibrate.recal \
