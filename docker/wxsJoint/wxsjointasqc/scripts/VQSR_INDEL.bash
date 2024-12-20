@@ -10,7 +10,7 @@ ${GATK} \
 	-V ${JOINT_VCF} \
 	--resource:mills,known=false,training=true,truth=true,prior=12.0 ${REF_MILLS_GOLD} \
 	--resource:dbsnp,known=true,training=false,truth=false,prior=2.0 ${REF_DBSNP} \
-	-an AS_QD -an AS_DP -an AS_MQRankSum -an AS_ReadPosRankSum -an AS_FS -an AS_SOR \
+	-an AS_QD -an DP -an AS_MQRankSum -an AS_ReadPosRankSum -an AS_FS -an AS_SOR \
 	-mode $MODE \
 	--max-gaussians 4 \
 	--trust-all-polymorphic \

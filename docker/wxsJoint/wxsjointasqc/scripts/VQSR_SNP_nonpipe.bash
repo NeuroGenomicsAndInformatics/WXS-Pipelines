@@ -12,7 +12,7 @@ ${GATK} \
 	--resource:omni,known=false,training=true,truth=true,prior=12.0 /ref/20190812_GATK_38_googlebundle/resources_broad_hg38_v0_1000G_omni2.5.hg38.vcf.gz \
 	--resource:1000G,known=false,training=true,truth=false,prior=10.0 ${REF_ONEKGP1} \
 	--resource:dbsnp,known=true,training=false,truth=false,prior=2.0 ${REF_DBSNP} \
-	-an AS_QD -an AS_MQ -an AS_MQRankSum -an AS_ReadPosRankSum -an AS_FS -an AS_SOR -an AS_DP \
+	-an AS_QD -an AS_MQ -an AS_MQRankSum -an AS_ReadPosRankSum -an AS_FS -an AS_SOR -an DP \
 	-mode $MODE \
 	--trust-all-polymorphic \
 	-tranche 100.0 -tranche 99.9 -tranche 99.8 -tranche 99.7 -tranche 99.6 -tranche 99.5 -tranche 99.4 -tranche 99.3 -tranche 99.2 -tranche 99.0 -tranche 90.0 \
