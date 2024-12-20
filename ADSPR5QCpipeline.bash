@@ -57,6 +57,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.index.%J.out \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -Ne \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_UTIL \
@@ -76,6 +77,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -w "done(\"${JOBNAME}-INDEX\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.%i.out \
+  -Ne \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
@@ -94,6 +96,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-SITES[1-50] \
   -w "done(\"${JOBNAME}-ANNOTATE[*]\")" \
   -n 1 \
+  -Ne \
   -o ${LOGDIR}/${NAMEBASE}.sites.%J.%i.out \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
