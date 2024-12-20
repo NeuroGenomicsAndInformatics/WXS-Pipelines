@@ -42,6 +42,7 @@ NAMEBASE=$(echo ${INPUT_VCF##*/} | cut -d. -f1)
 JOBNAME="ngi-${USER}-${NAMEBASE}"
 ENV_FILE="${SCRIPT_DIR}/baseEnvs/references_2_0.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
+[[ -d $LOGDIR ]] || mkdir $LOGDIR
 
 ## 1. Prepare data
 # 1.1 Index vcf
