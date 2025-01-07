@@ -34,7 +34,7 @@ NAMEBASE=$(echo ${INPUT_VCF##*/} | cut -d. -f1)
 
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
 JOBNAME="ngi-${USER}-${NAMEBASE}"
-ENV_FILE="${SCRIPT_DIR}/baseEnvs/references_2_0.env"
+ENV_FILE="${SCRIPT_DIR}/../../baseEnvs/references_2_0.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
