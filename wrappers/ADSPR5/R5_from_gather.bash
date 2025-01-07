@@ -94,7 +94,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-VQSR_INDEL \
-  -w "done(\"${JOBNAME}-SITES\")" \
+  -w "done(\"${JOBNAME}-GATHER\")" \
   -n 1 \
   -N \
   -o ${LOGDIR}/${NAMEBASE}.vqsrindel.%J.out \
