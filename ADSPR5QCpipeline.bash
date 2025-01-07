@@ -77,7 +77,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-ANNOTATE[1-50] \
   -w "done(\"${JOBNAME}-INDEX\")" \
   -n 1 \
-  -o ${LOGDIR}/${NAMEBASE}.ann.%J.%i.out \
+  -o ${LOGDIR}/${NAMEBASE}.ann.%J.%I.out \
   -Ne \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
@@ -98,13 +98,13 @@ bsub -g ${JOB_GROUP_JOINT} \
   -w "done(\"${JOBNAME}-ANNOTATE[*]\")" \
   -n 1 \
   -Ne \
-  -o ${LOGDIR}/${NAMEBASE}.sites.%J.%i.out \
+  -o ${LOGDIR}/${NAMEBASE}.sites.%J.%I.out \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_UTIL \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%.*.*}.ann.%i.vcf.gz
+  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%/*}
 
 # 1.4 Gather sites-only vcfs
 # This job produces a gathered sites-only vcf file.
@@ -117,6 +117,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-GATHER \
   -w "done(\"${JOBNAME}-SITES\")" \
   -n 1 \
+  -N \
   -o ${LOGDIR}/${NAMEBASE}.gather.%J.out \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
@@ -138,6 +139,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-VQSR_SNP \
   -w "done(\"${JOBNAME}-GATHER\")" \
   -n 1 \
+  -N \
   -o ${LOGDIR}/${NAMEBASE}.vqsrsnp.%J.out \
   -R '{ select[mem>50GB] rusage[mem=50GB] }' \
   -G compute-${COMPUTE_USER} \
@@ -158,6 +160,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-VQSR_INDEL \
   -w "done(\"${JOBNAME}-SITES\")" \
   -n 1 \
+  -N \
   -o ${LOGDIR}/${NAMEBASE}.vqsrindel.%J.out \
   -R '{ select[mem>50GB] rusage[mem=50GB] }' \
   -G compute-${COMPUTE_USER} \
@@ -180,12 +183,12 @@ bsub -g ${JOB_GROUP} \
   -n 1 \
   -Ne \
   -sp $PRIORITY_APPLY \
-  -o ${LOGDIR}/${NAMEBASE}.applySNP.%J.%i.out \
+  -o ${LOGDIR}/${NAMEBASE}.applySNP.%J.%I.out \
   -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/ApplyVQSR.bash ${INPUT_VCF%.*.*}.ann.%i.vcf.gz SNP ${INPUT_VCF%.*.*}.ann.sites.gathered.SNP_recalibrate.recal
+  bash /scripts/ApplyVQSR.bash ${INPUT_VCF%/*} SNP ${INPUT_VCF%.*.*}.ann.sites.gathered.SNP_recalibrate.recal
 
 # 3.2 Apply INDEL VQSR
 # This job applies the INDEL recal table to a vcf.
@@ -200,12 +203,12 @@ bsub -g ${JOB_GROUP} \
   -n 1 \
   -Ne \
   -sp $PRIORITY_APPLY \
-  -o ${LOGDIR}/${NAMEBASE}.applyINDEL.%J.%i.out \
+  -o ${LOGDIR}/${NAMEBASE}.applyINDEL.%J.%I.out \
   -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/ApplyVQSR.bash ${INPUT_VCF%.*.*}.ann.%i.SNP.vcf.gz INDEL ${INPUT_VCF%.*.*}.ann.sites.gathered.INDEL_recalibrate.recal
+  bash /scripts/ApplyVQSR.bash ${INPUT_VCF%/*} INDEL ${INPUT_VCF%.*.*}.ann.sites.gathered.INDEL_recalibrate.recal
 
 ## 4. GATK QC Filtering
 # This job runs the hard filtering on an interval vcf.
@@ -220,7 +223,7 @@ bsub -g ${JOB_GROUP} \
   -n 1 \
   -Ne \
   -sp $PRIORITY_FILTER \
-  -o ${LOGDIR}/${NAMEBASE}.hardfilt.%J.%i.out \
+  -o ${LOGDIR}/${NAMEBASE}.hardfilt.%J.%I.out \
   -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
   -q general \
