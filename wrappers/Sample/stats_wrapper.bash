@@ -1,7 +1,7 @@
 #!/bin/bash
-# This wrapper generates raw, high quality, and padded exome coverage reports
-# The argument is the full path to the cram to be analyzed
-FULL_CRAM=$1
+# This wrapper generates a stats.csv file from the various QC reports
+# The argument for this wrapper is a path to the sample's output directory on Active storage
+FINAL_OUTDIR=$1
 
 STORAGE_USER=cruchagac
 COMPUTE_USER=fernandezv
@@ -12,13 +12,13 @@ JOB_GROUP_QC="/${USER}/compute-${COMPUTE_USER}/qc"
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 ${REF_DIR}:/ref" \
-LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../baseEnvs/references_2_0.env \
+LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../../baseEnvs/references_2_0.env \
 bsub -g ${JOB_GROUP_QC} \
-    -J ngi-${USER}-wgsmetrics \
-    -n 2 \
+    -J ngi-${USER}-stats \
+    -n 1 \
     -Ne \
     -R 'rusage[mem=25GB,tmp=10GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
-    bash /scripts/get_all_wgsmetrics.bash $FULL_CRAM
+    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
+    bash /scripts/statsupdate.bash $FINAL_OUTDIR

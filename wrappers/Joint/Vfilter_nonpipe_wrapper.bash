@@ -5,6 +5,7 @@
 # The NUM_INTERVALS argument is the number of intervals to split the genome into
 COHORT=$1
 NUM_INTERVALS=$2
+RECAL_VCF=$3
 
 # These variables can be changed to run for other users
 export COMPUTE_USER=fernandezv
@@ -13,18 +14,13 @@ export SCRATCH_USER=cruchagac
 REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv5.bash $COHORT $NUM_INTERVALS)
+ENV_FILE=$(bash ${SCRIPT_DIR}/../../makeCohortEnv5.bash $COHORT $NUM_INTERVALS)
 
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}"
 JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
-
-JOINT_VCF=$3
-SNP_RECAL_TABLE=$4
-INDEL_RECAL_TABLE=$5
-INTERVAL=$6
 
 ## 3. Joint QC
 # This step performs VQSR filtering and a host of other filters on the CHR joint vcf
@@ -38,9 +34,9 @@ bsub -g ${JOB_GROUP} \
     -Ne \
     -n 2 \
     -sp 90 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.${INTERVAL}.joint_s3.%J.out \
-    -R 'select[mem>100GB && tmp>10GB] rusage[mem=100GB,tmp=10G] span[hosts=1]' \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s3.%J.out \
+    -R 'select[mem>100GB] rusage[mem=100GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/VQCPipe_noVQSR.bash $JOINT_VCF $SNP_RECAL_TABLE $INDEL_RECAL_TABLE $INTERVAL
+    bash /scripts/Vfilter1_noCHR.bash $RECAL_VCF

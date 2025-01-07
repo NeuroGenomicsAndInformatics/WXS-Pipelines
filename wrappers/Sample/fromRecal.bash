@@ -1,13 +1,13 @@
 #!/bin/bash
 ## This wrapper script takes the data from a failed pipeline run and tries to generate a gvcf
-# This wrapper assumes the cram is in the output directory on Active storage
+# This wrapper assumes the cram and BQSR report are in the output directory on Active storage
 # The argument for this wrapper script is a FULLSMID or workfile
 # This script is essentially a subset of the job submissions from the pipeline script
 
 ## Needed for Parabricks
 export PATH="/opt/miniconda/bin:$PATH"
-REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 export COMPUTE_USER=fernandezv
 export SCRATCH_USER=cruchagac
 export STORAGE_USER=cruchagac
@@ -34,29 +34,10 @@ JOB_GROUP_ALIGN="/${USER}/compute-${COMPUTE_USER}/align"
 
 if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
-bash $SCRIPT_DIR/../makeSampleEnvWGS.bash ${FULLSMID}
+bash $SCRIPT_DIR/../../makeSampleEnvWGS.bash ${FULLSMID}
 JOBNAME="ngi-${USER}-${FULLSMID}"
 ENV_FILE=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs/${FULLSMID}.env
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}
-
-## 2. BQSR
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP} \
-  -J ${JOBNAME}-bqsr \
-  -n 8 \
-  -Ne \
-  -sp $PRIORITY_BQSR \
-  -o ${LOGDIR}/${FULLSMID}.bqsr.%J.out \
-  -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -a 'docker(mjohnsonngi/wxsrecalibrator:2.0)' \
-  bash $SCRIPT_DIR/fixstage.bash\; \
-  bash /scripts/bqsrspark.bash
 
 ## 3. Call Variants
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -72,7 +53,6 @@ bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
   -n 8 \
   -Ne \
-  -w "done(\"${JOBNAME}-bqsr\")" \
   -sp $PRIORITY_HC \
   -o ${LOGDIR}/${FULLSMID}.hc.%J.out \
   -R 'select[gpuhost && mem>180GB] rusage[mem=180GB] span[hosts=1]' \
@@ -80,6 +60,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -G compute-${COMPUTE_USER} \
   -q general \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
+  bash $SCRIPT_DIR/fixstage.bash\; \
   bash /scripts/gpuhc.bash
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \

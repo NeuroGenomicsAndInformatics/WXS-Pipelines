@@ -1,5 +1,5 @@
 #!/bin/bash
-# This wrapper script generates the selfSM and Ancestry files for an WGS sample
+# This wrapper script generates the selfSM and Ancestry files for an WES sample
 # The argument is a path to the cram to be analyzed
 FULL_CRAM=$1
 
@@ -12,7 +12,7 @@ JOB_GROUP_QC="/${USER}/compute-${COMPUTE_USER}/qc"
 
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 ${REF_DIR}:/ref" \
-LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../baseEnvs/references_2_0.env \
+LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../../baseEnvs/references_2_0.env \
 bsub -g ${JOB_GROUP_QC} \
     -J ngi-${USER}-freemix \
     -Ne \
@@ -21,4 +21,4 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
-    bash /scripts/vbid.bash $FULL_CRAM
+    bash /scripts/vbid_exome.bash $FULL_CRAM

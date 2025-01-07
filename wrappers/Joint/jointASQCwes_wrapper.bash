@@ -10,10 +10,10 @@ CHR=$2
 export COMPUTE_USER=fernandezv
 export STORAGE_USER=cruchagac
 export SCRATCH_USER=cruchagac
-REF_DIR=/scratch1/fs1/cruchagac/WXSref
+REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv.bash $COHORT $CHR)
+ENV_FILE=$(bash ${SCRIPT_DIR}/../../makeCohortEnv.bash $COHORT $CHR)
 
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}-${CHR}"
@@ -38,4 +38,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/VQCPipelinekeep.bash
+    bash /scripts/VQCPipeline_wes.bash

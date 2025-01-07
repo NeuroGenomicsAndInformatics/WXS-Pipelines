@@ -14,7 +14,7 @@ JOB_GROUP_QC="/${USER}/compute-${COMPUTE_USER}/qc"
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
-LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../baseEnvs/references_2_0.env \
+LSF_DOCKER_ENV_FILE=$SCRIPT_DIR/../../baseEnvs/references_2_0.env \
 bsub -g ${JOB_GROUP_QC} \
     -J ngi-${USER}-snpeff \
     -Ne \
@@ -23,4 +23,4 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
-  	bash /scripts/allgene_annotate.bash $FULL_GVCF
+  	bash /scripts/keygene_annotate.bash $FULL_GVCF

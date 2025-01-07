@@ -1,11 +1,10 @@
 #!/bin/bash
-## This script runs the joint pipeline on a the entire genome by splitting it into intervals
-# The two arguments are the COHORT and the NUM_INTERVALS to split the genome into
-# The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1in
-# The NUM_INTERVALS argument is the number of intervals to split the genome into
+## This script runs the joint pipeline on a single chromosome
+# The two arguments are the COHORT and the CHR to be run
+# The COHORT argument is the name of the location in /storage1/fs1/${STORAGE_USER}/Active/$USER/c1out
+# The CHR argument is the chromosome to be run (ex. chr1, chrX)
 COHORT=$1
-NUM_INTERVALS=$2
-RECAL_VCF=$3
+JOINT_VCF=$2
 
 # These variables can be changed to run for other users
 export COMPUTE_USER=fernandezv
@@ -14,7 +13,7 @@ export SCRATCH_USER=cruchagac
 REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENV_FILE=$(bash ${SCRIPT_DIR}/../makeCohortEnv5.bash $COHORT $NUM_INTERVALS)
+ENV_FILE=$(bash ${SCRIPT_DIR}/../../makeCohortEnv2.bash $COHORT)
 
 # Pipeline variable setup for running the jobs
 JOBNAME="ngi-${USER}-${COHORT}"
@@ -31,12 +30,12 @@ $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-qc \
-    -Ne \
-    -n 2 \
+    -N \
+    -n 4 \
     -sp 90 \
     -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s3.%J.out \
     -R 'select[mem>100GB] rusage[mem=100GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.0)' \
-    bash /scripts/Vfilter1_noCHR.bash $RECAL_VCF
+    bash /scripts/VQCpipe_noCHR.bash ${JOINT_VCF}
