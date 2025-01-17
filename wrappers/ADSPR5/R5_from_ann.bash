@@ -17,7 +17,6 @@ find $REF_DIR -true -exec touch '{}' \;
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # 0.2 Priorities are set to handle bounded-buffer issues
-PRIORITY_INDEX=60
 PRIORITY_MISS=65
 PRIORITY_ANN=70
 PRIORITY_FILTER=75
@@ -37,6 +36,7 @@ JOB_GROUP_JOINT="/${USER}/compute-${COMPUTE_USER}/joint"
 ## Begin Job submission
 # Set up input
 INPUT_VCF=$1
+INTERVAL=$2
 NAMEBASE=$(echo ${INPUT_VCF##*/} | cut -d. -f1)
 
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
@@ -45,23 +45,45 @@ ENV_FILE="${SCRIPT_DIR}/baseEnvs/references_2_0.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
-## 3. Gather data
-# 3.1 Gather QCed vcfs
-# This job gathers the filtered files in the provided directory.
-# This job produces a gathered vcf file.
+## 2. Filter data
+# 2.1 Annotate vcf
+# This job annotates the vcf with Allele Balance annotations.
+# This job produces an annotated vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-GATHER \
+  -J ${JOBNAME}-ANNOTATE[${INTERVAL}] \
   -n 1 \
-  -N \
-  -o ${LOGDIR}/${NAMEBASE}.gather.%J.out \
+  -o ${LOGDIR}/${NAMEBASE}.ann.%J.${INTERVAL}.out \
+  -Ne \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_GATHER \
+  -sp $PRIORITY_ANN \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/gather_qced_vcfs.bash ${INPUT_VCF%/*}
+  bash /scripts/annotate_interval.bash ${INPUT_VCF%/*} ${INTERVAL}
+
+# 2.2 Filter vcf
+# This job filters variants based on several metrics.
+# This job produces a filtered vcf file.
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
+bsub -g ${JOB_GROUP_JOINT} \
+  -J ${JOBNAME}-FILTER[${INTERVAL}] \
+  -w "done(\"${JOBNAME}-ANNOTATE[${INTERVAL}]\")" \
+  -n 1 \
+  -o ${LOGDIR}/${NAMEBASE}.filter.%J.${INTERVAL}.out \
+  -Ne \
+  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -G compute-${COMPUTE_USER} \
+  -q general \
+  -sp $PRIORITY_FILTER \
+  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
+  bash /scripts/GATKQC_filters.bash ${INPUT_VCF%/*} ${INTERVAL}
+
