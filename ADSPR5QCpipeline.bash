@@ -17,11 +17,12 @@ find $REF_DIR -true -exec touch '{}' \;
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # 0.2 Priorities are set to handle bounded-buffer issues
-PRIORITY_VQSR=60
-PRIORITY_APPLY=65
-PRIORITY_FILTER=70
+PRIORITY_INDEX=60
+PRIORITY_MISS=65
+PRIORITY_ANN=70
+PRIORITY_FILTER=75
+PRIORITY_GATHER=80
 PRIORITY_UTIL=55
-PRIORITY_QC=50
 
 # 0.3 Used to find other files needed in repository
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
@@ -61,12 +62,34 @@ bsub -g ${JOB_GROUP_JOINT} \
   -Ne \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_UTIL \
+  -sp $PRIORITY_INDEX \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   tabix ${INPUT_VCF}
 
-# 1.2 Annotate vcf
-# This job annotates the vcf with standard annotations.
+# 1.2 Set missing vcf
+# This job sets genotypes with DP < 10 or GQ < 20 to missing.
+# This job produces split files with a low quality genotypes set to missing vcf file.
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
+bsub -g ${JOB_GROUP_JOINT} \
+  -J ${JOBNAME}-SETMISSING[1-50] \
+  -w "done(\"${JOBNAME}-INDEX\")" \
+  -n 1 \
+  -o ${LOGDIR}/${NAMEBASE}.miss.%J.%I.out \
+  -Ne \
+  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -G compute-${COMPUTE_USER} \
+  -q general \
+  -sp $PRIORITY_MISS \
+  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
+  bash /scripts/set_vars_missing.bash ${INPUT_VCF}
+
+## 2. Filter data
+# 2.1 Annotate vcf
+# This job annotates the vcf with Allele Balance annotations.
 # This job produces an annotated vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
@@ -75,39 +98,42 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-ANNOTATE[1-50] \
-  -w "done(\"${JOBNAME}-INDEX\")" \
+  -w "done(\"${JOBNAME}-SETMISSING[*]\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.%I.out \
   -Ne \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_UTIL \
+  -sp $PRIORITY_ANN \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/annotate_interval.bash ${INPUT_VCF}
+  bash /scripts/annotate_interval.bash ${INPUT_VCF%/*}
 
-# 1.3 Make sites-only vcf
-# This job produces a sites-only vcf file.
+# 2.2 Filter vcf
+# This job filters variants based on several metrics.
+# This job produces a filtered vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-SITES[1-50] \
+  -J ${JOBNAME}-FILTER[1-50] \
   -w "done(\"${JOBNAME}-ANNOTATE[*]\")" \
   -n 1 \
+  -o ${LOGDIR}/${NAMEBASE}.filter.%J.%I.out \
   -Ne \
-  -o ${LOGDIR}/${NAMEBASE}.sites.%J.%I.out \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_UTIL \
+  -sp $PRIORITY_FILTER \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%/*}
+  bash /scripts/GATKQC_filters.bash ${INPUT_VCF%/*}
 
-# 1.4 Gather sites-only vcfs
-# This job produces a gathered sites-only vcf file.
+## 3. Gather data
+# 3.1 Gather QCed vcfs
+# This job gathers the filtered files in the provided directory.
+# This job produces a gathered vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
@@ -115,117 +141,13 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-GATHER \
-  -w "done(\"${JOBNAME}-SITES\")" \
+  -w "done(\"${JOBNAME}-FILTER\")" \
   -n 1 \
   -N \
   -o ${LOGDIR}/${NAMEBASE}.gather.%J.out \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_UTIL \
+  -sp $PRIORITY_GATHER \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/gather_sites_only_vcfs.bash ${INPUT_VCF%/*}
-
-## 2. VQSR
-# 2.1 SNP VQSR
-# This job runs the SNP VQSR recalibration task.
-# This job produces a VQSR recal table and tranches file.
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
-bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-VQSR_SNP \
-  -w "done(\"${JOBNAME}-GATHER\")" \
-  -n 1 \
-  -N \
-  -o ${LOGDIR}/${NAMEBASE}.vqsrsnp.%J.out \
-  -R '{ select[mem>50GB] rusage[mem=50GB] }' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -sp $PRIORITY_VQSR \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/VQSR_SNP.bash ${INPUT_VCF%.*.*}.ann.sites.gathered.vcf.gz
-
-# 2.2 INDEL VQSR
-# This job runs the INDEL VQSR recalibration task.
-# This job produces a VQSR recal table and a tranches file.
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
-bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-VQSR_INDEL \
-  -w "done(\"${JOBNAME}-GATHER\")" \
-  -n 1 \
-  -N \
-  -o ${LOGDIR}/${NAMEBASE}.vqsrindel.%J.out \
-  -R '{ select[mem>50GB] rusage[mem=50GB] }' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -sp $PRIORITY_VQSR \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/VQSR_INDEL.bash ${INPUT_VCF%.*.*}.ann.sites.gathered.vcf.gz
-
-## 3. Apply VQSR
-# 3.1 Apply SNP VQSR
-# This job applies the SNP recal table to a vcf.
-# This job is an array of jobs to scatter the work. The number of array jobs must match the number of scattered intervals.
-LSF_DOCKER_VOLUMES="/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP} \
-  -J ${JOBNAME}-Apply_VQSR_SNP[1-50] \
-  -w "done(\"${JOBNAME}-VQSR_SNP\") && done(\"${JOBNAME}-VQSR_INDEL\")" \
-  -n 1 \
-  -Ne \
-  -sp $PRIORITY_APPLY \
-  -o ${LOGDIR}/${NAMEBASE}.applySNP.%J.%I.out \
-  -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/ApplyVQSR.bash ${INPUT_VCF%/*} SNP ${INPUT_VCF%.*.*}.ann.sites.gathered.SNP_recalibrate.recal
-
-# 3.2 Apply INDEL VQSR
-# This job applies the INDEL recal table to a vcf.
-# This job is an array of jobs to scatter the work. The number of array jobs must match the number of scattered intervals.
-LSF_DOCKER_VOLUMES="/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP} \
-  -J ${JOBNAME}-Apply_VQSR_INDEL[1-50] \
-  -w "done(\"${JOBNAME}-Apply_VQSR_SNP[*]\")" \
-  -n 1 \
-  -Ne \
-  -sp $PRIORITY_APPLY \
-  -o ${LOGDIR}/${NAMEBASE}.applyINDEL.%J.%I.out \
-  -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/ApplyVQSR.bash ${INPUT_VCF%/*} INDEL ${INPUT_VCF%.*.*}.ann.sites.gathered.INDEL_recalibrate.recal
-
-## 4. GATK QC Filtering
-# This job runs the hard filtering on an interval vcf.
-# This job produces a filtered vcf.
-LSF_DOCKER_VOLUMES="/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP} \
-  -J ${JOBNAME}-HARDFILT[1-50] \
-  -w "done(\"${JOBNAME}-Apply_VQSR_INDEL[*]\")" \
-  -n 1 \
-  -Ne \
-  -sp $PRIORITY_FILTER \
-  -o ${LOGDIR}/${NAMEBASE}.hardfilt.%J.%I.out \
-  -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/HardFilter.bash ${INPUT_VCF%.*.*}.ann.gathered.SNP.INDEL.vcf.gz
