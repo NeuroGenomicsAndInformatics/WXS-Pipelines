@@ -150,4 +150,4 @@ bsub -g ${JOB_GROUP_JOINT} \
   -q general \
   -sp $PRIORITY_GATHER \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/gather_sites_only_vcfs.bash ${INPUT_VCF%/*}
+  bash /scripts/gather_qced_vcfs.bash ${INPUT_VCF%/*}
