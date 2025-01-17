@@ -64,7 +64,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -q general \
   -sp $PRIORITY_INDEX \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  tabix ${INPUT_VCF}
+  bash /scripts/index_vcf.bash ${INPUT_VCF}
 
 # 1.2 Set missing vcf
 # This job sets genotypes with DP < 10 or GQ < 20 to missing.
