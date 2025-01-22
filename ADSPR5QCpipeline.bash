@@ -46,27 +46,7 @@ LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
 ## 1. Prepare data
-# 1.1 Index vcf
-# This job runs tabix to index the vcf.
-# This job produces a .tbi file.
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
-bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-INDEX \
-  -n 1 \
-  -o ${LOGDIR}/${NAMEBASE}.index.%J.out \
-  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
-  -Ne \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -sp $PRIORITY_INDEX \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/index_vcf.bash ${INPUT_VCF}
-
-# 1.2 Set missing vcf
+# 1.1 Set missing vcf
 # This job sets genotypes with DP < 10 or GQ < 20 to missing.
 # This job produces split files with a low quality genotypes set to missing vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -76,7 +56,6 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-SETMISSING[1-50] \
-  -w "done(\"${JOBNAME}-INDEX\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.miss.%J.%I.out \
   -Ne \
