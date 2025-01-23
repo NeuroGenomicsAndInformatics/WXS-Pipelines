@@ -36,8 +36,8 @@ JOB_GROUP_JOINT="/${USER}/compute-${COMPUTE_USER}/joint"
 
 ## Begin Job submission
 # Set up input
-INPUT_VCF=$1
-NAMEBASE=$(echo ${INPUT_VCF##*/} | cut -d. -f1)
+INPUT_DIR=$1
+NAMEBASE=$(echo ${INPUT_DIR##*/})
 
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
 JOBNAME="ngi-${USER}-${NAMEBASE}"
@@ -64,4 +64,4 @@ bsub -g ${JOB_GROUP_JOINT} \
   -q general \
   -sp $PRIORITY_GATHER \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/gather_qced_vcfs.bash ${INPUT_VCF%/*}
+  bash /scripts/gather_qced_vcfs.bash ${INPUT_DIR}
