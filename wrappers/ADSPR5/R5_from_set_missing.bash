@@ -54,7 +54,7 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-SETMISSING[$INTERVAL] \
+  -J ${JOBNAME}-SETMISSING-$INTERVAL \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.miss.%J.${INTERVAL}.out \
   -Ne \
@@ -75,8 +75,8 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-ANNOTATE[${INTERVAL}] \
-  -w "done(\"${JOBNAME}-SETMISSING[${INTERVAL}]\")" \
+  -J ${JOBNAME}-ANNOTATE-${INTERVAL} \
+  -w "done(\"${JOBNAME}-SETMISSING-${INTERVAL}\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.${INTERVAL}.out \
   -Ne \
@@ -96,8 +96,8 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-FILTER[${INTERVAL}] \
-  -w "done(\"${JOBNAME}-ANNOTATE[${INTERVAL}]\")" \
+  -J ${JOBNAME}-FILTER-${INTERVAL} \
+  -w "done(\"${JOBNAME}-ANNOTATE-${INTERVAL}\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.${INTERVAL}.out \
   -Ne \

@@ -54,7 +54,7 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-FILTER[${INTERVAL}] \
+  -J ${JOBNAME}-FILTER-${INTERVAL} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.${INTERVAL}.out \
   -Ne \
