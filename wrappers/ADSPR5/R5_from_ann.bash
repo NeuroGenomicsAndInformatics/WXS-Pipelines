@@ -59,12 +59,12 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.${INTERVAL}.out \
   -Ne \
-  -R '{ select[mem>40GB] rusage[mem=40GB] }' \
+  -R '{ select[mem>80GB] rusage[mem=80GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ANN \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/annotate_interval.bash ${INPUT_VCF%/*} ${INTERVAL}
+  bash /scripts/annotate_interval_rescue.bash ${INPUT_VCF%/*} ${INTERVAL}
 
 # 2.2 Filter vcf
 # This job filters variants based on several metrics.
