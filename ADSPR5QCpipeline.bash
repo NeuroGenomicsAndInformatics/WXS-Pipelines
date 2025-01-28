@@ -65,7 +65,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -q general \
   -sp $PRIORITY_INTLIST \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/make_intlists.bash ${INPUT_VCF}
+  bash /scripts/make_intlists.bash ${INPUT_BGZ}
 
 # 1.2 Set missing vcf
 # This job sets genotypes with DP < 10 or GQ < 20 to missing.
