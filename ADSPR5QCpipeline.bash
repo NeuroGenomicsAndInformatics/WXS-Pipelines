@@ -36,7 +36,8 @@ JOB_GROUP_JOINT="/${USER}/compute-${COMPUTE_USER}/joint"
 
 ## Begin Job submission
 # Set up input
-INPUT_VCF=$1
+INPUT_BGZ=$1
+INPUT_VCF=${INPUT_BGZ%.vcf.bgz}
 NAMEBASE=$(echo ${INPUT_VCF##*/} | cut -d. -f1)
 
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
