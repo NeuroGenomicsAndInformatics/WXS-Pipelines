@@ -36,8 +36,7 @@ JOB_GROUP_JOINT="/${USER}/compute-${COMPUTE_USER}/joint"
 
 ## Begin Job submission
 # Set up input
-INPUT_BGZ=$1
-INPUT_VCF=${INPUT_BGZ%.vcf.bgz}.vcf.gz
+INPUT_VCF=$1
 NAMEBASE=$(echo ${INPUT_VCF##*/} | cut -d. -f1)
 
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
@@ -65,7 +64,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -q general \
   -sp $PRIORITY_INTLIST \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/make_intlists.bash ${INPUT_BGZ}
+  bash /scripts/make_intlists.bash ${INPUT_VCF}
 
 # 1.2 Set missing vcf
 # This job sets genotypes with DP < 10 or GQ < 20 to missing.
