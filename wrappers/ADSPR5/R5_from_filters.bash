@@ -5,9 +5,6 @@ export SCRATCH_USER=cruchagac
 export STORAGE_USER=cruchagac
 export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
-## Touch the references so that compute1 doesn't remove them
-find $REF_DIR -true -exec touch '{}' \;
-
 ## 0. Set up for job submission 
 # 0.1 Make expected directories in case they are missing
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}
