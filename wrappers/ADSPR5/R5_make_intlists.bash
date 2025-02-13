@@ -51,7 +51,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -N \
   -o ${LOGDIR}/${NAMEBASE}.intlist.%J.out \
-  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_UTIL \

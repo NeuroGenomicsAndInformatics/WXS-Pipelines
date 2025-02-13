@@ -59,7 +59,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.intlist.%J.out \
   -Ne \
-  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_INTLIST \
@@ -80,7 +80,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.miss.%J.%I.out \
   -Ne \
-  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_MISS \
@@ -102,7 +102,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.%I.out \
   -Ne \
-  -R '{ select[mem>40GB] rusage[mem=40GB] }' \
+  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ANN \
@@ -123,7 +123,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.%I.out \
   -Ne \
-  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_FILTER \
@@ -145,7 +145,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -N \
   -o ${LOGDIR}/${NAMEBASE}.gather.%J.out \
-  -R '{ select[mem>20GB] rusage[mem=20GB] }' \
+  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_GATHER \
