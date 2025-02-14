@@ -58,7 +58,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_MISS \
+  -sp $(( PRIORITY_MISS + 1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/set_vars_missing.bash ${INPUT_VCF} ${INTERVAL}
 
@@ -80,7 +80,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_ANN \
+  -sp $(( PRIORITY_ANN + 1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/annotate_interval_rescue.bash ${INPUT_VCF%/*} ${INTERVAL}
 
@@ -101,7 +101,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_FILTER \
+  -sp $(( PRIORITY_FILTER + 1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/GATKQC_filters.bash ${INPUT_VCF%/*} ${INTERVAL}
 

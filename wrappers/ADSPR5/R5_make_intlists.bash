@@ -54,6 +54,6 @@ bsub -g ${JOB_GROUP_JOINT} \
   -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_UTIL \
+  -sp $(( PRIORITY_UTIL + 1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/make_intlists.bash ${INPUT_VCF%/*}

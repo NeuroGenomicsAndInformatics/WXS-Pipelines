@@ -58,7 +58,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -R '{ select[mem>4GB] rusage[mem=4GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_FILTER \
+  -sp $(( PRIORITY_FILTER +1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/GATKQC_filters.bash ${INPUT_VCF%/*} ${INTERVAL}
 
