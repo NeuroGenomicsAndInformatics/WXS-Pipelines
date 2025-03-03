@@ -19,7 +19,8 @@ PRIORITY_MISS=60
 PRIORITY_ANNAB=65
 PRIORITY_FILTER=70
 PRIORITY_SITES=75
-PRIORITY_GATHER=75
+PRIORITY_ANN=80
+PRIORITY_GATHER=85
 PRIORITY_UTIL=55
 
 # 0.3 Used to find other files needed in repository
@@ -106,4 +107,26 @@ bsub -g ${JOB_GROUP_JOINT} \
   -q general \
   -sp $PRIORITY_SITES \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%/*}
+  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%/*} ${INTERVAL}
+
+# 3.2 Annotate vcf
+# This job takes a sites-only vcf and annotates it with a variety of data.
+# This job produces an annotated vcf file.
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
+bsub -g ${JOB_GROUP_JOINT} \
+  -J ${JOBNAME}-ANNOTATE-${INTERVAL} \
+  -w "done(\"${JOBNAME}-SITES-${INTERVAL}\")" \
+  -n 1 \
+  -o ${LOGDIR}/${NAMEBASE}.ann.%J.${INTERVAL}.out \
+  -Ne \
+  -R '{ rusage[mem=40GB] }' \
+  -G compute-${COMPUTE_USER} \
+  -q general \
+  -sp $PRIORITY_ANN \
+  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
+  bash /scripts/annotateALL_interval.bash ${INPUT_VCF%/*} ${INTERVAL}
+  
