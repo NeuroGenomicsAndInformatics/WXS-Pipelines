@@ -14,10 +14,12 @@ export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # 0.2 Priorities are set to handle bounded-buffer issues
-PRIORITY_MISS=65
-PRIORITY_ANNAB=70
-PRIORITY_FILTER=75
-PRIORITY_GATHER=80
+PRIORITY_INTLIST=55
+PRIORITY_MISS=60
+PRIORITY_ANNAB=65
+PRIORITY_FILTER=70
+PRIORITY_SITES=75
+PRIORITY_GATHER=75
 PRIORITY_UTIL=55
 
 # 0.3 Used to find other files needed in repository

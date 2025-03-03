@@ -14,11 +14,12 @@ export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # 0.2 Priorities are set to handle bounded-buffer issues
-PRIORITY_INDEX=60
-PRIORITY_MISS=65
-PRIORITY_ANNAB=70
-PRIORITY_FILTER=75
-PRIORITY_GATHER=80
+PRIORITY_INTLIST=55
+PRIORITY_MISS=60
+PRIORITY_ANNAB=65
+PRIORITY_FILTER=70
+PRIORITY_SITES=75
+PRIORITY_GATHER=75
 PRIORITY_UTIL=55
 
 # 0.3 Used to find other files needed in repository
@@ -42,8 +43,8 @@ ENV_FILE="${SCRIPT_DIR}/../../baseEnvs/references_2_0.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
-## 3. Gather data
-# 3.1 Gather QCed vcfs
+## 4. Gather data
+# 4.1 Gather QCed vcfs
 # This job gathers the filtered files in the provided directory.
 # This job produces a gathered vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \

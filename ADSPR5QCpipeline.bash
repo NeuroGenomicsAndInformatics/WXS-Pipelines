@@ -17,11 +17,12 @@ find $REF_DIR -true -exec touch '{}' \;
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # 0.2 Priorities are set to handle bounded-buffer issues
-PRIORITY_INTLIST=60
-PRIORITY_MISS=65
-PRIORITY_ANNAB=70
-PRIORITY_FILTER=75
-PRIORITY_GATHER=80
+PRIORITY_INTLIST=55
+PRIORITY_MISS=60
+PRIORITY_ANNAB=65
+PRIORITY_FILTER=70
+PRIORITY_SITES=75
+PRIORITY_GATHER=75
 PRIORITY_UTIL=55
 
 # 0.3 Used to find other files needed in repository
@@ -130,8 +131,30 @@ bsub -g ${JOB_GROUP_JOINT} \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/GATKQC_filters.bash ${INPUT_VCF%/*}
 
-## 3. Gather data
-# 3.1 Gather QCed vcfs
+# 3. Annotate data
+# 3.1 Make sites-only vcf
+# This job takes a filtered vcf and makes a sites-only vcf for annotation.
+# This job produces a sites-only vcf file.
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+${REF_DIR}:/ref \
+$HOME:$HOME" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
+bsub -g ${JOB_GROUP_JOINT} \
+  -J ${JOBNAME}-SITES[1-50] \
+  -w "done(\"${JOBNAME}-FILTER[*]\")" \
+  -n 1 \
+  -o ${LOGDIR}/${NAMEBASE}.sites.%J.%I.out \
+  -Ne \
+  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
+  -G compute-${COMPUTE_USER} \
+  -q general \
+  -sp $PRIORITY_SITES \
+  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
+  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%/*}
+
+## 4. Gather data
+# 4.1 Gather QCed vcfs
 # This job gathers the filtered files in the provided directory.
 # This job produces a gathered vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
