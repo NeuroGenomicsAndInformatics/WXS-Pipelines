@@ -45,48 +45,6 @@ ENV_FILE="${SCRIPT_DIR}/../../baseEnvs/references_2_0.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
-# 2.2 Filter vcf
-# This job filters variants based on several metrics.
-# This job produces a filtered vcf file.
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
-bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-FILTER-${INTERVAL} \
-  -n 1 \
-  -o ${LOGDIR}/${NAMEBASE}.filter.%J.${INTERVAL}.out \
-  -Ne \
-  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -sp $(( PRIORITY_FILTER +1 )) \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/GATKQC_filters.bash ${INPUT_VCF%/*} ${INTERVAL}
-
-# 3. Annotate data
-# 3.1 Make sites-only vcf
-# This job takes a filtered vcf and makes a sites-only vcf for annotation.
-# This job produces a sites-only vcf file.
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
-bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-SITES-${INTERVAL} \
-  -w "done(\"${JOBNAME}-FILTER-${INTERVAL}\")" \
-  -n 1 \
-  -o ${LOGDIR}/${NAMEBASE}.sites.%J.${INTERVAL}.out \
-  -Ne \
-  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -sp $PRIORITY_SITES \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/make_sites_only_vcf.bash ${INPUT_VCF%/*} ${INTERVAL}
-
 # 3.2 Annotate vcf
 # This job takes a sites-only vcf and annotates it with a variety of data.
 # This job produces an annotated vcf file.
@@ -97,7 +55,6 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-ANNOTATE-${INTERVAL} \
-  -w "done(\"${JOBNAME}-SITES-${INTERVAL}\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.${INTERVAL}.out \
   -Ne \
