@@ -1,6 +1,6 @@
 #!/bin/bash
 ## Set up variables for specific users. These should be all that's needed to change user
-export COMPUTE_USER=fernandezv
+export COMPUTE_USER=cruchagac
 export SCRATCH_USER=cruchagac
 export STORAGE_USER=cruchagac
 export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
