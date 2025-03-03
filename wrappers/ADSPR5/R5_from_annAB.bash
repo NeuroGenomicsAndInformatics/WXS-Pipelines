@@ -15,7 +15,7 @@ export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 # 0.2 Priorities are set to handle bounded-buffer issues
 PRIORITY_MISS=65
-PRIORITY_ANN=70
+PRIORITY_ANNAB=70
 PRIORITY_FILTER=75
 PRIORITY_GATHER=80
 PRIORITY_UTIL=55
@@ -43,7 +43,7 @@ LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
 ## 2. Filter data
-# 2.1 Annotate vcf
+# 2.1 Annotate vcf with AB
 # This job annotates the vcf with Allele Balance annotations.
 # This job produces an annotated vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -52,16 +52,16 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-ANNOTATE-${INTERVAL} \
+  -J ${JOBNAME}-ANNAB-${INTERVAL} \
   -n 1 \
-  -o ${LOGDIR}/${NAMEBASE}.ann.%J.${INTERVAL}.out \
+  -o ${LOGDIR}/${NAMEBASE}.annAB.%J.${INTERVAL}.out \
   -Ne \
   -R '{ select[mem>80GB] rusage[mem=80GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $(( PRIORITY_ANN + 1 )) \
+  -sp $(( PRIORITY_ANNAB + 1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/annotate_interval_rescue.bash ${INPUT_VCF%/*} ${INTERVAL}
+  bash /scripts/annotateAB_interval_rescue.bash ${INPUT_VCF%/*} ${INTERVAL}
 
 # 2.2 Filter vcf
 # This job filters variants based on several metrics.
@@ -73,7 +73,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-FILTER-${INTERVAL} \
-  -w "done(\"${JOBNAME}-ANNOTATE-${INTERVAL}\")" \
+  -w "done(\"${JOBNAME}-ANNAB-${INTERVAL}\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.${INTERVAL}.out \
   -Ne \

@@ -15,7 +15,7 @@ export REF_DIR="/scratch1/fs1/cruchagac/WXSref"
 
 # 0.2 Priorities are set to handle bounded-buffer issues
 PRIORITY_MISS=65
-PRIORITY_ANN=70
+PRIORITY_ANNAB=70
 PRIORITY_FILTER=75
 PRIORITY_GATHER=80
 PRIORITY_UTIL=55

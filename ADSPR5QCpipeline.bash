@@ -19,7 +19,7 @@ find $REF_DIR -true -exec touch '{}' \;
 # 0.2 Priorities are set to handle bounded-buffer issues
 PRIORITY_INTLIST=60
 PRIORITY_MISS=65
-PRIORITY_ANN=70
+PRIORITY_ANNAB=70
 PRIORITY_FILTER=75
 PRIORITY_GATHER=80
 PRIORITY_UTIL=55
@@ -88,7 +88,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   bash /scripts/set_vars_missing.bash ${INPUT_VCF}
 
 ## 2. Filter data
-# 2.1 Annotate vcf
+# 2.1 Annotate vcf with AB
 # This job annotates the vcf with Allele Balance annotations.
 # This job produces an annotated vcf file.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -97,17 +97,17 @@ ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
-  -J ${JOBNAME}-ANNOTATE[1-50] \
+  -J ${JOBNAME}-ANNAB[1-50] \
   -w "done(\"${JOBNAME}-SETMISSING[*]\")" \
   -n 1 \
-  -o ${LOGDIR}/${NAMEBASE}.ann.%J.%I.out \
+  -o ${LOGDIR}/${NAMEBASE}.annAB.%J.%I.out \
   -Ne \
   -R '{ select[mem>20GB] rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_ANN \
+  -sp $PRIORITY_ANNAB \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
-  bash /scripts/annotate_interval.bash ${INPUT_VCF%/*}
+  bash /scripts/annotateAB_interval.bash ${INPUT_VCF%/*}
 
 # 2.2 Filter vcf
 # This job filters variants based on several metrics.
@@ -119,7 +119,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_JOINT} \
   -J ${JOBNAME}-FILTER[1-50] \
-  -w "done(\"${JOBNAME}-ANNOTATE[*]\")" \
+  -w "done(\"${JOBNAME}-ANNAB[*]\")" \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.%I.out \
   -Ne \

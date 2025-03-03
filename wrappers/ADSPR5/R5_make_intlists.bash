@@ -37,10 +37,10 @@ ENV_FILE="${SCRIPT_DIR}/../../baseEnvs/references_2_0.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${NAMEBASE}
 [[ -d $LOGDIR ]] || mkdir $LOGDIR
 
-## 3. Gather data
-# 3.1 Gather QCed vcfs
-# This job gathers the filtered files in the provided directory.
-# This job produces a gathered vcf file.
+## 0. Prepare Data
+# 0.1 Make Intlists
+# This job makes intlists and bed files for the pipeline from a bed file.
+# This job produces intlists and bed files.
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
