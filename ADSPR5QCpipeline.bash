@@ -168,7 +168,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.ann.%J.%I.out \
   -Ne \
-  -R '{ rusage[mem=40GB] }' \
+  -R '{ rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ANN \
