@@ -34,7 +34,7 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}"
 JOB_GROUP_JOINT="/${USER}/compute-${COMPUTE_USER}/joint"
 
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 500 ${JOB_GROUP}
-[[ -z "$(bjgroup | grep $JOB_GROUP_JOINT)" ]] && bgadd -L 480 ${JOB_GROUP_JOINT}
+[[ -z "$(bjgroup | grep $JOB_GROUP_JOINT)" ]] && bgadd -L 250 ${JOB_GROUP_JOINT}
 
 ## Begin Job submission
 # Set up input
@@ -125,7 +125,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.%I.out \
   -Ne \
-  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
+  -R '{ select[mem>10GB] rusage[mem=10GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_FILTER \

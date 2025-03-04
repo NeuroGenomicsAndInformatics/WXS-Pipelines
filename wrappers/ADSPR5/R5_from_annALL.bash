@@ -61,7 +61,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -R '{ rusage[mem=20GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -sp $PRIORITY_ANN \
+  -sp $(( PRIORITY_ANN + 1 )) \
   -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
   bash /scripts/annotateALL_interval.bash ${INPUT_VCF%/*} ${INTERVAL}
   

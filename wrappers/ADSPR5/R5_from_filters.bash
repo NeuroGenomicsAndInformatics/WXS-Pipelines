@@ -58,7 +58,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -n 1 \
   -o ${LOGDIR}/${NAMEBASE}.filter.%J.${INTERVAL}.out \
   -Ne \
-  -R '{ select[mem>4GB] rusage[mem=4GB] }' \
+  -R '{ select[mem>10GB] rusage[mem=10GB] }' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $(( PRIORITY_FILTER +1 )) \
