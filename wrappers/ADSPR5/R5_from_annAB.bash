@@ -63,7 +63,7 @@ bsub -g ${JOB_GROUP_JOINT} \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $(( PRIORITY_ANNAB + 1 )) \
-  -a 'docker(mjohnsonngi/wxsjointqc:2.0)' \
+  -a 'docker(mjohnsonngi/wxsjointqcjava8:2.0)' \
   bash /scripts/annotateAB_interval_rescue.bash ${INPUT_VCF%/*} ${INTERVAL}
 
 # 2.2 Filter vcf
