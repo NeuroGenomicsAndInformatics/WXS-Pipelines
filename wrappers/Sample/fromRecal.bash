@@ -60,22 +60,6 @@ bsub -g ${JOB_GROUP_GPU} \
   -G compute-${COMPUTE_USER} \
   -q general \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
-  bash $SCRIPT_DIR/fixstage.bash\; \
   bash /scripts/gpuhc.bash
 
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-${REF_DIR}:/ref \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE=$ENV_FILE \
-bsub -g ${JOB_GROUP} \
-  -J ${JOBNAME}-stageout \
-  -w "ended(\"${JOBNAME}-hc\")" \
-  -n1 \
-  -sp 90 \
-  -R 'rusage[mem=4GB]' \
-  -G compute-${COMPUTE_USER} \
-  -q general \
-  -a 'docker(mjohnsonngi/wxsstager:2.0)' \
-  bash /scripts/stageout.bash
 done
