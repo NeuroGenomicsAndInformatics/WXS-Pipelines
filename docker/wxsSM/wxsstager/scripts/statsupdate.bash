@@ -1,30 +1,30 @@
 #!/bin/bash
 [ -z $FULLSMID ] && FULLSMID=${1##*/}
-[ -z $FINAL_OUTDIR ] && FINAL_OUTDIR=$1
-[ -z $STATS_FILE ] && STATS_FILE=${FINAL_OUTDIR}/${FULLSMID}.stats.csv
+[ -z $OUTDIR ] && FINAL_OUTDIR=$1
+[ -z $STATS_FILE ] && STATS_FILE=${OUTDIR}/${FULLSMID}.stats.csv
 
 ## RG comparison
-IN_RGS=$(ls ${FINAL_OUTDIR} | grep -c rgfile)
-CRAM_RGS=$(samtools view -H ${FINAL_OUTDIR}/${FULLSMID}*.cram | grep -wc '^@RG')
+IN_RGS=$(ls ${OUTDIR} | grep -c rgfile)
+CRAM_RGS=$(samtools view -H ${OUTDIR}/${FULLSMID}*.cram | grep -wc '^@RG')
 
 ## Get Coverage Stats
-RAW_COV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.cram.rawwgsmetrics.txt | tail -n1 | cut -f2)
-WGS_COV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.cram.wgsmetrics.txt | tail -n1 | cut -f2)
-PADEX_COV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.cram.wgsmetrics_paddedexome.txt | tail -n1 | cut -f2)
+RAW_COV=$(head -n8 ${OUTDIR}/${FULLSMID}*.cram.rawwgsmetrics.txt | tail -n1 | cut -f2)
+WGS_COV=$(head -n8 ${OUTDIR}/${FULLSMID}*.cram.wgsmetrics.txt | tail -n1 | cut -f2)
+PADEX_COV=$(head -n8 ${OUTDIR}/${FULLSMID}*.cram.wgsmetrics_paddedexome.txt | tail -n1 | cut -f2)
 
 ## Get FREEMIX
-FREEMIX=$(tail -n1 ${FINAL_OUTDIR}/${FULLSMID}*.cram.vbid2.selfSM | cut -f7)
+FREEMIX=$(tail -n1 ${OUTDIR}/${FULLSMID}*.cram.vbid2.selfSM | cut -f7)
 
 ## Get TITV Ratio
-TOTAL_SNPS=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f1)
-TOTAL_INDELS=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f8)
-PCT_DBSNP=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f5)
-NOVEL_TITV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f7)
-DBSNP_TITV=$(head -n8 ${FINAL_OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f6)
+TOTAL_SNPS=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f1)
+TOTAL_INDELS=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f8)
+PCT_DBSNP=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f5)
+NOVEL_TITV=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f7)
+DBSNP_TITV=$(head -n8 ${OUTDIR}/${FULLSMID}*.g.vcf.gz.vcfmetrics.variant_calling_summary_metrics | tail -n1 | cut -f6)
 TOTAL_TITV=$(bc -l <<<"($PCT_DBSNP*$DBSNP_TITV)+((1-$PCT_DBSNP)*$NOVEL_TITV)")
 
 ## Get Annotation stats
-FIELDS_FILE="${FINAL_OUTDIR}/${FULLSMID}*.vcf.gz.snpeff-5.1-FIELDS.txt"
+FIELDS_FILE="${OUTDIR}/${FULLSMID}*.vcf.gz.snpeff-5.1-FIELDS.txt"
 GENES=(APP PSEN1 PSEN2 GRN MAPT TREM2 SNCA LRRK2 PARK2 PINK1)
 CAN_TS=(ENST00000346798.8 ENST00000324501 ENST00000366783.8 ENST00000053867.8 ENST00000262410.10 ENST00000373113.8 ENST00000394991 ENST00000298910 ENST00000366898 ENST00000321556)
 
@@ -43,4 +43,4 @@ done
 echo "" >> ${STATS_FILE}
 
 ## Get sex information
-bash /scripts/sex_check_coverage.bash ${FINAL_OUTDIR}/${FULLSMID}*.cram
+bash /scripts/sex_check_coverage.bash ${OUTDIR}/${FULLSMID}*.cram

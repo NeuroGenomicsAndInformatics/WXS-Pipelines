@@ -1,7 +1,7 @@
 #!/bin/bash
 #To run below "pipeline" in roughly 5 samples per sequencing project to have an idea of whether all projects used the wrong annotation files or only some
 # First argument is a text file with absolute or relative paths to gVCFs to check or a single gVCF
-if [[ -z $FULLSMID ]]; then FULL_GVCF=$1; FINAL_OUTDIR=${FULL_GVCF%/*}; GVCF=${FULL_GVCF##*/}; FULLSMID=$(echo "${GVCF}" | cut -d '.' -f1); fi
+if [[ -z $FULLSMID ]]; then FULL_GVCF=$1; OUTDIR=${FULL_GVCF%/*}; GVCF=${FULL_GVCF##*/}; FULLSMID=$(echo "${GVCF}" | cut -d '.' -f1); fi
 
 # Set locations for SNPEFF and SNPSIFT
 SNPEFF="/scripts/snpEff_v5.1/snpEff.jar"
@@ -12,7 +12,7 @@ KEYGENES="/scripts/keygenes.bed"
 FIELDS_FILE=${FINAL_OUTDIR}/${GVCF}.snpeff-5.1-FIELDS.txt
 
 ## 1st annotate with SNPEFF
-bcftools view -R ${KEYGENES} ${FINAL_OUTDIR}/${GVCF} \
+bcftools view -R ${KEYGENES} ${OUTDIR}/${GVCF} \
   | java -Xmx20g -jar ${SNPEFF} ann -interval ${KEYGENES} -noStats -v GRCh38.105 \
   | /scripts/snpEff_v5.1/scripts/vcfEffOnePerLine.pl \
   | java -Xmx20g -jar ${SNPSIFT} extractFields -e "."  \
