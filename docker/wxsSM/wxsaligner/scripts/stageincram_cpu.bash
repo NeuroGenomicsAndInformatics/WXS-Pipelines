@@ -1,19 +1,10 @@
 #!/bin/bash
-rsync -rL $STAGE_INDIR/ $INDIR
 for CRM in $(find $INDIR -name "*.cram"); do
-mkdir ${CRM%.cram}
-samtools index -@ 8 $CRM
-${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
-  RevertSam \
+  mkdir ${CRM%.cram}
+  samtools index -@ 8 $CRM
+  ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
+    SamToFastq \
     -I $CRM \
-    -O /dev/stdout \
-    -R /ref/$UNWRAP_FASTA \
-    --TMP_DIR $TMP_DIR \
-    -SO queryname \
-    --VALIDATION_STRINGENCY SILENT \
-| ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
-  SamToFastq \
-    -I /dev/stdin \
     --COMPRESS_OUTPUTS_PER_RG true \
     --OUTPUT_PER_RG true \
     --OUTPUT_DIR ${CRM%.cram} \
@@ -21,11 +12,9 @@ ${GATK} --java-options "-Xmx170g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_US
     --TMP_DIR $TMP_DIR \
     --VALIDATION_STRINGENCY SILENT \
     --MAX_RECORDS_IN_RAM 10000000
-if [[ $? -ne 0 ]]; then
-rm -R $INDIR
-exit 61
-fi
-rm $CRM
+  if [[ $? -ne 0 ]]; then
+    exit 61
+  fi
 done
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE

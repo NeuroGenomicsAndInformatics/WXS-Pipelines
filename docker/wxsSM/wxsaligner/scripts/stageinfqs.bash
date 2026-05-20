@@ -1,6 +1,4 @@
 #!/bin/bash
-rsync -rL $STAGE_INDIR/ $INDIR
-sleep 10
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
 for FQ in $(find $INDIR -name "*1.f*q.gz"); do

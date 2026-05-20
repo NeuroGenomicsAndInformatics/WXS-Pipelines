@@ -1,29 +1,19 @@
 #!/bin/bash
-rsync -rL $STAGE_INDIR/ $INDIR
 for BM in $(find $INDIR -name "*.bam"); do
   mkdir ${BM%.bam}
   ${GATK} --java-options "-Xmx70g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
-    RevertSam \
+    SamToFastq \
     -I $BM \
-    -O /dev/stdout \
+    --COMPRESS_OUTPUTS_PER_RG true \
+    --OUTPUT_PER_RG true \
+    --OUTPUT_DIR ${BM%.bam} \
+    -RG_TAG ID \
     --TMP_DIR $TMP_DIR \
-    -SO queryname \
-    --VALIDATION_STRINGENCY SILENT |
-    ${GATK} --java-options "-Xmx70g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
-      SamToFastq \
-      -I /dev/stdin \
-      --COMPRESS_OUTPUTS_PER_RG true \
-      --OUTPUT_PER_RG true \
-      --OUTPUT_DIR ${BM%.bam} \
-      -RG_TAG ID \
-      --TMP_DIR $TMP_DIR \
-      --VALIDATION_STRINGENCY SILENT \
-      --MAX_RECORDS_IN_RAM 10000000
+    --VALIDATION_STRINGENCY SILENT \
+    --MAX_RECORDS_IN_RAM 10000000
   if [[ $? -ne 0 ]]; then
-    rm -R $INDIR
     exit 61
   fi
-  rm $BM
 done
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
