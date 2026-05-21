@@ -14,9 +14,8 @@ find $REF_DIR -true -exec touch '{}' \;
 ## 0. Set up for job submission 
 # 0.1 Make expected directories in case they are missing
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}
-[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1in ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1in
-[ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out
 [ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out
+[ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
 # 0.2 Priorities are set to handle bounded-buffer issues
@@ -49,7 +48,7 @@ for FULLSMID in ${FULLSMIDS[@]}; do
 bash ${SCRIPT_DIR}/makeSampleEnvWGS.bash ${FULLSMID}
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
 JOBNAME="ngi-${USER}-${FULLSMID}"
-ENV_FILE="/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs/$FULLSMID.env"
+ENV_FILE="/storage1/fs1/${STORAGE_USER}/${USER}/c1in/envs/$FULLSMID.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}
 
 ## 1. Align
@@ -76,7 +75,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ALIGN \
-  -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
+  -a 'docker(mjohnsonngi/wxsaligner:2.1)' \
   bash /scripts/align.bash "$2"
 
 ## Fallback if GPU fails. 
@@ -99,7 +98,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ALIGN \
-  -a 'docker(mjohnsonngi/wxsaligner:2.0)' \
+  -a 'docker(mjohnsonngi/wxsaligner:2.1)' \
   bash /scripts/align.bash "$2"
 
 ## 2. BQSR
@@ -121,7 +120,7 @@ bsub -g ${JOB_GROUP} \
   -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -a 'docker(mjohnsonngi/wxsrecalibrator:2.0)' \
+  -a 'docker(mjohnsonngi/wxsrecalibrator:2.1)' \
   bash /scripts/bqsrspark.bash
 
 ## 3. Call Variants
@@ -148,29 +147,11 @@ bsub -g ${JOB_GROUP_GPU} \
   -gpu "num=1:gmem=12GB:j_exclusive=yes" \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
+  -a 'docker(mjohnsonngi/wxshaplotypecaller:2.1)' \
   bash /scripts/gpuhc.bash
 
-## 4. Stage out data
-# This job just moves data from scratch to storage and cleans up
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-stageout \
-    -w "exit(\"${JOBNAME}-bqsr\") || ended(\"${JOBNAME}-hc\")" \
-    -n 1 \
-    -sp $PRIORITY_UTIL \
-    -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
-    -R 'rusage[mem=4GB]' \
-    -G compute-${COMPUTE_USER} \
-    -q general \
-    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
-    bash /scripts/stageout.bash\; sleep 100
-
-## 5. QC
-# 5.1 Coverage
+## 4. QC
+# 4.1 Coverage
 # This job produces coverage reports for raw, high quality, and padded exome coverages
 # This job uses the pipeline-generated cram while it's on Active storage
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -179,17 +160,17 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-wgsmetrics \
-    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\")) && done(\"${JOBNAME}-stageout\")" \
+    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" \
     -n 2 \
     -Ne \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=25GB,tmp=2GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
+    -a 'docker(mjohnsonngi/wxscoverage:2.1)' \
     bash /scripts/get_all_wgsmetrics.bash
 
-# 5.2 FREEMIX
+# 4.2 FREEMIX
 # This job uses VerifyBamID2 to create a report on possible contamination for the sample
 # This job produces selfSM and Ancestry text files
 # This job uses the pipeline-generated cram while it's on Active storage
@@ -199,17 +180,17 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-freemix \
-    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\")) && done(\"${JOBNAME}-stageout\")" \
+    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=20GB,tmp=2GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
+    -a 'docker(mjohnsonngi/wxsfreemix:2.1)' \
     bash /scripts/vbid.bash
 
-## 5.3 Variant Calling Metrics
+## 4.3 Variant Calling Metrics
 # This job produces a variant calling metrics report that includes Ti/Tv ratios and #s of SNPs and INDELS
 # This job uses the pipeline-generated gvcf while it's on Active storage
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -218,17 +199,17 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-vcfmetrics \
-    -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-hc\")" \
     -Ne \
     -n 4 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=10GB,tmp=2GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
+    -a 'docker(mjohnsonngi/wxsvariantmetrics:2.1)' \
     bash /scripts/gatkvcfmetrics.bash
 
-## 5.4 Key Gene Annotations
+## 4.4 Key Gene Annotations
 # This job produces an annotation file using SnpEff
 # The genes annotated include APP, PSEN1, PSEN2, GRN, TREM2, and MAPT
 # This job uses the pipeline-generated gvcf while it's on Active storage
@@ -239,7 +220,7 @@ LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-snpeff \
-    -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-hc\")" \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
@@ -247,10 +228,10 @@ bsub -g ${JOB_GROUP_QC} \
     -R 'rusage[mem=25GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
+    -a 'docker(mjohnsonngi/wxskeygeneannotator:2.1)' \
   	bash /scripts/keygene_annotate.bash
 
-## 5.5 Stats File
+## 4.5 Stats File
 # This job collects data from each of the previously generated reports into a single line
 # This job produces a csv with a header line and a line of data from the QC reports
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -259,16 +240,16 @@ $HOME:$HOME \
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
-    -J ${JOBNAME}-stageout \
+    -J ${JOBNAME}-stats \
     -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
     -n 1 \
     -Ne \
     -sp $PRIORITY_UTIL \
-    -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
+    -o ${LOGDIR}/${FULLSMID}.stats.%J.out \
     -R 'rusage[mem=4GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
+    -a 'docker(mjohnsonngi/wxsstager:2.1)' \
     bash /scripts/statsupdate.bash
 
 done

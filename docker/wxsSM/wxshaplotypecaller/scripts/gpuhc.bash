@@ -13,4 +13,4 @@ pbrun haplotypecaller \
   --annotation-group StandardAnnotation \
   --annotation-group StandardHCAnnotation \
   --annotation-group AS_StandardAnnotation \
-&& rm -R $STAGE_INDIR
+&& rm -R $INDIR
