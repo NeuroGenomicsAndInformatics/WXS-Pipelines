@@ -48,7 +48,7 @@ for FULLSMID in ${FULLSMIDS[@]}; do
 bash ${SCRIPT_DIR}/makeSampleEnvWGS.bash ${FULLSMID}
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
 JOBNAME="ngi-${USER}-${FULLSMID}"
-ENV_FILE="/storage1/fs1/${STORAGE_USER}/${USER}/c1in/envs/$FULLSMID.env"
+ENV_FILE="/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs/$FULLSMID.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}
 
 ## 1. Align

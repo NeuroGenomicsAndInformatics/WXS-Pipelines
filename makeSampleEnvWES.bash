@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENVS_DIR="/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs"
+ENVS_DIR="/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs"
 [ ! -d $ENVS_DIR ] && mkdir $ENVS_DIR
 BASE_ENVS_DIR="${SCRIPT_DIR}/baseEnvs"
 FULLSMID="$1"
@@ -25,5 +25,3 @@ echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
 echo -e "GVCF=${FULLSMID}.snp.indel.g.vcf.gz" >> $ENV_FILE
 cat ${BASE_ENVS_DIR}/references_2_0.env >> $ENV_FILE
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}
-rsync $ENV_FILE /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${FULLSMID}/
-rsync $ENV_FILE /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}/
