@@ -13,4 +13,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-fernandezv \
     -q general \
     -a 'docker(pegi3s/sratoolkit:latest)' \
-    $@
+    /opt/sratoolkit.3.1.0-ubuntu64/bin/$@
