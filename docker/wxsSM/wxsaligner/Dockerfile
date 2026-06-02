@@ -1,8 +1,8 @@
 ##########################################
-FROM nvcr.io/nvidia/clara/clara-parabricks:4.3.1-1
+FROM nvcr.io/nvidia/clara/clara-parabricks:4.4.0-1
 
-ENV JAVA_LIBRARY_PATH /usr/lib/jni
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ENV JAVA_LIBRARY_PATH=/usr/lib/jni
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \

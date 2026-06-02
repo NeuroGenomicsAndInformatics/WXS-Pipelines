@@ -1,7 +1,7 @@
 ##########################################
 FROM rocker/r-ver:4.1.3
 
-ARG SAM_VER=1.15.1
+ARG SAM_VER=1.21.1
 
 RUN apt-get update && \
  	apt-get upgrade -y && \

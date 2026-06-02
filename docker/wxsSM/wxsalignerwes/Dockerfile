@@ -1,9 +1,9 @@
 ##########################################
 FROM rocker/r-ver:4.1.3
 
-ARG SAM_VER=1.16.1
-ENV JAVA_LIBRARY_PATH /usr/lib/jni
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+ARG SAM_VER=1.21.1
+ENV JAVA_LIBRARY_PATH=/usr/lib/jni
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
 RUN apt-get update && \
  	apt-get upgrade -y && \

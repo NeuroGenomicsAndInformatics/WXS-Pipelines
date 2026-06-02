@@ -1,4 +1,4 @@
-FROM openjdk:11-jre
+FROM ubuntu:22.04
 
 RUN apt-get update && \
  	apt-get upgrade -y && \
@@ -6,6 +6,7 @@ RUN apt-get update && \
 	bzip2 \
 	zlib1g \
 	zlib1g-dev \
+	openjdk-11-jdk \
 	tabix \
 	bcftools \
 	rsync && \
