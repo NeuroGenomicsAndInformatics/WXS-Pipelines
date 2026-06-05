@@ -1,11 +1,11 @@
 ##########################################
-FROM rocker/r-ver:4.1.3
+FROM rocker/r-ver:4.5.3
 
 ARG BWA_VER=0.7.17
-ARG SAM_VER=1.16.1
+ARG SAM_VER=1.21.1
 ARG BCF_VER=1.21
 ENV JAVA_LIBRARY_PATH=/usr/lib/jni
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
 ENV BCFTOOLS_PLUGINS=/usr/local/bin/bcftools-plugins
 
 RUN apt-get update && \
@@ -23,7 +23,7 @@ RUN apt-get update && \
   rsync \
   tabix \
   emacs \
-	python2 \
+	python3 \
   python3-matplotlib \
   bedtools \
   vcftools \
@@ -32,11 +32,11 @@ RUN apt-get update && \
   zlib1g \
   zlib1g-dev \
   liblzma-dev \
-	openjdk-8-jdk \
+	openjdk-17-jre \
   plink1.9 \
   plink2 \
   software-properties-common && \
-  ln -s /usr/bin/python2.7 /usr/bin/python && \
+  ln -s /usr/bin/python3 /usr/bin/python && \
   apt-get -y clean && \
 	apt-get -y autoclean && \
 	apt-get -y autoremove
