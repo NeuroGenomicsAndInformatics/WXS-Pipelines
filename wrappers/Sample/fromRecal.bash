@@ -36,7 +36,7 @@ if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
 bash $SCRIPT_DIR/../../makeSampleEnvWGS.bash ${FULLSMID}
 JOBNAME="ngi-${USER}-${FULLSMID}"
-ENV_FILE=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs/${FULLSMID}.env
+ENV_FILE="/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs/$FULLSMID.env"
 LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}
 
 ## 3. Call Variants

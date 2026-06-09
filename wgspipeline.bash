@@ -71,7 +71,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R '{ select[gpuhost && mem>256GB] rusage[ngpus_physical=1:gmem=16GB, mem=256GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
+  -R '{ select[gpuhost && mem>220GB] rusage[ngpus_physical=1:gmem=16GB, mem=220GB/job] span[hosts=1] } || { select[!gpuhost] rusage[mem=180GB/job] }@10' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ALIGN \
