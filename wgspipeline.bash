@@ -106,7 +106,8 @@ bsub -g ${JOB_GROUP_ALIGN} \
 # This job produces a BQSR report
 # The job itself runs BaseRecalibratorSpark on the cram created by the alignment job
 # The generated BQSR report is used by haplotypecaller without having to do ApplyBQSR
-LSF_DOCKER_VOLUMES="/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
