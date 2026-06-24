@@ -48,7 +48,7 @@ $HOME:$HOME" \
 LSF_DOCKER_NETWORK=host \
 LSF_DOCKER_RUN_LOGLEVEL=DEBUG \
 LSF_DOCKER_ENTRYPOINT=/bin/sh \
-LSF_DOCKER_ENV_FILE=$ENV_FILE \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
   -n 8 \
@@ -59,7 +59,7 @@ bsub -g ${JOB_GROUP_GPU} \
   -gpu "num=1:gmem=16GB:j_exclusive=yes" \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -a 'docker(mjohnsonngi/wxshaplotypecaller:2.0)' \
+  -a 'docker(mjohnsonngi/wxshaplotypecaller:2.1)' \
   bash /scripts/gpuhc.bash
 
 done
