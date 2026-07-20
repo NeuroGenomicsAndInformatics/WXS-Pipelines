@@ -91,10 +91,10 @@ LSF_DOCKER_ENTRYPOINT=/bin/bash \
 LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align2 \
-  -w "exit(\"${JOBNAME}-align\")" \
+  -w "exit(\"${JOBNAME}-align\")" -ti \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
-  -R 'select[mem>180GB] rusage[mem=180GB/job] span[hosts=1]' \
+  -R 'select[mem>256GB] rusage[mem=256GB/job] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ALIGN \
@@ -113,7 +113,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\")" \
+  -w "done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\")" -ti \
   -n 8 \
   -Ne \
   -sp $PRIORITY_BQSR \
@@ -139,7 +139,7 @@ LSF_DOCKER_ENTRYPOINT=/bin/sh \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_GPU} \
   -J ${JOBNAME}-hc \
-  -w "done(\"${JOBNAME}-bqsr\")" \
+  -w "done(\"${JOBNAME}-bqsr\")" -ti \
   -n 8 \
   -Ne \
   -sp $PRIORITY_HC \
@@ -161,7 +161,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-wgsmetrics \
-    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" \
+    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" -ti \
     -n 2 \
     -Ne \
     -sp $PRIORITY_QC \
@@ -181,7 +181,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-freemix \
-    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" \
+    -w "(done(\"${JOBNAME}-align\") || done(\"${JOBNAME}-align2\"))" -ti \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
@@ -200,7 +200,7 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-vcfmetrics \
-    -w "done(\"${JOBNAME}-hc\")" \
+    -w "done(\"${JOBNAME}-hc\")" -ti \
     -Ne \
     -n 4 \
     -sp $PRIORITY_QC \
@@ -221,7 +221,7 @@ LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-snpeff \
-    -w "done(\"${JOBNAME}-hc\")" \
+    -w "done(\"${JOBNAME}-hc\")" -ti \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
@@ -242,7 +242,7 @@ $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stats \
-    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
+    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
     -n 1 \
     -Ne \
     -sp $PRIORITY_UTIL \
