@@ -1,6 +1,6 @@
 #!/bin/bash
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ENVS_DIR="/scratch1/fs1/${SCRATCH_USER}/${USER}/c1in/envs"
+ENVS_DIR="/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs"
 [ ! -d $ENVS_DIR ] && mkdir $ENVS_DIR
 COHORT="$1"
 CHR="$2"

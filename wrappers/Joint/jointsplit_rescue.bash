@@ -24,7 +24,7 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
-## 1a. Joint Call on Intervals - genomicsDB and GenotypeGVCFs
+## 1. Joint Call on Intervals - genomicsDB and GenotypeGVCFs
 # This job runs a single interval that failed
 # This job adds the intervals from all input gvcfs to a genomicsdb.
 # After the genomicsDBImport is completed, the job calls variants with GenotypeGVCFs
@@ -42,5 +42,5 @@ bsub -g ${JOB_GROUP} \
     -R 'select[mem>80GB && tmp>10GB] rusage[mem=80GB,tmp=10GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsjointcaller:2.0)' \
+    -a 'docker(mjohnsonngi/wxsjointcaller:2.1)' \
     bash /scripts/jointcallsplitinterval.bash $INTERVAL
