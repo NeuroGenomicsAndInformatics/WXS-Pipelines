@@ -45,7 +45,7 @@ if [[ -f $1 ]]; then FULLSMIDS=($(cat $1)); else FULLSMIDS=($@); fi
 for FULLSMID in ${FULLSMIDS[@]}; do
 # This script generates the .env environment file that all jobs use in the pipeline
 # Each sample has a unique environment; however, the script adds the reference variables that are the same per version
-bash ${SCRIPT_DIR}/makeSampleEnvWGS.bash ${FULLSMID}
+bash ${SCRIPT_DIR}/../../makeSampleEnvWGS.bash ${FULLSMID}
 # These 3 variables are used for each job submission to connect all the jobs for each sample consistent
 JOBNAME="ngi-${USER}-${FULLSMID}"
 ENV_FILE="/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/envs/$FULLSMID.env"
