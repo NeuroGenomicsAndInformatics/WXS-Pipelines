@@ -92,6 +92,7 @@ LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_ALIGN} \
   -J ${JOBNAME}-align2 \
   -w "exit(\"${JOBNAME}-align\")" -ti \
+  -Ne \
   -n8 \
   -o ${LOGDIR}/${FULLSMID}.fq2bam.%J.out \
   -R 'select[mem>256GB] rusage[mem=256GB/job] span[hosts=1]' \
