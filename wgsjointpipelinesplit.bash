@@ -54,7 +54,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-call-*)" \
+    -w "done(${JOBNAME}-call-*)" -ti \
     -J ${JOBNAME}-gather-called \
     -N \
     -n 4 \
@@ -74,7 +74,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-gather-called)" \
+    -w "done(${JOBNAME}-gather-called)" -ti \
     -J ${JOBNAME}-vqsr-snp \
     -N \
     -n 4 \
@@ -91,7 +91,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-gather-called)" \
+    -w "done(${JOBNAME}-gather-called)" -ti \
     -J ${JOBNAME}-vqsr-indel \
     -N \
     -n 4 \
@@ -137,7 +137,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-qc-*)" \
+    -w "done(${JOBNAME}-qc-*)" -ti \
     -J ${JOBNAME}-gather-called \
     -N \
     -n 4 \
