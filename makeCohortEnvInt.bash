@@ -13,8 +13,8 @@ echo -e "OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}_wor
 [ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT} ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}
 echo -e "FINAL_OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}" >> $ENV_FILE
 echo -e "JOINT_VCF=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}/${COHORT}.wgs.joint.vcf.gz" >> $ENV_FILE
-echo -e "SNP_RECAL=${JOINT_VCF%.*.*}.AS.SNP_recalibrate.recal" >> $ENV_FILE
-echo -e "INDEL_RECAL=${JOINT_VCF%.*.*}.AS.INDEL_recalibrate.recal" >> $ENV_FILE
+echo -e "SNP_RECAL=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}/${COHORT}.wgs.joint.AS.SNP_recalibrate.recal" >> $ENV_FILE
+echo -e "INDEL_RECAL=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}/${COHORT}.wgs.joint.AS.INDEL_recalibrate.recal" >> $ENV_FILE
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}
 cat $SCRIPT_DIR/baseEnvs/references_2_1.env >> $ENV_FILE
 rsync $ENV_FILE /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}
