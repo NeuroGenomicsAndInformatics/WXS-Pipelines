@@ -17,5 +17,4 @@ echo -e "SNP_RECAL=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}/
 echo -e "INDEL_RECAL=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1out/${COHORT}/${COHORT}.wgs.joint.AS.INDEL_recalibrate.recal" >> $ENV_FILE
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT} ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}
 cat $SCRIPT_DIR/baseEnvs/references_2_1.env >> $ENV_FILE
-rsync $ENV_FILE /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/${COHORT}
 echo $ENV_FILE
