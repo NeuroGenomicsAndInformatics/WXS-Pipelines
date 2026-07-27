@@ -147,4 +147,4 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointgatherer:2.1)' \
-    bash /scripts/gathervcfs_called.bash
+    bash /scripts/gathervcfs_qced.bash
