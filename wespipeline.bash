@@ -203,7 +203,7 @@ $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stageout \
-    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
+    -w "ended(\"${JOBNAME}-docmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
     -n 1 \
     -Ne \
     -sp $PRIORITY_UTIL \
