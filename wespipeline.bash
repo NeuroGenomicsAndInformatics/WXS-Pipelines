@@ -67,7 +67,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
   -G compute-${COMPUTE_USER} \
   -q general \
   -sp $PRIORITY_ALIGN \
-  -a 'docker(mjohnsonngi/wxsalignerwes:2.0)' \
+  -a 'docker(mjohnsonngi/wxsalignerwes:2.1)' \
   bash /scripts/align.bash "$2"
 
 ## 2. BQSR
@@ -80,7 +80,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-bqsr \
-  -w "done(\"${JOBNAME}-align\")" \
+  -w "done(\"${JOBNAME}-align\")" -ti \
   -n 8 \
   -Ne \
   -sp $PRIORITY_BQSR \
@@ -88,7 +88,7 @@ bsub -g ${JOB_GROUP} \
   -R 'select[mem>50GB] rusage[mem=50GB] span[hosts=1]' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -a 'docker(mjohnsonngi/wxsrecalibrator:2.0)' \
+  -a 'docker(mjohnsonngi/wxsrecalibrator:2.1)' \
   bash /scripts/bqsrsparkwes.bash
 
 ## 3. Call Variants
@@ -101,7 +101,7 @@ $HOME:$HOME" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-hc \
-  -w "done(\"${JOBNAME}-bqsr\")" \
+  -w "done(\"${JOBNAME}-bqsr\")" -ti \
   -n 2 \
   -Ne \
   -sp $PRIORITY_HC \
@@ -109,26 +109,8 @@ bsub -g ${JOB_GROUP} \
   -R 'select[mem>50GB] rusage[mem=50GB]' \
   -G compute-${COMPUTE_USER} \
   -q general \
-  -a 'docker(mjohnsonngi/wxshaplotypecallerwes:2.0)' \
+  -a 'docker(mjohnsonngi/wxshaplotypecallerwes:2.1)' \
   bash /scripts/cpuhcwes.bash
-
-## 4. Stage out data
-# This job just moves data from scratch to storage and cleans up
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-$HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-stageout \
-    -w "exit(\"${JOBNAME}-bqsr\") || ended(\"${JOBNAME}-hc\")" \
-    -n 1 \
-    -sp $PRIORITY_UTIL \
-    -o ${LOGDIR}/${FULLSMID}.stageout.%J.out \
-    -R 'rusage[mem=4GB]' \
-    -G compute-${COMPUTE_USER} \
-    -q general \
-    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
-    bash /scripts/stageout.bash\; sleep 100
 
 ## 5. QC
 # 5.1 Coverage
@@ -140,14 +122,14 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-docmetrics \
-    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-align\")" -ti \
     -n 2 \
     -Ne \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=25GB,tmp=2GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxscoverage:2.0)' \
+    -a 'docker(mjohnsonngi/wxscoverage:2.1)' \
     bash /scripts/gatkdepthofcoveragewes_pipe.bash 
 
 # 5.2 FREEMIX
@@ -160,14 +142,14 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-freemix \
-    -w "done(\"${JOBNAME}-align\") && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-align\")" -ti \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=20GB,tmp=2GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsfreemix:2.0)' \
+    -a 'docker(mjohnsonngi/wxsfreemix:2.1)' \
     bash /scripts/vbid_exome.bash
 
 ## 5.3 Variant Calling Metrics
@@ -179,14 +161,14 @@ ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-vcfmetrics \
-    -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-hc\")" -ti \
     -Ne \
     -n 4 \
     -sp $PRIORITY_QC \
     -R 'rusage[mem=10GB,tmp=2GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsvariantmetrics:2.0)' \
+    -a 'docker(mjohnsonngi/wxsvariantmetrics:2.1)' \
     bash /scripts/gatkvcfmetrics_exome.bash
 
 ## 5.4 Key Gene Annotations
@@ -200,7 +182,7 @@ LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-snpeff \
-    -w "done(\"${JOBNAME}-hc\") && done(\"${JOBNAME}-stageout\")" \
+    -w "done(\"${JOBNAME}-hc\")" -ti \
     -Ne \
     -n 2 \
     -sp $PRIORITY_QC \
@@ -208,7 +190,7 @@ bsub -g ${JOB_GROUP_QC} \
     -R 'rusage[mem=25GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxskeygeneannotator:2.0)' \
+    -a 'docker(mjohnsonngi/wxskeygeneannotator:2.1)' \
   	bash /scripts/keygene_annotate.bash
 
 ## 5.5 Stats File
@@ -221,7 +203,7 @@ $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stageout \
-    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" \
+    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
     -n 1 \
     -Ne \
     -sp $PRIORITY_UTIL \
@@ -229,7 +211,7 @@ bsub -g ${JOB_GROUP_QC} \
     -R 'rusage[mem=4GB]' \
     -G compute-${COMPUTE_USER} \
     -q general \
-    -a 'docker(mjohnsonngi/wxsstager:2.0)' \
+    -a 'docker(mjohnsonngi/wxsstager:2.1)' \
     bash /scripts/statsupdate_exome.bash
 
 done
