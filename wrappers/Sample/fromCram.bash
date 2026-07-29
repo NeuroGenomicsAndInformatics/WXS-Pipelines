@@ -81,4 +81,66 @@ bsub -g ${JOB_GROUP_GPU} \
   -a 'docker(mjohnsonngi/wxshaplotypecaller:2.1)' \
   bash /scripts/gpuhc.bash
 
+## 4.3 Variant Calling Metrics
+# This job produces a variant calling metrics report that includes Ti/Tv ratios and #s of SNPs and INDELS
+# This job uses the pipeline-generated gvcf while it's on Active storage
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+${REF_DIR}:/ref" \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_QC} \
+    -J ${JOBNAME}-vcfmetrics \
+    -w "done(\"${JOBNAME}-hc\")" -ti \
+    -Ne \
+    -n 4 \
+    -sp $PRIORITY_QC \
+    -R 'rusage[mem=10GB,tmp=2GB]' \
+    -G compute-${COMPUTE_USER} \
+    -q general \
+    -a 'docker(mjohnsonngi/wxsvariantmetrics:2.1)' \
+    bash /scripts/gatkvcfmetrics.bash
+
+## 4.4 Key Gene Annotations
+# This job produces an annotation file using SnpEff
+# The genes annotated include APP, PSEN1, PSEN2, GRN, TREM2, and MAPT
+# This job uses the pipeline-generated gvcf while it's on Active storage
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+${REF_DIR}:/ref" \
+LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_QC} \
+    -J ${JOBNAME}-snpeff \
+    -w "done(\"${JOBNAME}-hc\")" -ti \
+    -Ne \
+    -n 2 \
+    -sp $PRIORITY_QC \
+    -o ${LOGDIR}/${FULLSMID}.snpeff.%J.out \
+    -R 'rusage[mem=25GB]' \
+    -G compute-${COMPUTE_USER} \
+    -q general \
+    -a 'docker(mjohnsonngi/wxskeygeneannotator:2.1)' \
+  	bash /scripts/keygene_annotate.bash
+
+## 4.5 Stats File
+# This job collects data from each of the previously generated reports into a single line
+# This job produces a csv with a header line and a line of data from the QC reports
+LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
+/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
+$HOME:$HOME \
+$REF_DIR:/ref" \
+LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+bsub -g ${JOB_GROUP_QC} \
+    -J ${JOBNAME}-stats \
+    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
+    -n 1 \
+    -Ne \
+    -sp $PRIORITY_UTIL \
+    -o ${LOGDIR}/${FULLSMID}.stats.%J.out \
+    -R 'rusage[mem=4GB]' \
+    -G compute-${COMPUTE_USER} \
+    -q general \
+    -a 'docker(mjohnsonngi/wxsstager:2.1)' \
+    bash /scripts/statsupdate.bash
+
 done
