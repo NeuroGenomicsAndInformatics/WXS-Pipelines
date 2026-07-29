@@ -88,7 +88,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP_QC} \
+bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-vcfmetrics \
     -w "done(\"${JOBNAME}-hc\")" -ti \
     -Ne \
@@ -109,7 +109,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 ${REF_DIR}:/ref" \
 LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP_QC} \
+bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-snpeff \
     -w "done(\"${JOBNAME}-hc\")" -ti \
     -Ne \
@@ -130,9 +130,9 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $HOME:$HOME \
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE="$ENV_FILE" \
-bsub -g ${JOB_GROUP_QC} \
+bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-stats \
-    -w "ended(\"${JOBNAME}-wgsmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
+    -w "ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-snpeff\")" -ti \
     -n 1 \
     -Ne \
     -sp $PRIORITY_UTIL \
