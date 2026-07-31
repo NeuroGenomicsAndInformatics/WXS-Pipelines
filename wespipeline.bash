@@ -130,7 +130,7 @@ bsub -g ${JOB_GROUP_QC} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxscoverage:2.1)' \
-    bash /scripts/gatkdepthofcoveragewes_pipe.bash 
+    bash /scripts/gatkdepthofcoveragewes.bash 
 
 # 5.2 FREEMIX
 # This job uses VerifyBamID2 to create a report on possible contamination for the sample
