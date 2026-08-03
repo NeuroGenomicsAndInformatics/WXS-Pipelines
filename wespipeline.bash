@@ -77,7 +77,7 @@ bsub -g ${JOB_GROUP_ALIGN} \
 LSF_DOCKER_VOLUMES="/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-bqsr \
   -w "done(\"${JOBNAME}-align\")" -ti \
@@ -98,7 +98,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref \
 $HOME:$HOME" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP} \
   -J ${JOBNAME}-hc \
   -w "done(\"${JOBNAME}-bqsr\")" -ti \
@@ -119,7 +119,7 @@ bsub -g ${JOB_GROUP} \
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-docmetrics \
     -w "done(\"${JOBNAME}-align\")" -ti \
@@ -139,7 +139,7 @@ bsub -g ${JOB_GROUP_QC} \
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-freemix \
     -w "done(\"${JOBNAME}-align\")" -ti \
@@ -158,7 +158,7 @@ bsub -g ${JOB_GROUP_QC} \
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-vcfmetrics \
     -w "done(\"${JOBNAME}-hc\")" -ti \
@@ -179,7 +179,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 ${REF_DIR}:/ref" \
 LSF_DOCKER_PRESERVE_ENVIRONMENT=false \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-snpeff \
     -w "done(\"${JOBNAME}-hc\")" -ti \
@@ -200,7 +200,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 /scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
 $HOME:$HOME \
 $REF_DIR:/ref" \
-LSF_DOCKER_ENV_FILE="$ENV_FILE" \
+LSF_DOCKER_ENV_FILE="${ENV_FILE}" \
 bsub -g ${JOB_GROUP_QC} \
     -J ${JOBNAME}-stageout \
     -w "ended(\"${JOBNAME}-docmetrics\") && ended(\"${JOBNAME}-vcfmetrics\") && ended(\"${JOBNAME}-freemix\") && ended(\"${JOBNAME}-snpeff\")" -ti \
