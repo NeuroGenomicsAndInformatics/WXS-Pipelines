@@ -1,11 +1,11 @@
 #!/bin/bash
-rsync -rL $STAGE_INDIR/ $INDIR
-for CRM in $(find $INDIR -name "*.cram"); do
+for CRM in $(find $INDIR -maxdepth 1 -name "*.cram"); do
   mkdir ${CRM%.cram}
   samtools index -@ 8 $CRM
   ${GATK} --java-options "-Xmx70g -XX:ParallelGCThreads=2 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
     SamToFastq \
-    -I /dev/stdin \
+    -I $CRM \
+    -R /ref/$1 \
     --COMPRESS_OUTPUTS_PER_RG true \
     --OUTPUT_PER_RG true \
     --OUTPUT_DIR ${CRM%.cram} \
@@ -36,6 +36,9 @@ FLOWLANE="${FLOWCELL}.${LANE}"
 else
 FLOWLANE=$(echo ${FQ##*/} | rev | cut -d_ -f2- | rev)
 fi
-echo "@RG\tID:${FLOWLANE}\tPL:illumina\tPU:${FLOWLANE}.${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWLANE}.rgfile
-echo "${FQ} ${FQ/_1.f/_2.f} @RG\tID:${FLOWLANE}\tPL:illumina\tPU:${FLOWLANE}.${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
+if [ $(wc -c < $FQ ) -gt 500 ]; then
+  echo "@RG\tID:${FLOWLANE}\tPL:illumina\tPU:${FLOWLANE}.${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" > ${OUTDIR}/${FULLSMID}.${FLOWLANE}.rgfile
+  echo "${FQ} ${FQ/_1.f/_2.f} @RG\tID:${FLOWLANE}\tPL:illumina\tPU:${FLOWLANE}.${BARCODE}\tLB:${BARCODE}\tSM:${SM}\tDS:${FULLSMID}" >> ${INFQ_FILE}
+else rm $FQ
+fi
 done

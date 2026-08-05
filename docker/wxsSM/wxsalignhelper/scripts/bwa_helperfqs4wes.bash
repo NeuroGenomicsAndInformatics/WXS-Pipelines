@@ -9,8 +9,8 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${REF_FASTA} \
   ${FQ1} \
   ${FQ1/1.f/2.f} \
-  | ${GATK} \
-  --java-options "-Xmx70g -XX:ParallelGCThreads=2" \
+  | ${GATK4261mod} \
+  --java-options "-Xmx50g -XX:ParallelGCThreads=2" \
   SortSam  \
   -I /dev/stdin \
   -O ${FQ1}.bam \
@@ -27,8 +27,8 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${FQ1} \
   ${FQ1/1.f/2.f} \
   | samtools view -b -1 -o ${FQ1}.aln.bam \
-  && ${GATK} \
-  --java-options "-Xmx70g -XX:ParallelGCThreads=2" \
+  && ${GATK4261mod} \
+  --java-options "-Xmx50g -XX:ParallelGCThreads=2" \
   SortSam  \
   -I ${FQ1}.aln.bam \
   -O ${FQ1}.bam \
@@ -41,4 +41,5 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
 fi
 
 bedtools intersect -u -a ${FQ1}.bam -b $REF_PADBED > ${FQ1}.isec.bam \
-&& rm ${FQ1}.ba* 
+&& samtools index -@ 8 ${FQ1}.isec.bam
+[[ -s ${FQ1}.isec.bam.bai ]] && rm ${INDIR}/${LSB_JOBINDEX}.lock && rm ${FQ1}.ba*  

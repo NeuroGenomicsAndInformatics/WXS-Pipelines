@@ -1,9 +1,12 @@
 #!/bin/bash
 # Build Recal Table
 THREADS=$(( LSB_MAX_NUM_PROCESSORS * 2 ))
-ln -s ${OUTDIR}/$CRAM /tmp/working.cram
-ln -s ${OUTDIR}/$CRAM.crai /tmp/working.cram.crai
-${GATK} \
+ln -s ${OUTDIR}/${CRAM} /tmp/working.cram
+ln -s ${OUTDIR}/${CRAM}.crai /tmp/working.cram.crai
+echo "check cram"
+ls -la /tmp
+echo "checked cram"
+${GATK4261mod} \
   --java-options "-Xmx40g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
   BaseRecalibratorSpark \
     -I /tmp/working.cram \
@@ -18,7 +21,7 @@ ${GATK} \
 cp /tmp/recal.txt ${OUTDIR}/${FULLSMID}.recal.txt
 
 # Apply Recal Table
-${GATK} \
+${GATK4261mod} \
   --java-options "-Xmx40g -XX:ParallelGCThreads=1" \
   ApplyBQSR \
     -I /tmp/working.cram \

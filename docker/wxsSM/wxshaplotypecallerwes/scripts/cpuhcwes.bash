@@ -10,5 +10,5 @@ ${GATK} \
     -O ${OUTDIR}/${GVCF} \
     -G StandardAnnotation \
     -G AS_StandardAnnotation \
-&& rm -R ${STAGE_INDIR}
+&& rm -R ${INDIR}
 rm ${OUTDIR}/${FULLSMID}.recal.cram*

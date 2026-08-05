@@ -41,4 +41,5 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
 fi
 
 bedtools intersect -u -a ${FQ1}.bam -b $REF_PADBED > ${FQ1}.isec.bam \
-&& rm ${FQ1}.ba* 
+&& samtools index -@ 8 ${FQ1}.isec.bam
+[[ -s ${FQ1}.isec.bam.bai ]] && rm ${INDIR}/0.lock && rm ${FQ1}.ba* 
