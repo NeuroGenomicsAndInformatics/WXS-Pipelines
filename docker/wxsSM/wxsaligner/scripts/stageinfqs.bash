@@ -1,7 +1,7 @@
 #!/bin/bash
 INFQ_FILE=${INDIR}/infqfile.txt
 echo -n "" > $INFQ_FILE
-for FQ in $(find $INDIR -name "*1.f*q.gz"); do
+for FQ in $(find $INDIR -maxdepth 1 -name "*1.f*q.gz"); do
 SM=$(echo $FULLSMID | cut -d^ -f1)
 BARCODE=$(echo $FULLSMID | cut -d^ -f2)
 PROJECT=$(echo $FULLSMID | cut -d^ -f3)

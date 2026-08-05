@@ -1,6 +1,6 @@
 #!/bin/bash
 [ -z $FULLSMID ] && FULLSMID=${1##*/}
-[ -z $OUTDIR ] && FINAL_OUTDIR=$1
+[ -z $OUTDIR ] && OUTDIR=$1
 [ -z $STATS_FILE ] && STATS_FILE=${OUTDIR}/${FULLSMID}.stats.csv
 
 ## RG comparison

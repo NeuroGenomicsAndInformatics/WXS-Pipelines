@@ -3,7 +3,7 @@ FROM rocker/r-ver:4.5.3
 
 ARG SAM_VER=1.21.1
 ENV JAVA_LIBRARY_PATH=/usr/lib/jni
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
 
 RUN apt-get update && \
  	apt-get upgrade -y && \
@@ -24,7 +24,7 @@ RUN apt-get update && \
   zlib1g \
   zlib1g-dev \
   liblzma-dev \
-	openjdk-17-jre \
+	openjdk-8-jre \
   software-properties-common && \
   apt-get -y clean && \
 	apt-get -y autoclean && \

@@ -1,5 +1,5 @@
 ##########################################
-FROM nvcr.io/nvidia/clara/clara-parabricks:4.4.0-1
+FROM nvcr.io/nvidia/clara/clara-parabricks:4.3.1-1
 
 RUN apt-get update && \
   apt-get upgrade -y && \

@@ -9,7 +9,7 @@ SNPSIFT="/scripts/snpEff_v5.1/SnpSift.jar"
 KEYGENES="/scripts/keygenes.bed"
 
 # Creates Fields file local to gVCF
-FIELDS_FILE=${FINAL_OUTDIR}/${GVCF}.snpeff-5.1-FIELDS.txt
+FIELDS_FILE=${OUTDIR}/${GVCF}.snpeff-5.1-FIELDS.txt
 
 ## 1st annotate with SNPEFF
 bcftools view -R ${KEYGENES} ${OUTDIR}/${GVCF} \

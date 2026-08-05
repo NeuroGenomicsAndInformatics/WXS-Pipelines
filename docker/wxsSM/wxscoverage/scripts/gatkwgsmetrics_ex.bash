@@ -1,9 +1,11 @@
 #!/bin/bash
+CRM=$1
+[[ -z $CRM ]] && CRM=${OUTDIR}/${CRAM}
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
-    -I $1 \
+    -I $CRM \
     --INTERVALS ${REF_PADBED%.bed}.interval_list \
-    -O $1.wgsmetrics_paddedexome.txt \
+    -O ${CRM}.wgsmetrics_paddedexome.txt \
     -R ${REF_FASTA} \
     --TMP_DIR /tmp

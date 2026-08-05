@@ -2,7 +2,7 @@
 for VAR in $(printenv | grep CUDA_VISIBLE_DEVICES); do
 export ${VAR/CUDA/NVIDIA}
 done
-pbrun haplotypecaller \
+/usr/local/parabricks/pbrun haplotypecaller \
   --ref ${REF_FASTA} \
   --in-bam ${OUTDIR}/${CRAM} \
   --in-recal-file ${OUTDIR}/${FULLSMID}.recal.txt \
@@ -13,4 +13,4 @@ pbrun haplotypecaller \
   --annotation-group StandardAnnotation \
   --annotation-group StandardHCAnnotation \
   --annotation-group AS_StandardAnnotation \
-&& rm -R $INDIR
+&& ( [ ! -d $INDIR ] || rm -R $INDIR )

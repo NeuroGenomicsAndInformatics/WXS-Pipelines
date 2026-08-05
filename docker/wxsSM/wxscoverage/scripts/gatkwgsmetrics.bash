@@ -1,8 +1,10 @@
 #!/bin/bash
+CRM=$1
+[[ -z $CRM ]] && CRM=${OUTDIR}/${CRAM}
 ${GATK} \
   --java-options "-Xmx20g -XX:ParallelGCThreads=1" \
   CollectWgsMetrics \
-    -I $1 \
-    -O $1.wgsmetrics.txt \
+    -I $CRM \
+    -O ${CRM}.wgsmetrics.txt \
     -R ${REF_FASTA} \
     --TMP_DIR /tmp
