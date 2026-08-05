@@ -45,8 +45,6 @@ RUN wget -q -P /tmp https://github.com/samtools/bcftools/releases/download/${BCF
 
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
-COPY ./intlists/* /intlists/
-
 COPY ./scripts/* /scripts/
 
 CMD ["/bin/bash"]

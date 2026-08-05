@@ -1,12 +1,12 @@
 #!/bin/bash
 MODE="INDEL"
-NAMEBASE="${JOINT_VCF%.*.*}.AS.${CHR}.${MODE}"
+[[ -z $JOINT_VCF ]] && JOINT_VCF=$1
+NAMEBASE="${JOINT_VCF%.*.*}.AS.${MODE}"
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	VariantRecalibrator \
 	-AS \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
 	-V ${JOINT_VCF} \
 	--resource:mills,known=false,training=true,truth=true,prior=12.0 ${REF_MILLS_GOLD} \
 	--resource:dbsnp,known=true,training=false,truth=false,prior=2.0 ${REF_DBSNP} \

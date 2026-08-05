@@ -1,12 +1,12 @@
 #!/bin/bash
 MODE="SNP"
-NAMEBASE="${JOINT_VCF%.*.*}.AS.${CHR}.${MODE}"
+[[ -z $JOINT_VCF ]] && JOINT_VCF=$1
+NAMEBASE="${JOINT_VCF%.*.*}.AS.${MODE}"
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
 	VariantRecalibrator \
 	-AS \
 	-R ${REF_FASTA} \
-	-L ${CHR} \
 	-V ${JOINT_VCF} \
 	--resource:hapmap,known=false,training=true,truth=true,prior=15.0 ${REF_HAPMAP} \
 	--resource:omni,known=false,training=true,truth=true,prior=12.0 /ref/20190812_GATK_38_googlebundle/resources_broad_hg38_v0_1000G_omni2.5.hg38.vcf.gz \
