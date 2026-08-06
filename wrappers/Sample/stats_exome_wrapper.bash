@@ -1,7 +1,7 @@
 #!/bin/bash
 # This wrapper generates a stats.csv file from the various QC reports
 # The argument for this wrapper is a path to the sample's output directory on Active storage
-FINAL_OUTDIR=$1
+OUTDIR=$1
 
 STORAGE_USER=cruchagac
 COMPUTE_USER=fernandezv
