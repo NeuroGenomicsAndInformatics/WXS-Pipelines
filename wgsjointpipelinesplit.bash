@@ -39,7 +39,7 @@ bsub -g ${JOB_GROUP} \
     -Ne \
     -sp 70 \
     -n 1 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s1.%J.${i}.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s1.${i}.%J.out \
     -R 'select[mem>80GB && tmp>6GB] rusage[mem=80GB,tmp=6GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
@@ -121,7 +121,7 @@ bsub -g ${JOB_GROUP} \
     -Ne \
     -sp 70 \
     -n 1 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s4.%J.${i}.out \
+    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s4.${i}.%J.out \
     -R 'select[mem>80GB && tmp>6GB] rusage[mem=80GB,tmp=6GB] span[hosts=1]' \
     -G compute-${COMPUTE_USER} \
     -q general \
