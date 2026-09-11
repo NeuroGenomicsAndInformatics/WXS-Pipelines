@@ -72,31 +72,14 @@ ${GATK} \
 
 echo "AF Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
-#java -Xmx80g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -XX:+UseSerialGC \
-#	-jar /ref/GATK360.jar \
-#	-T VariantAnnotator \
-#	-A AlleleBalance \
-#	-R /ref/20190812_GATK_38_googlebundle/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta \
-#	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
-#	-o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
-#&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz.tbi
-
-#${GATK} \
-#    --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
-#	VariantAnnotator \
-#	-R ${REF_FASTA} \
-#	-A AlleleBalance \
-#	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
-#	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
-#&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz.tbi
-
-bcftools +fill-tags \
-	-Oz -o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
-	${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
-	-- \
-  	-t 'ABHet:1=float(smpl_sum(FORMAT/AD[0:1]) / (smpl_sum(FORMAT/AD[0:0]) + smpl_sum(FORMAT/AD[0:1])))' \
+/usr/lib/jvm/java-8-openjdk-amd64/bin/java -Xmx80g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -XX:+UseSerialGC \
+	-jar /ref/GATK360.jar \
+	-T VariantAnnotator \
+	-A AlleleBalance \
+	-R /ref/20190812_GATK_38_googlebundle/resources_broad_hg38_v0_Homo_sapiens_assembly38.fasta \
+	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz \
+	-o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
 && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1.vcf.gz.tbi
-tabix ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz
 
 ${GATK} \
     --java-options "-Xmx80g -XX:ConcGCThreads=1 -XX:ParallelGCThreads=1 -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \

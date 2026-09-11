@@ -23,6 +23,7 @@ RUN apt-get update && \
   zlib1g-dev \
   liblzma-dev \
 	openjdk-17-jre \
+  openjdk-8-jre \
   software-properties-common && \
   apt-get -y clean && \
 	apt-get -y autoclean && \
