@@ -1,9 +1,7 @@
 #!/bin/bash
-VCF_SHARDS=($(find ${OUTDIR} -maxdepth 1 -name "*joint.vcf.gz"))
-echo ${#VCF_SHARDS[@]}
 VCF_INPUTS=()
-for VCF in ${VCF_SHARDS[@]}; do
-  VCF_INPUTS+="-I ${VCF} "
+for ((int i; i < $NUM_INTERVALS; i++)); do
+  VCF_INPUTS+="-I ${OUTDIR}/${INT}.joint.vcf.gz "
 done
 
 ${GATK} \

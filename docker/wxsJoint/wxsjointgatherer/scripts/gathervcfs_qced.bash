@@ -1,9 +1,7 @@
 #!/bin/bash
-VCF_SHARDS=($(find ${OUTDIR} -maxdepth 1 -name "*ABfiltered.vcf.gz"))
-echo ${#VCF_SHARDS[@]}
 VCF_INPUTS=()
-for VCF in ${VCF_SHARDS[@]}; do
-  VCF_INPUTS+="-I ${VCF} "
+for (( i=0;i<$NUM_INTERVALS;i++)); do 
+  VCF_INPUTS+="-I $(find $OUTDIR -name "$i.*ABfiltered.vcf.gz") "
 done
 
 ${GATK} \
