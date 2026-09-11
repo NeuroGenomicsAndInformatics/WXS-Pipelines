@@ -10,7 +10,7 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${FQ1} \
   ${FQ1/1.f/2.f} \
   | ${GATK4261mod} \
-  --java-options "-Xmx220g -XX:ParallelGCThreads=2" \
+  --java-options "-Xmx100g -XX:ParallelGCThreads=2" \
   SortSam  \
   -I /dev/stdin \
   -O ${FQ1}.bam \
@@ -25,9 +25,9 @@ bwa-mem2 mem -M -t $THREADS -K 10000000 \
   ${REF_FASTA} \
   ${FQ1} \
   ${FQ1/1.f/2.f} \
-  | samtools view -b -1 -o ${FQ1}.aln.bam \
+  | samtools view -b -o ${FQ1}.aln.bam \
   && ${GATK4261mod} \
-  --java-options "-Xmx220g -XX:ParallelGCThreads=2" \
+  --java-options "-Xmx100g -XX:ParallelGCThreads=2" \
   SortSam  \
   -I ${FQ1}.aln.bam \
   -O ${FQ1}.bam \
