@@ -1,7 +1,7 @@
 #!/bin/bash
 VCF_INPUTS=()
 for ((int i; i < $NUM_INTERVALS; i++)); do
-  VCF_INPUTS+="-I ${OUTDIR}/${INT}.joint.vcf.gz "
+  VCF_INPUTS+="-I ${OUTDIR}/${i}.joint.vcf.gz "
 done
 
 ${GATK} \
