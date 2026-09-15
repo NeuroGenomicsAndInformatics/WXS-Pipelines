@@ -21,32 +21,6 @@ JOB_GROUP="/${USER}/compute-${COMPUTE_USER}/joint"
 [[ -z "$(bjgroup | grep $JOB_GROUP)" ]] && bgadd -L 50 ${JOB_GROUP}
 [ ! -d /scratch1/fs1/${COMPUTE_USER}/${USER}/c1out/logs ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs
 
-## 4. QC on Intervals
-# These jobs QC the joint called intervals.
-# They use the split vcfs from the calling stage.
-# First it applies the VQSR done on the gathered vcf.
-# It then does several hard filtering steps.
-
-for ((i=0 ; i < $NUM_INTERVALS ; i++)); do
-
-LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
-/scratch1/fs1/${SCRATCH_USER}:/scratch1/fs1/${SCRATCH_USER} \
-$REF_DIR:/ref" \
-LSF_DOCKER_ENV_FILE=$ENV_FILE \
-bsub -g ${JOB_GROUP} \
-    -J ${JOBNAME}-qc-$i \
-    -Ne \
-    -sp 70 \
-    -n 1 \
-    -o /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${COHORT}.joint_s4.${i}.%J.out \
-    -R 'select[mem>80GB && tmp>6GB] rusage[mem=80GB,tmp=6GB] span[hosts=1]' \
-    -G compute-${COMPUTE_USER} \
-    -q general \
-    -a 'docker(mjohnsonngi/wxsjointasqc:2.1)' \
-    bash /scripts/VQCPipeline.bash $i
-
-done
-
 ## 5. Gather QCed Vcfs
 # This step takes all of the joint vcfs from the previous step and combines them into a chromosome joint vcf
 LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE_USER}/Active \
@@ -54,8 +28,7 @@ LSF_DOCKER_VOLUMES="/storage1/fs1/${STORAGE_USER}/Active:/storage1/fs1/${STORAGE
 $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
-    -w "done(${JOBNAME}-qc-*)" \
-    -J ${JOBNAME}-gather-qced \
+    -J ${JOBNAME}-gather-split \
     -N \
     -n 4 \
     -sp 80 \

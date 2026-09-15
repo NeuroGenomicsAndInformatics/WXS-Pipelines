@@ -87,11 +87,22 @@ ${GATK} \
 	-R ${REF_FASTA} \
 	-V ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz \
 	-select '(!vc.hasAttribute("ABHet") || ABHet == "." || ABHet == "NaN" || ABHet == "-nan") || (ABHet >= 0.30 && ABHet <= 0.70)' \
-	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz
-SUCCESS=$?
-
-[[ $SUCCESS -eq 0 ]] && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz.tbi
+	-O ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz \
+&& rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABannotated.vcf.gz.tbi
 
 echo "AB Filtered,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
+
+bcftools norm \
+	--threads $LSB_MAX_NUM_PROCESSORS \
+	-m -any \
+	-o ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.splitMA.vcf.gz \
+	${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz \
+	&& tabix -s1 -b2 -e2 ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.splitMA.vcf.gz
+
+SUCCESS=$?
+
+[[ $SUCCESS -eq 0 ]] && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz && rm ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.vcf.gz.tbi
+
+echo "splitMA,${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.splitMA.vcf.gz,$(zcat ${NAMEBASE}-PASS-maxDP${SNV_DP_TR}-LCR-nonVariants-AF1-ABfiltered.splitMA.vcf.gz | grep -v '^#' | wc -l)" >> $COUNT_FILE
 
 exit $SUCCESS
