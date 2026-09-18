@@ -126,7 +126,7 @@ bsub -g ${JOB_GROUP} \
     -G compute-${COMPUTE_USER} \
     -q general \
     -a 'docker(mjohnsonngi/wxsjointasqc:2.1)' \
-    bash /scripts/VQCPipeline.bash $i
+    bash /scripts/VQCPipeline_padex.bash $i
 
 done
 
