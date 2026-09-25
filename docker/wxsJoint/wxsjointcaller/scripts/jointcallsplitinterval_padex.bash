@@ -13,7 +13,7 @@ ${GATK462} --java-options "-Xms70g -Xmx70g -DGATK_STACKTRACE_ON_USER_EXCEPTION=t
     --batch-size 50 \
     --consolidate true \
     --genomicsdb-shared-posixfs-optimizations true \
-    --genomicsdb-vcf-buffer-size 65536 \
+    --merge-input-intervals true \
     --tmp-dir ${TMP_DIR} \
 && ${GATK462} --java-options "-Xms70g -Xmx70g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true" \
     GenotypeGVCFs \
