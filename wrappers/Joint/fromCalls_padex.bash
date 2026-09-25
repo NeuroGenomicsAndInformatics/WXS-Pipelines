@@ -90,7 +90,7 @@ $REF_DIR:/ref" \
 LSF_DOCKER_ENV_FILE=$ENV_FILE \
 bsub -g ${JOB_GROUP} \
     -J ${JOBNAME}-qc-$i \
-    -w "done(\"${JOBNAME}-vqsr*\")" -ti \
+    -w "(done(\"${JOBNAME}-vqsr-indel\") && done(\"${JOBNAME}-vqsr-snp\"))" -ti \
     -Ne \
     -sp 70 \
     -n 1 \
