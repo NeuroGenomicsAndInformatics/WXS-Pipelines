@@ -12,8 +12,8 @@ echo -e "OUTDIR=/storage1/fs1/${STORAGE_USER}/Active/$USER/c1out/${FULLSMID}" >>
 [ ! -d /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/$FULLSMID ] && mkdir /scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/$FULLSMID
 echo -e "LOGDIR=/scratch1/fs1/${SCRATCH_USER}/${USER}/c1out/logs/${FULLSMID}" >> $ENV_FILE
 echo -e "REF_DIR=${REF_DIR}" >> $ENV_FILE
-echo -e "TMP_DIR=/storage1/fs1/${STORAGE_USER}/${USER}/c1in/tmp/${FULLSMID}" >> $ENV_FILE
-[ ! -d /storage1/fs1/${STORAGE_USER}/${USER}/c1in/tmp/${FULLSMID} ] && mkdir /storage1/fs1/${STORAGE_USER}/${USER}/c1in/tmp/${FULLSMID}
+echo -e "TMP_DIR=/storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/tmp/${FULLSMID}" >> $ENV_FILE
+[ ! -d /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/tmp/${FULLSMID} ] && mkdir /storage1/fs1/${STORAGE_USER}/Active/${USER}/c1in/tmp/${FULLSMID}
 echo -e "RUN_TYPE=genome" >> $ENV_FILE
 echo -e "BAM=${FULLSMID}.aln.srt.mrk.bam" >> $ENV_FILE
 echo -e "CRAM=${FULLSMID}.aln.srt.mrk.cram" >> $ENV_FILE
